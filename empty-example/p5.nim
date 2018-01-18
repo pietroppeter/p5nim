@@ -13,6 +13,22 @@ var
 var
     mouseX* {.importc.}: float
     mouseY* {.importc.}: float
+    pmouseX* {.importc.}: float
+    pmouseY* {.importc.}: float
+    winMouseX* {.importc.}: float
+    winMouseY* {.importc.}: float
+    pwinMouseX* {.importc.}: float
+    pwinMouseY* {.importc.}: float
+    mouseButton* {.importc.}: any
+    mouseIsPressed* {.importc.}: bool
+    #procs
+    mouseMoved* {.exportc.}: proc(): void
+    mouseDragged* {.exportc.}: proc(): void
+    mousePressed* {.exportc.}: proc(): void
+    mouseReleased* {.exportc.}: proc(): void
+    mouseClicked* {.exportc.}: proc(): void
+    doubleClicked* {.exportc.}: proc(): void
+    mouseWheel* {.exportc.}: proc(): void
 
 var
     P2D* {.importc.}: any
