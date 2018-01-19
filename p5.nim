@@ -31,6 +31,52 @@ var
     mouseWheel* {.exportc.}: proc(): void
 
 var
+    keyIsPressed* {.importc.}: bool
+    key* {.importc.}: cstring
+    keyCode* {.importc.}: int
+    #procs
+    keyPressed* {.exportc.}: proc(): void
+    keyReleased* {.exportc.}: proc(): void
+    keyTyped* {.exportc.}: proc(): void
+
+proc keyIsDown*(code: PNumber): bool {.importc.}
+
+type
+    Touche* = ref ToucheObj
+    ToucheObj* {.importc.} = object
+      x: float
+      y: float
+      id: int
+
+var
+    touches* {.importc.}: seq[float]
+    touchStarted* {.exportc.}: proc(): void
+    touchMoved* {.exportc.}: proc(): void
+    touchEnded* {.exportc.}: proc(): void
+
+var
+    deviceOrientation* {.importc.}: any
+    accelerationX* {.importc.}: float
+    accelerationY* {.importc.}: float
+    accelerationZ* {.importc.}: float
+    pAccelerationX* {.importc.}: float
+    pAccelerationY* {.importc.}: float
+    pAccelerationZ* {.importc.}: float
+    rotationX* {.importc.}: float
+    rotationY* {.importc.}: float
+    rotationZ* {.importc.}: float
+    pRotationX* {.importc.}: float
+    pRotationY* {.importc.}: float
+    pRotationZ* {.importc.}: float
+    deviceMoved* {.exportc.}: proc(): void
+    deviceTurned* {.exportc.}: proc(): void
+    deviceShaken* {.exportc.}: proc(): void
+
+
+proc setMoveThreshold*(value: PNumber) {.importc.}
+proc setShakeThreshold*(value: PNumber) {.importc.}
+
+var
     P2D* {.importc.}: any
     WEBGL* {.importc.}: any
     ARROW* {.importc.}: any
@@ -132,7 +178,56 @@ var
 type
     Image* = ref ImageObj
     ImageObj {.importc.} = object
+      width*: float
+      height*: float
+      pixels*: openArray[float]
 
+proc loadPixels*(image: Image): void {.importcpp.}
+proc updatePixels*(image: Image): void {.importcpp.}
+proc updatePixels*(image: Image, x, y, w, h: PNumber): void {.importcpp.}
+proc get*(image: Image): Image {.importcpp. }
+proc get*(image: Image, x, y: PNumber): openArray[float] {.importcpp. }
+proc get*(image: Image, x, y, w, h: PNumber): Image {.importcpp. }
+proc set*(image: Image, x, y: PNumber, value: PNumber | openArray[PNumber] | Color | Image) {.importcpp.}
+proc resize*(image: Image, w, h: PNumber) {.importcpp.}
+proc copy*(image: Image, source: Image #[ TODO: | Element ]#, sx, sy, sw, sh, dx, dy, dw, dh: int) {.importcpp.}
+proc mask*(image, maskImage: Image) {.importcpp.}
+proc filter*(image: Image, filterType: any) {.importcpp.}
+proc filter*(image: Image, filterType: any, value: PNumber) {.importcpp.}
+proc blend*(image: Image, sx, sy, sw, sh, dx, dy, dw, dh: int, blendMode: any): {.importcpp.}
+proc blend*(image: Image, source: Image, sx, sy, sw, sh, dx, dy, dw, dh: int, blendMode: any) {.importcpp.}
+proc save*(image: Image, filename, extension: cstring) {.importcpp.}
+proc createImage*(w, h: int): Image {.importc.}
+proc saveCanvas*() {.importc.}
+proc saveCanvas*(selectedCanvas: any #[ TODO: Element | HTMLCanvasElement ]#) {.importc.}
+proc saveCanvas*(selectedCanvas: any #[ TODO: Element | HTMLCanvasElement ]#, filename: cstring) {.importc.}
+proc saveCanvas*(selectedCanvas: any #[ TODO: Element | HTMLCanvasElement ]#, filename, extension: cstring) {.importc.}
+proc saveCanvas*(filename: cstring) {.importc.}
+proc saveCanvas*(filename, extension: cstring) {.importc.}
+proc saveFrames*(filename, extension: cstring, duration, framerate: PNumber) {.importc.}
+proc saveFrames*(filename, extension: cstring, duration, framerate: PNumber, callback: proc(openArray[any]): void) {.importc.}
+
+var
+    pixels {.importc.}: openArray[float]
+
+proc blend*(source: Image #[ TODO: | Element ]#, sx, sy, sw, sh, dx, dy, dw, dh: int, blendMode: any) {.importc.}
+proc blend*(sx, sy, sw, sh, dx, dy, dw, dh: int, blendMode: any) {.importc.}
+proc copy*(source: Image #[ TODO: | Element ]#, sx, sy, sw, sh, dx, dy, dw, dh: int) {.importc.}
+proc copy*(sx, sy, sw, sh, dx, dy, dw, dh: int) {.importc.}
+proc filter*(filterType: any) {.importc.}
+proc filter*(filterType: any, filterParam: PNumber) {.importc.}
+proc get*(): Image {.importc. }
+proc get*(x, y: PNumber): openArray[float] {.importc.}
+proc get*(x, y, w, h: PNumber): Image {.importc.}
+proc loadPixels*() {.importc.}
+proc set*(x, y: PNumber, value: PNumber | openArray[PNumber] | Color | Image) {.importc.}
+proc updatePixels*() {.importc.}
+proc updatePixels*(x, y, w, h: PNumber) {.importc.}
+proc loadImage*(path: cstring): Image {.importc.}
+proc loadImage*(path: cstring, successCallback: proc(Image)): Image {.importc.}
+proc loadImage*(path: cstring, successCallback: proc(Image), failureCallback: proc(#[ TODO: Event ]#)): Image {.importc.}
+
+type
     Vector* = ref VectorObj
     VectorObj* {.importcpp.} = object
         x*: float
