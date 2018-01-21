@@ -176,21 +176,53 @@ var
     PORTRAIT* {.importc.}: any
 
 type
-    Image* = ref ImageObj
-    ImageObj {.importc.} = object
-      width*: float
-      height*: float
-      pixels*: openArray[float]
+  Element* = ref ElementObj
+  ElementObj {.importc.} = object
+
+proc parent*(element: Element): Element {.importcpp.}
+proc parent*(element: Element, newParent: cstring | Element | JsObject) {.importcpp.}
+proc id*(element: Element): cstring {.importcpp.}
+proc id*(element: Element, newId: cstring) {.importcpp.}
+proc class*(element: Element): cstring {.importcpp.}
+proc class*(element: Element, class: cstring) {.importcpp.}
+proc mousePressed*(element: Element, arg: proc() | bool) {.importcpp.}
+proc doubleClicked*(element: Element, arg: proc() | bool) {.importcpp.}
+proc mouseWheel*(element: Element, arg: proc(event: JsObject) | bool) {.importcpp.}
+proc mouseReleased*(element: Element, arg: proc() | bool) {.importcpp.}
+proc mouseClicked*(element: Element, arg: proc() | bool) {.importcpp.}
+proc mouseMoved*(element: Element, arg: proc() | bool) {.importcpp.}
+proc mouseOver*(element: Element, arg: proc() | bool) {.importcpp.}
+proc changed*(element: Element, arg: proc() | bool) {.importcpp.}
+proc input*(element: Element, arg: proc() | bool) {.importcpp.}
+proc mouseOut*(element: Element, arg: proc() | bool) {.importcpp.}
+proc touchStarted*(element: Element, arg: proc() | bool) {.importcpp.}
+proc touchMoved*(element: Element, arg: proc() | bool) {.importcpp.}
+proc touchEnded*(element: Element, arg: proc() | bool) {.importcpp.}
+proc dragOver*(element: Element, arg: proc() | bool) {.importcpp.}
+proc dragLeave*(element: Element, arg: proc() | bool) {.importcpp.}
+proc drop*(element: Element, callback: proc(file: File), fxn: proc()) {.importcpp.}
+
+type
+  Graphics* = ref GraphicsObj
+  GraphicsObj {.importc.} = object
+
+
+type
+  Image* = ref ImageObj
+  ImageObj {.importc.} = object
+    width*: float
+    height*: float
+    pixels*: openArray[float]
 
 proc loadPixels*(image: Image): void {.importcpp.}
 proc updatePixels*(image: Image): void {.importcpp.}
 proc updatePixels*(image: Image, x, y, w, h: PNumber): void {.importcpp.}
 proc get*(image: Image): Image {.importcpp. }
-proc get*(image: Image, x, y: PNumber): openArray[float] {.importcpp. }
-proc get*(image: Image, x, y, w, h: PNumber): Image {.importcpp. }
+proc get*(image: Image, x, y: PNumber): openArray[float] {.importcpp.}
+proc get*(image: Image, x, y, w, h: PNumber): Image {.importcpp.}
 proc set*(image: Image, x, y: PNumber, value: PNumber | openArray[PNumber] | Color | Image) {.importcpp.}
 proc resize*(image: Image, w, h: PNumber) {.importcpp.}
-proc copy*(image: Image, source: Image #[ TODO: | Element ]#, sx, sy, sw, sh, dx, dy, dw, dh: int) {.importcpp.}
+proc copy*(image: Image, source: Image | Element, sx, sy, sw, sh, dx, dy, dw, dh: int) {.importcpp.}
 proc mask*(image, maskImage: Image) {.importcpp.}
 proc filter*(image: Image, filterType: any) {.importcpp.}
 proc filter*(image: Image, filterType: any, value: PNumber) {.importcpp.}
@@ -199,20 +231,20 @@ proc blend*(image: Image, source: Image, sx, sy, sw, sh, dx, dy, dw, dh: int, bl
 proc save*(image: Image, filename, extension: cstring) {.importcpp.}
 proc createImage*(w, h: int): Image {.importc.}
 proc saveCanvas*() {.importc.}
-proc saveCanvas*(selectedCanvas: any #[ TODO: Element | HTMLCanvasElement ]#) {.importc.}
-proc saveCanvas*(selectedCanvas: any #[ TODO: Element | HTMLCanvasElement ]#, filename: cstring) {.importc.}
-proc saveCanvas*(selectedCanvas: any #[ TODO: Element | HTMLCanvasElement ]#, filename, extension: cstring) {.importc.}
+proc saveCanvas*(selectedCanvas: Element #[ TODO: | HTMLCanvasElement ]#) {.importc.}
+proc saveCanvas*(selectedCanvas: Element #[ TODO: | HTMLCanvasElement ]#, filename: cstring) {.importc.}
+proc saveCanvas*(selectedCanvas: Element #[ TODO: | HTMLCanvasElement ]#, filename, extension: cstring) {.importc.}
 proc saveCanvas*(filename: cstring) {.importc.}
 proc saveCanvas*(filename, extension: cstring) {.importc.}
 proc saveFrames*(filename, extension: cstring, duration, framerate: PNumber) {.importc.}
-proc saveFrames*(filename, extension: cstring, duration, framerate: PNumber, callback: proc(openArray[any]): void) {.importc.}
+proc saveFrames*(filename, extension: cstring, duration, framerate: PNumber, callback: proc(openArray[JsObject]): void) {.importc.}
 
 var
     pixels {.importc.}: openArray[float]
 
-proc blend*(source: Image #[ TODO: | Element ]#, sx, sy, sw, sh, dx, dy, dw, dh: int, blendMode: any) {.importc.}
+proc blend*(source: Image | Element, sx, sy, sw, sh, dx, dy, dw, dh: int, blendMode: any) {.importc.}
 proc blend*(sx, sy, sw, sh, dx, dy, dw, dh: int, blendMode: any) {.importc.}
-proc copy*(source: Image #[ TODO: | Element ]#, sx, sy, sw, sh, dx, dy, dw, dh: int) {.importc.}
+proc copy*(source: Image | Element, sx, sy, sw, sh, dx, dy, dw, dh: int) {.importc.}
 proc copy*(sx, sy, sw, sh, dx, dy, dw, dh: int) {.importc.}
 proc filter*(filterType: any) {.importc.}
 proc filter*(filterType: any, filterParam: PNumber) {.importc.}
@@ -226,6 +258,18 @@ proc updatePixels*(x, y, w, h: PNumber) {.importc.}
 proc loadImage*(path: cstring): Image {.importc.}
 proc loadImage*(path: cstring, successCallback: proc(Image)): Image {.importc.}
 proc loadImage*(path: cstring, successCallback: proc(Image), failureCallback: proc(#[ TODO: Event ]#)): Image {.importc.}
+proc image*(img: Image | Element, x, y: PNumber) {.importc.}
+proc image*(img: Image | Element, x, y, w, h: PNumber) {.importc.}
+proc image*(img: Image | Element, dx, dy, dw, dh, sx, sy: PNumber) {.importc.}
+proc image*(img: Image | Element, dx, dy, dw, dh, sx, sy, sw, sh: PNumber) {.importc.}
+proc tint*(v1, v2, v3: PNumber) {.importc.}
+proc tint*(v1, v2, v3, alpha: PNumber) {.importc.}
+proc tint*(value: cstring) {.importc.}
+proc tint*(value: cstring, alpha: PNumber) {.importc.}
+proc tint*(values[]: openArray[PNumber]) {.importc.}
+proc tint*(color: Color) {.importc.}
+proc noTint*() {.importc.}
+proc imageMode*(mode: any) {.importc.}
 
 type
     Vector* = ref VectorObj
@@ -477,7 +521,7 @@ proc translate*(x, y, z: PNumber) {.importc.}
 proc randomSeed*(seed: PNumber)
 proc random*(): float
 proc random*(maximum: PNumber): float
-proc random*(arr: openArray[float]): any
+proc random*(arr: openArray[T]): T
 proc random*(minumum, maximum: float): float
 proc randomGaussian*(): float
 proc randomGaussian*(mean: PNumber): float
@@ -533,12 +577,55 @@ proc textFont*(font: Font | cstring): Font
 proc textFont*(font: Font | cstring, size: PNumber): Font
 proc textBounds*(font: Font, line: cstring, x, y: PNumber): object
 proc textBounds*(font: Font, line: cstring, x, y: PNumber, fontSize: PNumber): object
-proc textBounds*(font: Font, line: cstring, x, y: PNumber, options: any): any
-proc textBounds*(font: Font, line: cstring, x, y: PNumber, fontSize: PNumber, options: any): any
-proc textToPoints*(font: Font, text: cstring, x, y: PNumber): openArray[any]
-proc textToPoints*(font: Font, text: cstring, x, y: PNumber, fontSize: PNumber): openArray[any]
-proc textToPoints*(font: Font, text: cstring, x, y: PNumber, options: any): openArray[any]
-proc textToPoints*(font: Font, text: cstring, x, y: PNumber, fontSize: PNumber, options: any): openArray[any]
+proc textBounds*(font: Font, line: cstring, x, y: PNumber, options: JsObject): JsObject
+proc textBounds*(font: Font, line: cstring, x, y: PNumber, fontSize: PNumber, options: JsObject): JsObject
+proc textToPoints*(font: Font, text: cstring, x, y: PNumber): openArray[JsObject]
+proc textToPoints*(font: Font, text: cstring, x, y: PNumber, fontSize: PNumber): openArray[JsObject]
+proc textToPoints*(font: Font, text: cstring, x, y: PNumber, options: JsObject): openArray[JsObject]
+proc textToPoints*(font: Font, text: cstring, x, y: PNumber, fontSize: PNumber, options: JsObject): openArray[JsObject]
 
 {.pop.}
+
+{.push importc.}
+
+proc noise*(x: PNumber): PNumber
+proc noise*(x, y: PNumber): PNumber
+proc noise*(x, y, z: PNumber): PNumber
+proc noiseDetail*(lod, falloff: PNumber)
+proc noiseSeed*(seed: PNumber)
+
+{.pop.}
+
+{.push importc.}
+
+proc camera()
+proc camera(x, y, z, centerX, centerY, centerZ, upX, upY, upZ: PNumber)
+proc perspective*()
+proc perspective*(fovy, aspect, near, far: PNumber)
+proc ortho*(left, right, bottom, top, near, far: PŃumber)
+
+{.pop.}
+
+{.push importc.}
+
+proc ambientLight*(v1, v2, v3: PNumber)
+proc ambientLight*(v1, v2, v3, alpha: PNumber)
+proc ambientLight*(color: cstring)
+proc ambientLight*(color: cstring, alpha: PNumber)
+proc ambientLight*(value: openArray[PNumber])
+proc ambientLight*(color: Color)
+proc directionalLight*(v1, v2, v3: PNumber, position: Vector)
+proc directionalLight*(value: openArray[PNumber] | cstring | Color, x, y, z: PNumber)
+proc directionalLight*(value: openArray[PNumber] | cstring | Color, position: Vector)
+proc directionalLight*(v1, v2, v3, x, y, z: PNumber)
+proc pointLight*(v1, v2, v3, x, y, z: PNumber)
+proc pointLight*(v1, v2, v3, position: Vector)
+proc pointLight*(value: openArray[PNumber] | cstring | Color, x, y, z: PNumber)
+proc pointLight*(value: openArray[PNumber] | cstring | Color, position: Vector)
+
+{.pop.}
+
+type
+  Geometry = ref GeometryObj
+  GeometryObj {.importc.} = object
 
