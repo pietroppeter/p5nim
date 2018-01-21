@@ -76,137 +76,141 @@ var
 proc setMoveThreshold*(value: PNumber) {.importc.}
 proc setShakeThreshold*(value: PNumber) {.importc.}
 
+{.push importc.}
 var
-    P2D* {.importc.}: any
-    WEBGL* {.importc.}: any
-    ARROW* {.importc.}: any
-    CROSS* {.importc.}: any
-    HAND* {.importc.}: any
-    MOVE* {.importc.}: any
-    TEXT* {.importc.}: any
-    WAIT* {.importc.}: any
-    PI* {.importc.}: float
-    HALF_PI* {.importc.}: float
-    QUARTER_PI* {.importc.}: float
-    TAU* {.importc.}: float
-    TWO_PI* {.importc.}: float
-    DEGREES* {.importc.}: any
-    RADIANS* {.importc.}: any
-    DEG_TO_RAD* {.importc.}: float
-    RAD_TO_DEG* {.importc.}: float
-    CORNER* {.importc.}: any
-    CORNERS* {.importc.}: any
-    RADIUS* {.importc.}: any
-    RIGHT* {.importc.}: any
-    LEFT* {.importc.}: any
-    CENTER* {.importc.}: any
-    TOP* {.importc.}: any
-    BOTTOM* {.importc.}: any
-    BASELINE* {.importc.}: any
-    POINTS* {.importc.}: float
-    LINES* {.importc.}: float
-    LINE_STRIP* {.importc.}: float
-    LINE_LOOP* {.importc.}: float
-    TRIANGLES* {.importc.}: float
-    TRIANGLE_FAN* {.importc.}: float
-    TRIANGLE_STRIP* {.importc.}: float
-    QUADS* {.importc.}: any
-    QUAD_STRIP* {.importc.}: any
-    CLOSE* {.importc.}: any
-    OPEN* {.importc.}: any
-    CHORD* {.importc.}: any
-    PIE* {.importc.}: any
-    PROJECT* {.importc.}: any
-    SQUARE* {.importc.}: any
-    ROUND* {.importc.}: any
-    BEVEL* {.importc.}: any
-    MITER* {.importc.}: any
-    RGB* {.importc.}: any
-    HSB* {.importc.}: any
-    HSL* {.importc.}: any
-    AUTO* {.importc.}: any
-    ALT* {.importc.}: any
-    BACKSPACE* {.importc.}: any
-    CONTROL* {.importc.}: any
-    DELETE* {.importc.}: any
-    DOWN_ARROW* {.importc.}: any
-    ENTER* {.importc.}: any
-    ESCAPE* {.importc.}: any
-    LEFT_ARROW* {.importc.}: any
-    OPTION* {.importc.}: any
-    RETURN* {.importc.}: any
-    RIGHT_ARROW* {.importc.}: any
-    SHIFT* {.importc.}: any
-    TAB* {.importc.}: any
-    UP_ARROW* {.importc.}: any
-    BLEND* {.importc.}: any
-    ADD* {.importc.}: any
-    DARKEST* {.importc.}: any
-    LIGHTEST* {.importc.}: any
-    DIFFERENCE* {.importc.}: any
-    EXCLUSION* {.importc.}: any
-    MULTIPLY* {.importc.}: any
-    SCREEN* {.importc.}: any
-    REPLACE* {.importc.}: any
-    OVERLAY* {.importc.}: any
-    HARD_LIGHT* {.importc.}: any
-    SOFT_LIGHT* {.importc.}: any
-    DODGE* {.importc.}: any
-    BURN* {.importc.}: any
-    THRESHOLD* {.importc.}: any
-    GRAY* {.importc.}: any
-    OPAQUE* {.importc.}: any
-    INVERT* {.importc.}: any
-    POSTERIZE* {.importc.}: any
-    DILATE* {.importc.}: any
-    ERODE* {.importc.}: any
-    BLUR* {.importc.}: any
-    NORMAL* {.importc.}: any
-    ITALIC* {.importc.}: any
-    BOLD* {.importc.}: any
-    LINEAR* {.importc.}: any
-    QUADRATIC* {.importc.}: any
-    BEZIER* {.importc.}: any
-    CURVE* {.importc.}: any
-    STROKE* {.importc.}: any
-    FILL* {.importc.}: any
-    TEXTURE* {.importc.}: any
-    IMMEDIATE* {.importc.}: any
-    LANDSCAPE* {.importc.}: any
-    PORTRAIT* {.importc.}: any
+    P2D*: any
+    WEBGL*: any
+    ARROW*: any
+    CROSS*: any
+    HAND*: any
+    MOVE*: any
+    TEXT*: any
+    WAIT*: any
+    PI*: float
+    HALF_PI*: float
+    QUARTER_PI*: float
+    TAU*: float
+    TWO_PI*: float
+    DEGREES*: any
+    RADIANS*: any
+    DEG_TO_RAD*: float
+    RAD_TO_DEG*: float
+    CORNER*: any
+    CORNERS*: any
+    RADIUS*: any
+    RIGHT*: any
+    LEFT*: any
+    CENTER*: any
+    TOP*: any
+    BOTTOM*: any
+    BASELINE*: any
+    POINTS*: float
+    LINES*: float
+    LINE_STRIP*: float
+    LINE_LOOP*: float
+    TRIANGLES*: float
+    TRIANGLE_FAN*: float
+    TRIANGLE_STRIP*: float
+    QUADS*: any
+    QUAD_STRIP*: any
+    CLOSE*: any
+    OPEN*: any
+    CHORD*: any
+    PIE*: any
+    PROJECT*: any
+    SQUARE*: any
+    ROUND*: any
+    BEVEL*: any
+    MITER*: any
+    RGB*: any
+    HSB*: any
+    HSL*: any
+    AUTO*: any
+    ALT*: any
+    BACKSPACE*: any
+    CONTROL*: any
+    DELETE*: any
+    DOWN_ARROW*: any
+    ENTER*: any
+    ESCAPE*: any
+    LEFT_ARROW*: any
+    OPTION*: any
+    RETURN*: any
+    RIGHT_ARROW*: any
+    SHIFT*: any
+    TAB*: any
+    UP_ARROW*: any
+    BLEND*: any
+    ADD*: any
+    DARKEST*: any
+    LIGHTEST*: any
+    DIFFERENCE*: any
+    EXCLUSION*: any
+    MULTIPLY*: any
+    SCREEN*: any
+    REPLACE*: any
+    OVERLAY*: any
+    HARD_LIGHT*: any
+    SOFT_LIGHT*: any
+    DODGE*: any
+    BURN*: any
+    THRESHOLD*: any
+    GRAY*: any
+    OPAQUE*: any
+    INVERT*: any
+    POSTERIZE*: any
+    DILATE*: any
+    ERODE*: any
+    BLUR*: any
+    NORMAL*: any
+    ITALIC*: any
+    BOLD*: any
+    LINEAR*: any
+    QUADRATIC*: any
+    BEZIER*: any
+    CURVE*: any
+    STROKE*: any
+    FILL*: any
+    TEXTURE*: any
+    IMMEDIATE*: any
+    LANDSCAPE*: any
+    PORTRAIT*: any
 
+{.pop.}
+
+#Elements
 type
   Element* = ref ElementObj
   ElementObj {.importc.} = object
 
-proc parent*(element: Element): Element {.importcpp.}
-proc parent*(element: Element, newParent: cstring | Element | JsObject) {.importcpp.}
-proc id*(element: Element): cstring {.importcpp.}
-proc id*(element: Element, newId: cstring) {.importcpp.}
-proc class*(element: Element): cstring {.importcpp.}
-proc class*(element: Element, class: cstring) {.importcpp.}
-proc mousePressed*(element: Element, arg: proc() | bool) {.importcpp.}
-proc doubleClicked*(element: Element, arg: proc() | bool) {.importcpp.}
-proc mouseWheel*(element: Element, arg: proc(event: JsObject) | bool) {.importcpp.}
-proc mouseReleased*(element: Element, arg: proc() | bool) {.importcpp.}
-proc mouseClicked*(element: Element, arg: proc() | bool) {.importcpp.}
-proc mouseMoved*(element: Element, arg: proc() | bool) {.importcpp.}
-proc mouseOver*(element: Element, arg: proc() | bool) {.importcpp.}
-proc changed*(element: Element, arg: proc() | bool) {.importcpp.}
-proc input*(element: Element, arg: proc() | bool) {.importcpp.}
-proc mouseOut*(element: Element, arg: proc() | bool) {.importcpp.}
-proc touchStarted*(element: Element, arg: proc() | bool) {.importcpp.}
-proc touchMoved*(element: Element, arg: proc() | bool) {.importcpp.}
-proc touchEnded*(element: Element, arg: proc() | bool) {.importcpp.}
-proc dragOver*(element: Element, arg: proc() | bool) {.importcpp.}
-proc dragLeave*(element: Element, arg: proc() | bool) {.importcpp.}
-proc drop*(element: Element, callback: proc(file: File), fxn: proc()) {.importcpp.}
+{.push importcpp.}
 
-type
-  Graphics* = ref GraphicsObj
-  GraphicsObj {.importc.} = object
+proc parent*(element: Element): Element
+proc parent*(element: Element, newParent: cstring | Element | JsObject)
+proc id*(element: Element): cstring
+proc id*(element: Element, newId: cstring)
+proc class*(element: Element): cstring
+proc class*(element: Element, class: cstring)
+proc mousePressed*(element: Element, arg: proc() | bool)
+proc doubleClicked*(element: Element, arg: proc() | bool)
+proc mouseWheel*(element: Element, arg: proc(event: JsObject) | bool)
+proc mouseReleased*(element: Element, arg: proc() | bool)
+proc mouseClicked*(element: Element, arg: proc() | bool)
+proc mouseMoved*(element: Element, arg: proc() | bool)
+proc mouseOver*(element: Element, arg: proc() | bool)
+proc changed*(element: Element, arg: proc() | bool)
+proc input*(element: Element, arg: proc() | bool)
+proc mouseOut*(element: Element, arg: proc() | bool)
+proc touchStarted*(element: Element, arg: proc() | bool)
+proc touchMoved*(element: Element, arg: proc() | bool)
+proc touchEnded*(element: Element, arg: proc() | bool)
+proc dragOver*(element: Element, arg: proc() | bool)
+proc dragLeave*(element: Element, arg: proc() | bool)
+proc drop*(element: Element, callback: proc(file: File), fxn: proc())
 
+{.pop.}
 
+#Images
 type
   Image* = ref ImageObj
   ImageObj {.importc.} = object
@@ -214,63 +218,77 @@ type
     height*: float
     pixels*: openArray[float]
 
-proc loadPixels*(image: Image): void {.importcpp.}
-proc updatePixels*(image: Image): void {.importcpp.}
-proc updatePixels*(image: Image, x, y, w, h: PNumber): void {.importcpp.}
-proc get*(image: Image): Image {.importcpp. }
-proc get*(image: Image, x, y: PNumber): openArray[float] {.importcpp.}
-proc get*(image: Image, x, y, w, h: PNumber): Image {.importcpp.}
-proc set*(image: Image, x, y: PNumber, value: PNumber | openArray[PNumber] | Color | Image) {.importcpp.}
-proc resize*(image: Image, w, h: PNumber) {.importcpp.}
-proc copy*(image: Image, source: Image | Element, sx, sy, sw, sh, dx, dy, dw, dh: int) {.importcpp.}
-proc mask*(image, maskImage: Image) {.importcpp.}
-proc filter*(image: Image, filterType: any) {.importcpp.}
-proc filter*(image: Image, filterType: any, value: PNumber) {.importcpp.}
-proc blend*(image: Image, sx, sy, sw, sh, dx, dy, dw, dh: int, blendMode: any): {.importcpp.}
-proc blend*(image: Image, source: Image, sx, sy, sw, sh, dx, dy, dw, dh: int, blendMode: any) {.importcpp.}
-proc save*(image: Image, filename, extension: cstring) {.importcpp.}
-proc createImage*(w, h: int): Image {.importc.}
-proc saveCanvas*() {.importc.}
-proc saveCanvas*(selectedCanvas: Element #[ TODO: | HTMLCanvasElement ]#) {.importc.}
-proc saveCanvas*(selectedCanvas: Element #[ TODO: | HTMLCanvasElement ]#, filename: cstring) {.importc.}
-proc saveCanvas*(selectedCanvas: Element #[ TODO: | HTMLCanvasElement ]#, filename, extension: cstring) {.importc.}
-proc saveCanvas*(filename: cstring) {.importc.}
-proc saveCanvas*(filename, extension: cstring) {.importc.}
-proc saveFrames*(filename, extension: cstring, duration, framerate: PNumber) {.importc.}
-proc saveFrames*(filename, extension: cstring, duration, framerate: PNumber, callback: proc(openArray[JsObject]): void) {.importc.}
+{.push importcpp.}
+
+proc loadPixels*(image: Image): void
+proc updatePixels*(image: Image): void
+proc updatePixels*(image: Image, x, y, w, h: PNumber): void
+proc get*(image: Image): Image
+proc get*(image: Image, x, y: PNumber): openArray[float]
+proc get*(image: Image, x, y, w, h: PNumber): Image
+proc set*(image: Image, x, y: PNumber, value: PNumber | openArray[PNumber] | Color | Image)
+proc resize*(image: Image, w, h: PNumber)
+proc copy*(image: Image, source: Image | Element, sx, sy, sw, sh, dx, dy, dw, dh: int)
+proc mask*(image, maskImage: Image)
+proc filter*(image: Image, filterType: any)
+proc filter*(image: Image, filterType: any, value: PNumber)
+proc blend*(image: Image, sx, sy, sw, sh, dx, dy, dw, dh: int, blendMode: any):
+proc blend*(image: Image, source: Image, sx, sy, sw, sh, dx, dy, dw, dh: int, blendMode: any)
+proc save*(image: Image, filename, extension: cstring)
+
+{.pop.}
+
+{.push importc.}
+
+proc createImage*(w, h: int): Image
+proc saveCanvas*()
+proc saveCanvas*(selectedCanvas: Element #[ TODO: | HTMLCanvasElement ]#)
+proc saveCanvas*(selectedCanvas: Element #[ TODO: | HTMLCanvasElement ]#, filename: cstring)
+proc saveCanvas*(selectedCanvas: Element #[ TODO: | HTMLCanvasElement ]#, filename, extension: cstring)
+proc saveCanvas*(filename: cstring)
+proc saveCanvas*(filename, extension: cstring)
+proc saveFrames*(filename, extension: cstring, duration, framerate: PNumber)
+proc saveFrames*(filename, extension: cstring, duration, framerate: PNumber, callback: proc(openArray[JsObject]): void)
+
+{.pop.}
 
 var
-    pixels {.importc.}: openArray[float]
+    pixels* {.importc.}: openArray[float]
 
-proc blend*(source: Image | Element, sx, sy, sw, sh, dx, dy, dw, dh: int, blendMode: any) {.importc.}
-proc blend*(sx, sy, sw, sh, dx, dy, dw, dh: int, blendMode: any) {.importc.}
-proc copy*(source: Image | Element, sx, sy, sw, sh, dx, dy, dw, dh: int) {.importc.}
-proc copy*(sx, sy, sw, sh, dx, dy, dw, dh: int) {.importc.}
-proc filter*(filterType: any) {.importc.}
-proc filter*(filterType: any, filterParam: PNumber) {.importc.}
-proc get*(): Image {.importc. }
-proc get*(x, y: PNumber): openArray[float] {.importc.}
-proc get*(x, y, w, h: PNumber): Image {.importc.}
-proc loadPixels*() {.importc.}
-proc set*(x, y: PNumber, value: PNumber | openArray[PNumber] | Color | Image) {.importc.}
-proc updatePixels*() {.importc.}
-proc updatePixels*(x, y, w, h: PNumber) {.importc.}
-proc loadImage*(path: cstring): Image {.importc.}
-proc loadImage*(path: cstring, successCallback: proc(Image)): Image {.importc.}
-proc loadImage*(path: cstring, successCallback: proc(Image), failureCallback: proc(#[ TODO: Event ]#)): Image {.importc.}
-proc image*(img: Image | Element, x, y: PNumber) {.importc.}
-proc image*(img: Image | Element, x, y, w, h: PNumber) {.importc.}
-proc image*(img: Image | Element, dx, dy, dw, dh, sx, sy: PNumber) {.importc.}
-proc image*(img: Image | Element, dx, dy, dw, dh, sx, sy, sw, sh: PNumber) {.importc.}
-proc tint*(v1, v2, v3: PNumber) {.importc.}
-proc tint*(v1, v2, v3, alpha: PNumber) {.importc.}
-proc tint*(value: cstring) {.importc.}
-proc tint*(value: cstring, alpha: PNumber) {.importc.}
-proc tint*(values[]: openArray[PNumber]) {.importc.}
-proc tint*(color: Color) {.importc.}
-proc noTint*() {.importc.}
-proc imageMode*(mode: any) {.importc.}
+{.push importc.}
 
+proc blend*(source: Image | Element, sx, sy, sw, sh, dx, dy, dw, dh: int, blendMode: any)
+proc blend*(sx, sy, sw, sh, dx, dy, dw, dh: int, blendMode: any)
+proc copy*(source: Image | Element, sx, sy, sw, sh, dx, dy, dw, dh: int)
+proc copy*(sx, sy, sw, sh, dx, dy, dw, dh: int)
+proc filter*(filterType: any)
+proc filter*(filterType: any, filterParam: PNumber)
+proc get*(): Image {
+proc get*(x, y: PNumber): openArray[float]
+proc get*(x, y, w, h: PNumber): Image
+proc loadPixels*()
+proc set*(x, y: PNumber, value: PNumber | openArray[PNumber] | Color | Image)
+proc updatePixels*()
+proc updatePixels*(x, y, w, h: PNumber)
+proc loadImage*(path: cstring): Image
+proc loadImage*(path: cstring, successCallback: proc(Image)): Image
+proc loadImage*(path: cstring, successCallback: proc(Image), failureCallback: proc(#[ TODO: Event ]#)): Image
+proc image*(img: Image | Element, x, y: PNumber)
+proc image*(img: Image | Element, x, y, w, h: PNumber)
+proc image*(img: Image | Element, dx, dy, dw, dh, sx, sy: PNumber)
+proc image*(img: Image | Element, dx, dy, dw, dh, sx, sy, sw, sh: PNumber)
+proc tint*(v1, v2, v3: PNumber)
+proc tint*(v1, v2, v3, alpha: PNumber)
+proc tint*(value: cstring)
+proc tint*(value: cstring, alpha: PNumber)
+proc tint*(values[]: openArray[PNumber])
+proc tint*(color: Color)
+proc noTint*()
+proc imageMode*(mode: any)
+
+{.pop.}
+
+#Vectors
 type
     Vector* = ref VectorObj
     VectorObj* {.importcpp.} = object
@@ -313,11 +331,6 @@ proc equals*(self: Vector, x, y, z: PNumber): bool
 
 {.pop.}
 
-proc addVectors*(vector1, vector2: Vector): Vector =
-    result = createVector(0, 0, 0)
-    result.add(vector1)
-    result.add(vector2)
-
 proc add*(t: typedesc[Vector], vector1, vector2: Vector): Vector {.importcpp: "p5.Vector.add(@)".}
 proc sub*(t: typedesc[Vector], vector1, vector2: Vector): Vector {.importcpp: "p5.Vector.sub(@)".}
 proc mult*(t: typedesc[Vector], vector: Vector, scalar: PNumber): Vector {.importcpp: "p5.Vector.mult(@)".}
@@ -331,7 +344,7 @@ proc fromAngle*(t: typedesc[Vector], angle: PNumber): Vector {.importcpp: "p5.Ve
 proc random2D*(t: typedesc[Vector]): Vector {.importcpp: "p5.Vector.random2D()".}
 proc random3D*(t: typedesc[Vector]): Vector {.importcpp: "p5.Vector.random3D()".}
 
-
+#Colors
 type
   Color* = ref ColorObj
   ColorObj {.importc.} = object
@@ -343,46 +356,60 @@ proc color*(channel1, channel2, channel3, alpha: PNumber): Color {.importc.}
 proc color*(gray: PNumber): Color {.importc.}
 proc color*(gray, alpha: PNumber): Color {.importc.}
 proc color*(str: cstring): Color {.importc.}
-proc toString*(color: Color): cstring {.importcpp.}
-proc setRed*(color: Color, value: PNumber) {.importcpp.}
-proc setGreen*(color: Color, value: PNumber) {.importcpp.}
-proc setBlue*(color: Color, value: PNumber) {.importcpp.}
-proc setAlpha*(color: Color, value: PNumber) {.importcpp.}
-proc red*(color: Color | array[4, PNumber] | array[3, PNumber]): PNumber {.importc.}
-proc red*(color: cstring): PNumber {.importc.}
-proc blue*(color: Color | array[4, PNumber] | array[3, PNumber]): PNumber {.importc.}
-proc blue*(color: cstring): PNumber {.importc.}
-proc green*(color: Color | array[4, PNumber] | array[3, PNumber]): PNumber {.importc.}
-proc green*(color: cstring): PNumber {.importc.}
-proc alpha*(color: Color | array[4, PNumber] | array[3, PNumber]): PNumber {.importc.}
-proc alpha*(color: cstring): PNumber {.importc.}
-proc hue*(color: Color | array[4, PNumber] | array[3, PNumber]): PNumber {.importc.}
-proc hue*(color: cstring): PNumber {.importc.}
-proc saturation*(color: Color | array[4, PNumber] | array[3, PNumber]): PNumber {.importc.}
-proc saturation*(color: cstring): PNumber {.importc.}
-proc lightness*(color: Color | array[4, PNumber] | array[3, PNumber]): PNumber {.importc.}
-proc lightness*(color: cstring): PNumber {.importc.}
-proc brigthness*(color: Color | array[4, PNumber] | array[3, PNumber]): PNumber {.importc.}
-proc brigthness*(color: cstring): PNumber {.importc.}
-proc lerpColor*(color1, color2: Color, amount: PNumber): Color {.importc.}
+proc lerpColor*(color1, color2: Color, amount: PNumber): Color
 
 {.pop.}
 
-proc createCanvas*(width, height: PNumber) {.importc.}
-proc createCanvas*(width, height: PNumber, renderMode: any) {.importc.}
-proc resizeCanvas*(width, height: PNumber) {.importc.}
-proc resizeCanvas*(width, height: PNumber, noRedraw: bool) {.importc.}
-proc noCanvas*() {.importc.}
-proc createGraphics*(width, height: PNumber): object {.importc.}
-proc createGraphics*(width, height: PNumber, renderMode: any): object {.importc.}
-proc blendMode*(mode: any) {.importc.}
+{.push importcpp.}
 
-proc noLoop*() {.importc.}
-proc loop*() {.importc.}
-proc push*() {.importc.}
-proc pop*() {.importc.}
-proc redraw*() {.importc.}
-proc redraw*(n: int) {.importc.}
+proc toString*(color: Color): cstring
+proc setRed*(color: Color, value: PNumber)
+proc setGreen*(color: Color, value: PNumber)
+proc setBlue*(color: Color, value: PNumber)
+proc setAlpha*(color: Color, value: PNumber)
+proc red*(color: Color | array[4, PNumber] | array[3, PNumber]): PNumber
+proc red*(color: cstring): PNumber
+proc blue*(color: Color | array[4, PNumber] | array[3, PNumber]): PNumber
+proc blue*(color: cstring): PNumber
+proc green*(color: Color | array[4, PNumber] | array[3, PNumber]): PNumber
+proc green*(color: cstring): PNumber
+proc alpha*(color: Color | array[4, PNumber] | array[3, PNumber]): PNumber
+proc alpha*(color: cstring): PNumber
+proc hue*(color: Color | array[4, PNumber] | array[3, PNumber]): PNumber
+proc hue*(color: cstring): PNumber
+proc saturation*(color: Color | array[4, PNumber] | array[3, PNumber]): PNumber
+proc saturation*(color: cstring): PNumber
+proc lightness*(color: Color | array[4, PNumber] | array[3, PNumber]): PNumber
+proc lightness*(color: cstring): PNumber
+proc brigthness*(color: Color | array[4, PNumber] | array[3, PNumber]): PNumber
+proc brigthness*(color: cstring): PNumber
+
+{.pop.}
+
+#Graphics
+type
+    Graphics* = ref GraphicsObj
+    GraphicsObj {.importc.} = object
+
+{.push importc.}
+
+proc createCanvas*(width, height: PNumber)
+proc createCanvas*(width, height: PNumber, renderMode: any)
+proc resizeCanvas*(width, height: PNumber)
+proc resizeCanvas*(width, height: PNumber, noRedraw: bool)
+proc noCanvas*()
+proc createGraphics*(width, height: PNumber): Graphics
+proc createGraphics*(width, height: PNumber, renderMode: any): Graphics
+proc blendMode*(mode: any)
+
+proc noLoop*()
+proc loop*()
+proc push*()
+proc pop*()
+proc redraw*()
+proc redraw*(n: int)
+
+{.pop.}
 
 #Vertex
 {.push importc.}
@@ -400,120 +427,142 @@ proc vertex*(x, y, z, u, v: PNumber)
 
 {.pop.}
 
-proc background*(channel1, channel2, channel3: PNumber) {.importc.}
-proc background*(channel1, channel2, channel3, alpha: PNumber) {.importc.}
-proc background*(gray: PNumber) {.importc.}
-proc background*(gray, alpha: PNumber) {.importc.}
-proc background*(str: cstring) {.importc.}
-proc background*(color: Color) {.importc.}
-proc background*(image: Image) {.importc.}
-proc clear*() {.importc.}
-proc colorMode*(mode: any) {.importc.}
-proc colorMode*(mode: any, max: PNumber) {.importc.}
-proc colorMode*(mode: any, max1, max2, max3: PNumber) {.importc.}
-proc colorMode*(mode: any, max1, max2, max3, maxAlpha: PNumber) {.importc.}
-proc fill*(channel1, channel2, channel3: PNumber) {.importc.}
-proc fill*(channel1, channel2, channel3: PNumber, alpha: PNumber) {.importc.}
-proc fill*(gray: PNumber) {.importc.}
-proc fill*(gray: PNumber, alpha: PNumber) {.importc.}
-proc fill*(str: cstring) {.importc.}
-proc fill*(str: cstring, alpha: PNumber) {.importc.}
-proc fill*(color: Color) {.importc.}
-proc fill*(color: Color, alpha: PNumber) {.importc.}
-proc noFill*() {.importc.}
-proc noStroke*() {.importc.}
-proc stroke*(channel1, channel2, channel3: PNumber) {.importc.}
-proc stroke*(channel1, channel2, channel3: PNumber, alpha: PNumber) {.importc.}
-proc stroke*(gray: PNumber) {.importc.}
-proc stroke*(gray: PNumber, alpha: PNumber) {.importc.}
-proc stroke*(str: cstring) {.importc.}
-proc stroke*(str: cstring, alpha: PNumber) {.importc.}
-proc stroke*(color: Color) {.importc.}
-proc stroke*(color: Color, alpha: PNumber) {.importc.}
+#Global drawing procedures
+{.push importc.}
+
+proc background*(channel1, channel2, channel3: PNumber)
+proc background*(channel1, channel2, channel3, alpha: PNumber)
+proc background*(gray: PNumber)
+proc background*(gray, alpha: PNumber)
+proc background*(str: cstring)
+proc background*(color: Color)
+proc background*(image: Image)
+proc clear*()
+proc colorMode*(mode: any)
+proc colorMode*(mode: any, max: PNumber)
+proc colorMode*(mode: any, max1, max2, max3: PNumber)
+proc colorMode*(mode: any, max1, max2, max3, maxAlpha: PNumber)
+proc fill*(channel1, channel2, channel3: PNumber)
+proc fill*(channel1, channel2, channel3: PNumber, alpha: PNumber)
+proc fill*(gray: PNumber)
+proc fill*(gray: PNumber, alpha: PNumber)
+proc fill*(str: cstring)
+proc fill*(str: cstring, alpha: PNumber)
+proc fill*(color: Color)
+proc fill*(color: Color, alpha: PNumber)
+proc noFill*()
+proc noStroke*()
+proc stroke*(channel1, channel2, channel3: PNumber)
+proc stroke*(channel1, channel2, channel3: PNumber, alpha: PNumber)
+proc stroke*(gray: PNumber)
+proc stroke*(gray: PNumber, alpha: PNumber)
+proc stroke*(str: cstring)
+proc stroke*(str: cstring, alpha: PNumber)
+proc stroke*(color: Color)
+proc stroke*(color: Color, alpha: PNumber)
+
+{.pop.}
 
 #2D Primitives
+{.push importc.}
 
-proc arc*(x, y, width, height, start, stop: PNumber) {.importc.}
-proc arc*(x, y, width, height, start, stop: PNumber, mode: cstring) {.importc.}
-proc ellipse*(x, y, diameter: PNumber) {.importc.}
-proc ellipse*(x, y, width, height: PNumber) {.importc.}
-proc line*(x1, y1, x2, y2: PNumber) {.importc.}
-proc point*(x, y: PNumber) {.importc.}
-proc quad*(x1, y1, x2, y2, x3, y3, x4, y4: PNumber) {.importc.}
-proc rect*(x, y, width, height: PNumber) {.importc.}
-proc rect*(x, y, width, height, tl, tr, bl, br: PNumber) {.importc.} #TODO: How does this work in p5?
-proc rect*(x, y, width, height, detailX, detailY: PNumber) {.importc.}
-proc triangle*(x1, y1, x2, y2, x3, y3: PNumber) {.importc.}
+proc arc*(x, y, width, height, start, stop: PNumber)
+proc arc*(x, y, width, height, start, stop: PNumber, mode: cstring)
+proc ellipse*(x, y, diameter: PNumber)
+proc ellipse*(x, y, width, height: PNumber)
+proc line*(x1, y1, x2, y2: PNumber)
+proc point*(x, y: PNumber)
+proc quad*(x1, y1, x2, y2, x3, y3, x4, y4: PNumber)
+proc rect*(x, y, width, height: PNumber)
+proc rect*(x, y, width, height, tl, tr, bl, br: PNumber)
+proc rect*(x, y, width, height, detailX, detailY: PNumber)
+proc triangle*(x1, y1, x2, y2, x3, y3: PNumber)
+
+{.pop.}
 
 #Rendering settings
+{.push importc.}
 
-proc ellipseMode*(mode: cstring) {.importc.}
-proc noSmooth*() {.importc.}
-proc rectMode*(mode: cstring) {.importc.}
-proc smooth*() {.importc.}
-proc strokeCap*(mode: cstring) {.importc.}
-proc strokeJoin*(mode: cstring) {.importc.}
-proc strokeWeight*(weight: PNumber) {.importc.}
+proc ellipseMode*(mode: cstring)
+proc noSmooth*()
+proc rectMode*(mode: cstring)
+proc smooth*()
+proc strokeCap*(mode: cstring)
+proc strokeJoin*(mode: cstring)
+proc strokeWeight*(weight: PNumber)
+
+{.pop.}
 
 #Curves
+{.push importc.}
 
-proc bezier*(x1, y1, x2, y2, x3, y3, x4, y4: PNumber) {.importc.}
-proc bezier*(x1, y1, z1, x2, y2, z2, x3, y3, z3, x4, y4, z4: PNumber) {.importc.}
-proc bezierDetail*(detail: PNumber) {.importc.}
-proc bezierPoint*(a, b, c, d, t: PNumber): PNumber {.importc.}
-proc bezierTangent*(a, b, c, d, t: PNumber): PNumber {.importc.}
-proc curve*(x1, y1, x2, y2, x3, y3, x4, y4: PNumber) {.importc.}
-proc curve*(x1, y1, z1, x2, y2, z2, x3, y3, z3, x4, y4, z4: PNumber) {.importc.}
-proc curveDetail*(detail: PNumber) {.importc.}
-proc curveTightness*(tightness: PNumber) {.importc.}
-proc curvePoint*(a, b, c, d, t: PNumber): PNumber {.importc.}
-proc curveTangent*(a, b, c, d, t: PNumber): PNumber {.importc.}
+proc bezier*(x1, y1, x2, y2, x3, y3, x4, y4: PNumber)
+proc bezier*(x1, y1, z1, x2, y2, z2, x3, y3, z3, x4, y4, z4: PNumber)
+proc bezierDetail*(detail: PNumber)
+proc bezierPoint*(a, b, c, d, t: PNumber): PNumber
+proc bezierTangent*(a, b, c, d, t: PNumber): PNumber
+proc curve*(x1, y1, x2, y2, x3, y3, x4, y4: PNumber)
+proc curve*(x1, y1, z1, x2, y2, z2, x3, y3, z3, x4, y4, z4: PNumber)
+proc curveDetail*(detail: PNumber)
+proc curveTightness*(tightness: PNumber)
+proc curvePoint*(a, b, c, d, t: PNumber): PNumber
+proc curveTangent*(a, b, c, d, t: PNumber): PNumber
+
+{.pop.}
+
+#Log helper
+proc print*(content: untyped) {.importc.}
 
 #Settings
+{.push importc.}
 
-proc print*(content: untyped) {.importc.}
-var frameCount* {.importc.}: int
-var focused* {.importc.}: bool
-proc cursor*(imgagePath: cstring) {.importc.}
-proc cursor*(constant: any) {.importc.}
-proc frameRate*(fps: PNumber) {.importc.}
-proc frameRate*(): float {.importc.}
-proc noCursor*() {.importc.}
-var displayWidth* {.importc.}: float
-var displayHeight* {.importc.}: float
-var windowWidth* {.importc.}: float
-var windowHeight* {.importc.}: float
-var width* {.importc.}: float
-var height* {.importc.}: float
-proc fullscreen*(isFullScreen: bool) {.importc.}
-proc fullscreen*(): bool {.importc.}
-proc pixelDensity*(density: PNumber) {.importc.}
-proc pixelDensity*(): float {.importc.}
-proc displayDensity*(): float {.importc.}
-proc getURL*(): cstring {.importc.}
-proc getURLPath*(): openarray[cstring] {.importc.}
-proc getURLParams*(): object {.importc.}
+var frameCount*: int
+var focused*: bool
+proc cursor*(imgagePath: cstring)
+proc cursor*(constant: any)
+proc frameRate*(fps: PNumber)
+proc frameRate*(): float
+proc noCursor*()
+var displayWidth*: float
+var displayHeight*: float
+var windowWidth*: float
+var windowHeight*: float
+var width*: float
+var height*: float
+proc fullscreen*(isFullScreen: bool)
+proc fullscreen*(): bool
+proc pixelDensity*(density: PNumber)
+proc pixelDensity*(): float
+proc displayDensity*(): float
+proc getURL*(): cstring
+proc getURLPath*(): openarray[cstring]
+proc getURLParams*(): JsObject
+
+{.pop.}
 
 #Transforms
+{.push importc.}
 
-proc applyMatrix*(a, b, c, d, e, f: PNumber) {.importc.}
-proc popMatrix*() {.importc.}
-proc pushMatrix*() {.importc.}
-proc printMatrix*() {.importc.}
-proc resetMatrix*() {.importc.}
-proc rotate*(angle: PNumber) {.importc.}
-proc rotate*(angle: PNumber, axis: array[3, PNumber] | Vector) {.importc.}
-proc rotateX*(radians: PNumber) {.importc.}
-proc rotateY*(radians: PNumber) {.importc.}
-proc rotateZ*(radians: PNumber) {.importc.}
-proc scale*(s: PNumber | Vector | array[3, PNumber]) {.importc.}
-proc scale*(s: PNumber | Vector | array[3, PNumber], y: PNumber) {.importc.}
-proc scale*(s: PNumber | Vector | array[3, PNumber], z: PNumber) {.importc.}
-proc scale*(s: PNumber | Vector | array[3, PNumber], y, z: PNumber) {.importc.}
-proc shearX*(angle: PNumber) {.importc.}
-proc shearY*(angle: PNumber) {.importc.}
-proc translate*(x, y: PNumber) {.importc.}
-proc translate*(x, y, z: PNumber) {.importc.}
+proc applyMatrix*(a, b, c, d, e, f: PNumber)
+proc popMatrix*()
+proc pushMatrix*()
+proc printMatrix*()
+proc resetMatrix*()
+proc rotate*(angle: PNumber)
+proc rotate*(angle: PNumber, axis: array[3, PNumber] | Vector)
+proc rotateX*(radians: PNumber)
+proc rotateY*(radians: PNumber)
+proc rotateZ*(radians: PNumber)
+proc scale*(s: PNumber | Vector | array[3, PNumber])
+proc scale*(s: PNumber | Vector | array[3, PNumber], y: PNumber)
+proc scale*(s: PNumber | Vector | array[3, PNumber], z: PNumber)
+proc scale*(s: PNumber | Vector | array[3, PNumber], y, z: PNumber)
+proc shearX*(angle: PNumber)
+proc shearY*(angle: PNumber)
+proc translate*(x, y: PNumber)
+proc translate*(x, y, z: PNumber)
+
+{.pop.}
 
 #Random
 {.push importc.}
@@ -570,6 +619,7 @@ proc text*(text: cstring, x, y: PNumber)
 proc text*(text: cstring, x, y, x2, y2: PNumber)
 
 {.pop.}
+
 {.push importcpp.}
 
 proc textFont*(): Font
@@ -586,6 +636,7 @@ proc textToPoints*(font: Font, text: cstring, x, y: PNumber, fontSize: PNumber, 
 
 {.pop.}
 
+#Noise
 {.push importc.}
 
 proc noise*(x: PNumber): PNumber
@@ -596,6 +647,7 @@ proc noiseSeed*(seed: PNumber)
 
 {.pop.}
 
+#Camera
 {.push importc.}
 
 proc camera()
@@ -606,6 +658,7 @@ proc ortho*(left, right, bottom, top, near, far: PŃumber)
 
 {.pop.}
 
+#Light
 {.push importc.}
 
 proc ambientLight*(v1, v2, v3: PNumber)
