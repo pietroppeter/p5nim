@@ -4,6 +4,10 @@ import dom
 
 type PNumber = int or float
 
+type
+    Color* = ref ColorObj
+    ColorObj {.importc.} = object
+
 var
     preload* {.exportc.}: proc(): void
     setup* {.exportc.}: proc(): void
@@ -76,112 +80,112 @@ var
 proc setMoveThreshold*(value: PNumber) {.importc.}
 proc setShakeThreshold*(value: PNumber) {.importc.}
 
-{.push importc.}
 var
-    P2D*: any
-    WEBGL*: any
-    ARROW*: any
-    CROSS*: any
-    HAND*: any
-    MOVE*: any
-    TEXT*: any
-    WAIT*: any
-    PI*: float
-    HALF_PI*: float
-    QUARTER_PI*: float
-    TAU*: float
-    TWO_PI*: float
-    DEGREES*: any
-    RADIANS*: any
-    DEG_TO_RAD*: float
-    RAD_TO_DEG*: float
-    CORNER*: any
-    CORNERS*: any
-    RADIUS*: any
-    RIGHT*: any
-    LEFT*: any
-    CENTER*: any
-    TOP*: any
-    BOTTOM*: any
-    BASELINE*: any
-    POINTS*: float
-    LINES*: float
-    LINE_STRIP*: float
-    LINE_LOOP*: float
-    TRIANGLES*: float
-    TRIANGLE_FAN*: float
-    TRIANGLE_STRIP*: float
-    QUADS*: any
-    QUAD_STRIP*: any
-    CLOSE*: any
-    OPEN*: any
-    CHORD*: any
-    PIE*: any
-    PROJECT*: any
-    SQUARE*: any
-    ROUND*: any
-    BEVEL*: any
-    MITER*: any
-    RGB*: any
-    HSB*: any
-    HSL*: any
-    AUTO*: any
-    ALT*: any
-    BACKSPACE*: any
-    CONTROL*: any
-    DELETE*: any
-    DOWN_ARROW*: any
-    ENTER*: any
-    ESCAPE*: any
-    LEFT_ARROW*: any
-    OPTION*: any
-    RETURN*: any
-    RIGHT_ARROW*: any
-    SHIFT*: any
-    TAB*: any
-    UP_ARROW*: any
-    BLEND*: any
-    ADD*: any
-    DARKEST*: any
-    LIGHTEST*: any
-    DIFFERENCE*: any
-    EXCLUSION*: any
-    MULTIPLY*: any
-    SCREEN*: any
-    REPLACE*: any
-    OVERLAY*: any
-    HARD_LIGHT*: any
-    SOFT_LIGHT*: any
-    DODGE*: any
-    BURN*: any
-    THRESHOLD*: any
-    GRAY*: any
-    OPAQUE*: any
-    INVERT*: any
-    POSTERIZE*: any
-    DILATE*: any
-    ERODE*: any
-    BLUR*: any
-    NORMAL*: any
-    ITALIC*: any
-    BOLD*: any
-    LINEAR*: any
-    QUADRATIC*: any
-    BEZIER*: any
-    CURVE*: any
-    STROKE*: any
-    FILL*: any
-    TEXTURE*: any
-    IMMEDIATE*: any
-    LANDSCAPE*: any
-    PORTRAIT*: any
-
-{.pop.}
+    P2D* {.importc.}: any 
+    WEBGL* {.importc.}: any 
+    ARROW* {.importc.}: any 
+    CROSS* {.importc.}: any 
+    HAND* {.importc.}: any 
+    MOVE* {.importc.}: any 
+    TEXT* {.importc.}: any 
+    WAIT* {.importc.}: any 
+    PI* {.importc.}: float 
+    HALF_PI* {.importc.}: float 
+    QUARTER_PI* {.importc.}: float 
+    TAU* {.importc.}: float 
+    TWO_PI* {.importc.}: float 
+    DEGREES* {.importc.}: any 
+    RADIANS* {.importc.}: any 
+    DEG_TO_RAD* {.importc.}: float 
+    RAD_TO_DEG* {.importc.}: float 
+    CORNER* {.importc.}: any 
+    CORNERS* {.importc.}: any 
+    RADIUS* {.importc.}: any 
+    RIGHT* {.importc.}: any 
+    LEFT* {.importc.}: any 
+    CENTER* {.importc.}: any 
+    TOP* {.importc.}: any 
+    BOTTOM* {.importc.}: any 
+    BASELINE* {.importc.}: any 
+    POINTS* {.importc.}: float 
+    LINES* {.importc.}: float 
+    LINE_STRIP* {.importc.}: float 
+    LINE_LOOP* {.importc.}: float 
+    TRIANGLES* {.importc.}: float 
+    TRIANGLE_FAN* {.importc.}: float 
+    TRIANGLE_STRIP* {.importc.}: float 
+    QUADS* {.importc.}: any 
+    QUAD_STRIP* {.importc.}: any 
+    CLOSE* {.importc.}: any 
+    OPEN* {.importc.}: any 
+    CHORD* {.importc.}: any 
+    PIE* {.importc.}: any 
+    PROJECT* {.importc.}: any 
+    SQUARE* {.importc.}: any 
+    ROUND* {.importc.}: any 
+    BEVEL* {.importc.}: any 
+    MITER* {.importc.}: any 
+    RGB* {.importc.}: any 
+    HSB* {.importc.}: any 
+    HSL* {.importc.}: any 
+    AUTO* {.importc.}: any 
+    ALT* {.importc.}: any 
+    BACKSPACE* {.importc.}: any 
+    CONTROL* {.importc.}: any 
+    DELETE* {.importc.}: any 
+    DOWN_ARROW* {.importc.}: any 
+    ENTER* {.importc.}: any 
+    ESCAPE* {.importc.}: any 
+    LEFT_ARROW* {.importc.}: any 
+    OPTION* {.importc.}: any 
+    RETURN* {.importc.}: any 
+    RIGHT_ARROW* {.importc.}: any 
+    SHIFT* {.importc.}: any 
+    TAB* {.importc.}: any 
+    UP_ARROW* {.importc.}: any 
+    BLEND* {.importc.}: any 
+    ADD* {.importc.}: any 
+    DARKEST* {.importc.}: any 
+    LIGHTEST* {.importc.}: any 
+    DIFFERENCE* {.importc.}: any 
+    EXCLUSION* {.importc.}: any 
+    MULTIPLY* {.importc.}: any 
+    SCREEN* {.importc.}: any 
+    REPLACE* {.importc.}: any 
+    OVERLAY* {.importc.}: any 
+    HARD_LIGHT* {.importc.}: any 
+    SOFT_LIGHT* {.importc.}: any 
+    DODGE* {.importc.}: any 
+    BURN* {.importc.}: any 
+    THRESHOLD* {.importc.}: any 
+    GRAY* {.importc.}: any 
+    OPAQUE* {.importc.}: any 
+    INVERT* {.importc.}: any 
+    POSTERIZE* {.importc.}: any 
+    DILATE* {.importc.}: any 
+    ERODE* {.importc.}: any 
+    BLUR* {.importc.}: any 
+    NORMAL* {.importc.}: any 
+    ITALIC* {.importc.}: any 
+    BOLD* {.importc.}: any 
+    LINEAR* {.importc.}: any 
+    QUADRATIC* {.importc.}: any 
+    BEZIER* {.importc.}: any 
+    CURVE* {.importc.}: any 
+    STROKE* {.importc.}: any 
+    FILL* {.importc.}: any 
+    TEXTURE* {.importc.}: any 
+    IMMEDIATE* {.importc.}: any 
+    LANDSCAPE* {.importc.}: any 
+    PORTRAIT* {.importc.}: any 
 
 #Elements
 type
   Element* = ref ElementObj
   ElementObj {.importc.} = object
+
+  File* = ref FileObj
+  FileObj {.importc.} = object
 
 {.push importcpp.}
 
@@ -191,19 +195,19 @@ proc id*(element: Element): cstring
 proc id*(element: Element, newId: cstring)
 proc class*(element: Element): cstring
 proc class*(element: Element, class: cstring)
-proc mousePressed*(element: Element, arg: proc() | bool)
-proc doubleClicked*(element: Element, arg: proc() | bool)
-proc mouseWheel*(element: Element, arg: proc(event: JsObject) | bool)
-proc mouseReleased*(element: Element, arg: proc() | bool)
-proc mouseClicked*(element: Element, arg: proc() | bool)
-proc mouseMoved*(element: Element, arg: proc() | bool)
-proc mouseOver*(element: Element, arg: proc() | bool)
+#proc mousePressed*(element: Element, arg: proc() | bool) #TODO: This redefines previous exportc mousePressed
+#proc doubleClicked*(element: Element, arg: proc() | bool) #TODO: SAME
+#proc mouseWheel*(element: Element, arg: proc(event: JsObject) | bool) #TODO: SAME
+#proc mouseReleased*(element: Element, arg: proc() | bool) #TODO: SAME
+#proc mouseClicked*(element: Element, arg: proc() | bool) #TODO: SAME
+#proc mouseMoved*(element: Element, arg: proc() | bool) #TODO: SAME
+#proc mouseOver*(element: Element, arg: proc() | bool) #TODO: SAME
 proc changed*(element: Element, arg: proc() | bool)
 proc input*(element: Element, arg: proc() | bool)
 proc mouseOut*(element: Element, arg: proc() | bool)
-proc touchStarted*(element: Element, arg: proc() | bool)
-proc touchMoved*(element: Element, arg: proc() | bool)
-proc touchEnded*(element: Element, arg: proc() | bool)
+#proc touchStarted*(element: Element, arg: proc() | bool) TODO: SAME
+#proc touchMoved*(element: Element, arg: proc() | bool) TODO: SAME
+#proc touchEnded*(element: Element, arg: proc() | bool) TODO: SAME
 proc dragOver*(element: Element, arg: proc() | bool)
 proc dragLeave*(element: Element, arg: proc() | bool)
 proc drop*(element: Element, callback: proc(file: File), fxn: proc())
@@ -232,7 +236,7 @@ proc copy*(image: Image, source: Image | Element, sx, sy, sw, sh, dx, dy, dw, dh
 proc mask*(image, maskImage: Image)
 proc filter*(image: Image, filterType: any)
 proc filter*(image: Image, filterType: any, value: PNumber)
-proc blend*(image: Image, sx, sy, sw, sh, dx, dy, dw, dh: int, blendMode: any):
+proc blend*(image: Image, sx, sy, sw, sh, dx, dy, dw, dh: int, blendMode: any)
 proc blend*(image: Image, source: Image, sx, sy, sw, sh, dx, dy, dw, dh: int, blendMode: any)
 proc save*(image: Image, filename, extension: cstring)
 
@@ -248,12 +252,12 @@ proc saveCanvas*(selectedCanvas: Element #[ TODO: | HTMLCanvasElement ]#, filena
 proc saveCanvas*(filename: cstring)
 proc saveCanvas*(filename, extension: cstring)
 proc saveFrames*(filename, extension: cstring, duration, framerate: PNumber)
-proc saveFrames*(filename, extension: cstring, duration, framerate: PNumber, callback: proc(openArray[JsObject]): void)
+proc saveFrames*(filename, extension: cstring, duration, framerate: PNumber, callback: proc(framesObj: openArray[JsObject]): void)
 
 {.pop.}
 
 var
-    pixels* {.importc.}: openArray[float]
+    pixels* {.importc.}: seq[float]
 
 {.push importc.}
 
@@ -263,7 +267,7 @@ proc copy*(source: Image | Element, sx, sy, sw, sh, dx, dy, dw, dh: int)
 proc copy*(sx, sy, sw, sh, dx, dy, dw, dh: int)
 proc filter*(filterType: any)
 proc filter*(filterType: any, filterParam: PNumber)
-proc get*(): Image {
+proc get*(): Image
 proc get*(x, y: PNumber): openArray[float]
 proc get*(x, y, w, h: PNumber): Image
 proc loadPixels*()
@@ -271,8 +275,8 @@ proc set*(x, y: PNumber, value: PNumber | openArray[PNumber] | Color | Image)
 proc updatePixels*()
 proc updatePixels*(x, y, w, h: PNumber)
 proc loadImage*(path: cstring): Image
-proc loadImage*(path: cstring, successCallback: proc(Image)): Image
-proc loadImage*(path: cstring, successCallback: proc(Image), failureCallback: proc(#[ TODO: Event ]#)): Image
+proc loadImage*(path: cstring, successCallback: proc(img: Image)): Image
+proc loadImage*(path: cstring, successCallback: proc(img: Image), failureCallback: proc(#[ TODO: Event ]#)): Image
 proc image*(img: Image | Element, x, y: PNumber)
 proc image*(img: Image | Element, x, y, w, h: PNumber)
 proc image*(img: Image | Element, dx, dy, dw, dh, sx, sy: PNumber)
@@ -281,7 +285,7 @@ proc tint*(v1, v2, v3: PNumber)
 proc tint*(v1, v2, v3, alpha: PNumber)
 proc tint*(value: cstring)
 proc tint*(value: cstring, alpha: PNumber)
-proc tint*(values[]: openArray[PNumber])
+proc tint*(values: openArray[PNumber])
 proc tint*(color: Color)
 proc noTint*()
 proc imageMode*(mode: any)
@@ -345,9 +349,6 @@ proc random2D*(t: typedesc[Vector]): Vector {.importcpp: "p5.Vector.random2D()".
 proc random3D*(t: typedesc[Vector]): Vector {.importcpp: "p5.Vector.random3D()".}
 
 #Colors
-type
-  Color* = ref ColorObj
-  ColorObj {.importc.} = object
 
 {.push importc.}
 
@@ -570,7 +571,7 @@ proc translate*(x, y, z: PNumber)
 proc randomSeed*(seed: PNumber)
 proc random*(): float
 proc random*(maximum: PNumber): float
-proc random*(arr: openArray[T]): T
+proc random*[T](arr: openArray[T]): T
 proc random*(minumum, maximum: float): float
 proc randomGaussian*(): float
 proc randomGaussian*(mean: PNumber): float
@@ -654,7 +655,7 @@ proc camera()
 proc camera(x, y, z, centerX, centerY, centerZ, upX, upY, upZ: PNumber)
 proc perspective*()
 proc perspective*(fovy, aspect, near, far: PNumber)
-proc ortho*(left, right, bottom, top, near, far: PŃumber)
+proc ortho*(left, right, bottom, top, near, far: PNumber)
 
 {.pop.}
 
