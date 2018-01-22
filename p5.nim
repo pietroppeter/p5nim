@@ -218,9 +218,9 @@ proc drop*(element: Element, callback: proc(file: File), fxn: proc())
 type
   Image* = ref ImageObj
   ImageObj {.importc.} = object
-    width*: float
-    height*: float
-    pixels*: openArray[float]
+    width* {.importc.}: float
+    height* {.importc.}: float
+    pixels* {.importc.}: seq[float]
 
 {.push importcpp.}
 
@@ -257,7 +257,7 @@ proc saveFrames*(filename, extension: cstring, duration, framerate: PNumber, cal
 {.pop.}
 
 var
-    pixels* {.importc.}: seq[float]
+    pixels* {.importc.}: seq[Color]
 
 {.push importc.}
 
@@ -368,22 +368,27 @@ proc setRed*(color: Color, value: PNumber)
 proc setGreen*(color: Color, value: PNumber)
 proc setBlue*(color: Color, value: PNumber)
 proc setAlpha*(color: Color, value: PNumber)
-proc red*(color: Color | array[4, PNumber] | array[3, PNumber]): PNumber
-proc red*(color: cstring): PNumber
-proc blue*(color: Color | array[4, PNumber] | array[3, PNumber]): PNumber
-proc blue*(color: cstring): PNumber
-proc green*(color: Color | array[4, PNumber] | array[3, PNumber]): PNumber
-proc green*(color: cstring): PNumber
-proc alpha*(color: Color | array[4, PNumber] | array[3, PNumber]): PNumber
-proc alpha*(color: cstring): PNumber
-proc hue*(color: Color | array[4, PNumber] | array[3, PNumber]): PNumber
-proc hue*(color: cstring): PNumber
-proc saturation*(color: Color | array[4, PNumber] | array[3, PNumber]): PNumber
-proc saturation*(color: cstring): PNumber
-proc lightness*(color: Color | array[4, PNumber] | array[3, PNumber]): PNumber
-proc lightness*(color: cstring): PNumber
-proc brigthness*(color: Color | array[4, PNumber] | array[3, PNumber]): PNumber
-proc brigthness*(color: cstring): PNumber
+
+{.pop.}
+
+{.push importc.}
+
+proc red*(color: Color | array[4, PNumber] | array[3, PNumber]): float
+proc red*(color: cstring): float
+proc blue*(color: Color | array[4, PNumber] | array[3, PNumber]): float
+proc blue*(color: cstring): float
+proc green*(color: Color | array[4, PNumber] | array[3, PNumber]): float
+proc green*(color: cstring): float
+proc alpha*(color: Color | array[4, PNumber] | array[3, PNumber]): float
+proc alpha*(color: cstring): float
+proc hue*(color: Color | array[4, PNumber] | array[3, PNumber]): float
+proc hue*(color: cstring): float
+proc saturation*(color: Color | array[4, PNumber] | array[3, PNumber]): float
+proc saturation*(color: cstring): float
+proc lightness*(color: Color | array[4, PNumber] | array[3, PNumber]): float
+proc lightness*(color: cstring): float
+proc brigthness*(color: Color | array[4, PNumber] | array[3, PNumber]): float
+proc brigthness*(color: cstring): float
 
 {.pop.}
 
@@ -514,22 +519,23 @@ proc curveTangent*(a, b, c, d, t: PNumber): PNumber
 #Log helper
 proc print*(content: untyped) {.importc.}
 
+var displayWidth* {.importc.}: float
+var displayHeight* {.importc.}: float
+var windowWidth* {.importc.}: float
+var windowHeight* {.importc.}: float
+var width* {.importc.}: float
+var height* {.importc.}: float
+var frameCount* {.importc.}: int
+var focused*{.importc.}: bool
+
 #Settings
 {.push importc.}
 
-var frameCount*: int
-var focused*: bool
 proc cursor*(imgagePath: cstring)
 proc cursor*(constant: any)
 proc frameRate*(fps: PNumber)
 proc frameRate*(): float
 proc noCursor*()
-var displayWidth*: float
-var displayHeight*: float
-var windowWidth*: float
-var windowHeight*: float
-var width*: float
-var height*: float
 proc fullscreen*(isFullScreen: bool)
 proc fullscreen*(): bool
 proc pixelDensity*(density: PNumber)
@@ -626,8 +632,8 @@ proc text*(text: cstring, x, y, x2, y2: PNumber)
 proc textFont*(): Font
 proc textFont*(font: Font | cstring): Font
 proc textFont*(font: Font | cstring, size: PNumber): Font
-proc textBounds*(font: Font, line: cstring, x, y: PNumber): object
-proc textBounds*(font: Font, line: cstring, x, y: PNumber, fontSize: PNumber): object
+proc textBounds*(font: Font, line: cstring, x, y: PNumber): JsObject
+proc textBounds*(font: Font, line: cstring, x, y: PNumber, fontSize: PNumber): JsObject
 proc textBounds*(font: Font, line: cstring, x, y: PNumber, options: JsObject): JsObject
 proc textBounds*(font: Font, line: cstring, x, y: PNumber, fontSize: PNumber, options: JsObject): JsObject
 proc textToPoints*(font: Font, text: cstring, x, y: PNumber): openArray[JsObject]
@@ -651,8 +657,8 @@ proc noiseSeed*(seed: PNumber)
 #Camera
 {.push importc.}
 
-proc camera()
-proc camera(x, y, z, centerX, centerY, centerZ, upX, upY, upZ: PNumber)
+proc camera*()
+proc camera*(x, y, z, centerX, centerY, centerZ, upX, upY, upZ: PNumber)
 proc perspective*()
 proc perspective*(fovy, aspect, near, far: PNumber)
 proc ortho*(left, right, bottom, top, near, far: PNumber)
@@ -679,7 +685,129 @@ proc pointLight*(value: openArray[PNumber] | cstring | Color, position: Vector)
 
 {.pop.}
 
+#WEBGL
+
 type
   Geometry = ref GeometryObj
   GeometryObj {.importc.} = object
+
+proc newGeometry*(vertData: proc | JsObject): Geometry {.importcpp: "new p5.Geometry(@)"}
+proc newGeometry*(vertData: proc | JsObject, detailX, detailY: PNumber): Geometry {.importcpp: "new p5.Geometry(@)"}
+proc newGeometry*(vertData: proc | JsObject, detailX, detailY: PNumber, callback: proc): Geometry {.importcpp: "new p5.Geometry(@)"}
+
+{.push importcpp.}
+
+proc computeFaces*()
+proc computeNormals*()
+proc averageNormals*()
+proc averagePoleNormals*()
+proc normalize*()
+
+{.pop.}
+
+{.push importc.}
+
+proc loadModel*(path: cstring): Geometry
+proc loadModel*(path: cstring, normalize: bool): Geometry
+proc loadModel*(path: cstring, normalize: bool, successCallback, failureCallback: proc): Geometry
+proc loadModel*(path: cstring, successCallback, failureCallback: proc): Geometry
+proc model*(model: Geometry)
+
+{.pop.}
+
+type
+  Shader* = ref ShaderObj
+  ShaderObj {.importc.} = object
+
+{.push importc.}
+
+proc setUniform*(uniformName: cstring, data: JsObject | PNumber | bool | openArray[PNumber])
+proc loadShader*(vertFileName, fragFileName: cstring): Shader
+proc createShader*(vertCode, fragCode: cstring): Shader
+proc shader*(shader: Shader)
+proc normalMaterial*()
+proc texture*(tex: Image | Graphics #[TODO: MediaElement]#)
+proc ambientMaterial*(gray: PNumber)
+proc ambientMaterial*(red, green, blue: PNumber)
+proc ambientMaterial*(red, green, blue, alpha: PNumber)
+proc ambientMaterial*(color: openArray[PNumber] | cstring | Color)
+proc specularMaterial*(gray: PNumber)
+proc specularMaterial*(red, green, blue: PNumber)
+proc specularMaterial*(red, green, blue, alpha: PNumber)
+proc specularMaterial*(color: openArray[PNumber] | cstring | Color)
+
+
+{.pop.}
+
+{.push importc.}
+
+proc plane*()
+proc plane*(width: PNumber)
+proc plane*(width, height: PNumber)
+proc plane*(width, height: PNumber, detailX: int)
+proc plane*(width, height: PNumber, detailX, detailY: int)
+proc box*()
+proc box*(width: PNumber)
+proc box*(width, height: PNumber)
+proc box*(width, height, depth: PNumber)
+proc box*(width, height: PNumber, detailX: int)
+proc box*(width, height: PNumber, detailX, detailY: int)
+proc sphere*()
+proc sphere*(radius: PNumber)
+proc sphere*(radius: PNumber, detailX: int)
+proc sphere*(radius: PNumber, detailX, detailY: int)
+proc cylinder*()
+proc cylinder*(radius: PNumber)
+proc cylinder*(radius, height: PNumber)
+proc cylinder*(radius, height: PNumber, detailX: int)
+proc cylinder*(radius, height: PNumber, detailX, detailY: int)
+proc cone*()
+proc cone*(radius: PNumber)
+proc cone*(radius, height: PNumber)
+proc cone*(radius, height: PNumber, detailX: int)
+proc cone*(radius, height: PNumber, detailX, detailY: int)
+proc ellipsoid*()
+proc ellipsoid*(radiusX: PNumber)
+proc ellipsoid*(radiusX, radiusY: PNumber)
+proc ellipsoid*(radiusX, radiusY, radiusZ: PNumber)
+proc ellipsoid*(radiusX, radiusY, radiusZ: PNumber, detailX: int)
+proc ellipsoid*(radiusX, radiusY, radiusZ: PNumber, detailX, detailY: int)
+proc torus*()
+proc torus*(radius: PNumber)
+proc torus*(radius, tubeRadius: PNumber)
+proc torus*(radius, tubeRadius: PNumber, detailX: int)
+proc torus*(radius, tubeRadius: PNumber, detailX, detailY: int)
+
+#TODO: Investigate 2D primitives in WEBGL context (RendererGL)
+{.pop.}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
