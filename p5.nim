@@ -8,11 +8,31 @@ type
     Color* = ref ColorObj
     ColorObj {.importc.} = object
 
-var
-    preload* {.exportc.}: proc(): void
-    setup* {.exportc.}: proc(): void
-    draw* {.exportc.}: proc(): void
-    remove* {.exportc.}: proc(): void
+#[
+    use overloadable p5 functions with exportc pragma, i.e. proc setup(): void {.exportc.} =
+
+    preload
+    setup
+    draw
+    remove
+    mouseMoved
+    mouseDragged
+    mousePressed
+    mouseReleased
+    mouseClicked
+    doubleClicked
+    mouseWheel
+    keyPressed
+    keyReleased
+    keyTyped
+    touchStarted
+    touchMoved
+    touchEnded
+    deviceMoved
+    deviceTurned
+    deviceShaken
+
+]#
 
 var
     mouseX* {.importc.}: float
@@ -25,23 +45,11 @@ var
     pwinMouseY* {.importc.}: float
     mouseButton* {.importc.}: any
     mouseIsPressed* {.importc.}: bool
-    #procs
-    mouseMoved* {.exportc.}: proc(): void
-    mouseDragged* {.exportc.}: proc(): void
-    mousePressed* {.exportc.}: proc(): void
-    mouseReleased* {.exportc.}: proc(): void
-    mouseClicked* {.exportc.}: proc(): void
-    doubleClicked* {.exportc.}: proc(): void
-    mouseWheel* {.exportc.}: proc(): void
 
 var
     keyIsPressed* {.importc.}: bool
     key* {.importc.}: cstring
     keyCode* {.importc.}: int
-    #procs
-    keyPressed* {.exportc.}: proc(): void
-    keyReleased* {.exportc.}: proc(): void
-    keyTyped* {.exportc.}: proc(): void
 
 proc keyIsDown*(code: PNumber): bool {.importc.}
 
@@ -54,9 +62,6 @@ type
 
 var
     touches* {.importc.}: seq[float]
-    touchStarted* {.exportc.}: proc(): void
-    touchMoved* {.exportc.}: proc(): void
-    touchEnded* {.exportc.}: proc(): void
 
 var
     deviceOrientation* {.importc.}: any
@@ -72,9 +77,6 @@ var
     pRotationX* {.importc.}: float
     pRotationY* {.importc.}: float
     pRotationZ* {.importc.}: float
-    deviceMoved* {.exportc.}: proc(): void
-    deviceTurned* {.exportc.}: proc(): void
-    deviceShaken* {.exportc.}: proc(): void
 
 
 proc setMoveThreshold*(value: PNumber) {.importc.}
@@ -195,19 +197,19 @@ proc id*(element: Element): cstring
 proc id*(element: Element, newId: cstring)
 proc class*(element: Element): cstring
 proc class*(element: Element, class: cstring)
-#proc mousePressed*(element: Element, arg: proc() | bool) #TODO: This redefines previous exportc mousePressed
-#proc doubleClicked*(element: Element, arg: proc() | bool) #TODO: SAME
-#proc mouseWheel*(element: Element, arg: proc(event: JsObject) | bool) #TODO: SAME
-#proc mouseReleased*(element: Element, arg: proc() | bool) #TODO: SAME
-#proc mouseClicked*(element: Element, arg: proc() | bool) #TODO: SAME
-#proc mouseMoved*(element: Element, arg: proc() | bool) #TODO: SAME
-#proc mouseOver*(element: Element, arg: proc() | bool) #TODO: SAME
+proc mousePressed*(element: Element, arg: proc() | bool)
+proc doubleClicked*(element: Element, arg: proc() | bool)
+proc mouseWheel*(element: Element, arg: proc(event: JsObject) | bool)
+proc mouseReleased*(element: Element, arg: proc() | bool)
+proc mouseClicked*(element: Element, arg: proc() | bool)
+proc mouseMoved*(element: Element, arg: proc() | bool)
+proc mouseOver*(element: Element, arg: proc() | bool)
 proc changed*(element: Element, arg: proc() | bool)
 proc input*(element: Element, arg: proc() | bool)
 proc mouseOut*(element: Element, arg: proc() | bool)
-#proc touchStarted*(element: Element, arg: proc() | bool) TODO: SAME
-#proc touchMoved*(element: Element, arg: proc() | bool) TODO: SAME
-#proc touchEnded*(element: Element, arg: proc() | bool) TODO: SAME
+proc touchStarted*(element: Element, arg: proc() | bool)
+proc touchMoved*(element: Element, arg: proc() | bool)
+proc touchEnded*(element: Element, arg: proc() | bool)
 proc dragOver*(element: Element, arg: proc() | bool)
 proc dragLeave*(element: Element, arg: proc() | bool)
 proc drop*(element: Element, callback: proc(file: File), fxn: proc())
