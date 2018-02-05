@@ -8,6 +8,45 @@ type
     Color* = ref ColorObj
     ColorObj {.importc.} = object
 
+    Touche* = ref ToucheObj
+    ToucheObj* {.importc.} = object
+        x: float
+        y: float
+        id: int
+
+    Element* = ref ElementObj
+    ElementObj {.importc.} = object
+    
+    File* = ref FileObj
+    FileObj {.importc.} = object
+
+    Image* = ref ImageObj
+    ImageObj {.importc.} = object
+      width* {.importc.}: float
+      height* {.importc.}: float
+      pixels* {.importc.}: seq[float]
+
+    Vector* = ref VectorObj
+    VectorObj* {.importcpp.} = object
+        x*: float
+        y*: float
+        z*: float
+
+    Graphics* = ref GraphicsObj
+    GraphicsObj {.importc.} = object
+
+    Font* = ref FontObj
+    FontObj* {.importcpp.} = object
+
+    Geometry = ref GeometryObj
+    GeometryObj {.importc.} = object
+
+    Shader* = ref ShaderObj
+    ShaderObj {.importc.} = object
+
+    XML* = ref XMLObj
+    XMLObj {.importcpp.} = object
+
 #[
     use overloadable p5 functions with exportc pragma, i.e. proc setup(): void {.exportc.} =
 
@@ -52,13 +91,6 @@ var
     keyCode* {.importc.}: int
 
 proc keyIsDown*(code: PNumber): bool {.importc.}
-
-type
-    Touche* = ref ToucheObj
-    ToucheObj* {.importc.} = object
-      x: float
-      y: float
-      id: int
 
 var
     touches* {.importc.}: seq[float]
@@ -182,12 +214,6 @@ var
     PORTRAIT* {.importc.}: any 
 
 #Elements
-type
-  Element* = ref ElementObj
-  ElementObj {.importc.} = object
-
-  File* = ref FileObj
-  FileObj {.importc.} = object
 
 {.push importcpp.}
 
@@ -217,12 +243,6 @@ proc drop*(element: Element, callback: proc(file: File), fxn: proc())
 {.pop.}
 
 #Images
-type
-  Image* = ref ImageObj
-  ImageObj {.importc.} = object
-    width* {.importc.}: float
-    height* {.importc.}: float
-    pixels* {.importc.}: seq[float]
 
 {.push importcpp.}
 
@@ -295,12 +315,6 @@ proc imageMode*(mode: any)
 {.pop.}
 
 #Vectors
-type
-    Vector* = ref VectorObj
-    VectorObj* {.importcpp.} = object
-        x*: float
-        y*: float
-        z*: float
 
 proc createVector*(x, y: PNumber,  z: PNumber = 0): Vector {.importc.}
 
@@ -395,9 +409,6 @@ proc brigthness*(color: cstring): float
 {.pop.}
 
 #Graphics
-type
-    Graphics* = ref GraphicsObj
-    GraphicsObj {.importc.} = object
 
 {.push importc.}
 
@@ -605,10 +616,6 @@ proc angleMode*(mode: any)
 
 #Typography
 
-type
-  Font* = ref FontObj
-  FontObj* {.importcpp.} = object
-
 {.push importc.}
 
 proc textAlign*(horizAlign: any): float
@@ -689,10 +696,6 @@ proc pointLight*(value: openArray[PNumber] | cstring | Color, position: Vector)
 
 #WEBGL
 
-type
-  Geometry = ref GeometryObj
-  GeometryObj {.importc.} = object
-
 proc newGeometry*(vertData: proc | JsObject): Geometry {.importcpp: "new p5.Geometry(@)"}
 proc newGeometry*(vertData: proc | JsObject, detailX, detailY: PNumber): Geometry {.importcpp: "new p5.Geometry(@)"}
 proc newGeometry*(vertData: proc | JsObject, detailX, detailY: PNumber, callback: proc): Geometry {.importcpp: "new p5.Geometry(@)"}
@@ -716,10 +719,6 @@ proc loadModel*(path: cstring, successCallback, failureCallback: proc): Geometry
 proc model*(model: Geometry)
 
 {.pop.}
-
-type
-  Shader* = ref ShaderObj
-  ShaderObj {.importc.} = object
 
 {.push importc.}
 
@@ -783,7 +782,33 @@ proc torus*(radius, tubeRadius: PNumber, detailX, detailY: int)
 #TODO: Investigate 2D primitives in WEBGL context (RendererGL)
 {.pop.}
 
+#XML
 
+{.push importcpp.}
+
+proc getParent*(self: XML): XML
+proc getName*(self: XML): cstring
+proc setName*(self: XML, name: cstring): void
+proc hasChildren*(self: XML): bool
+proc listChildren*(self: XML): seq[cstring]
+proc getChildren*(self: XML): seq[XML]
+proc getChildren*(self: XML, name: cstring): seq[XML]
+proc getChild*(self: XML, nameOrIdx: cstring | PNumber): XML
+proc addChild*(self: XML, a: XML): void
+proc removeChild*(self: XML, nameOrIdx: cstring | PNumber): void
+proc getAttributeCount*(self: XML): int
+proc listAttributes*(self: XML): seq[cstring]
+proc hasAttribute*(self: XML, attribute: cstring): bool
+proc getNum*(self: XML, name: cstring): float
+proc getNum*(self: XML, name: cstring, defaultValue: PNumber): float
+proc getString*(self: XML, name: cstring): float
+proc getString*(self: XML, name: cstring, defaultValue: PNumber): float
+proc setAttribute*(self: XML, name: cstring, value: PNumber): void
+proc getContent*(self: XML): cstring
+proc getContent*(self: XML, defaultValue: cstring): cstring
+proc setContent*(self: XML, content: cstring): void
+
+{.pop.}
 
 
 
