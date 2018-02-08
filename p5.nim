@@ -810,7 +810,33 @@ proc setContent*(self: XML, content: cstring): void
 
 {.pop.}
 
+{.push importc.}
 
+proc abs*(value: PNumber): PNumber
+proc ceil*(value: PNumber): int
+proc constrain*(n, min, max: PNumber): PNumber
+proc dist*(x1, y1, x2, y2: PNumber): PNumber
+proc exp*(n: PNumber): PNumber
+proc floor*(n: PNumber): int
+proc lerp*(start, stop, amt: PNumber): PNumber
+proc log*(n: PNumber): PNumber
+proc mag*(a, b: PNumber): PNumber
+proc map*(value, start1, stop1, start2, stop2: PNumber): PNumber
+proc map*(value, start1, stop1, start2, stop2: PNumber, withinBounds: bool): PNumber
+proc max*(n0, n1: PNumber): PNumber
+proc max*(nums: openArray[PNumber]): PNumber
+proc min*(n0, n1: PNumber): PNumber
+proc min*(nums: openArray[PNumber]): PNumber
+proc norm*(value, start, stop: PNumber): PNumber
+proc pow*(n, e: PNumber): PNumber
+proc round*(n: PNumber): int
+proc sq*(n: PNumber): PNumber
+proc sqrt*(n: PNumber): PNumber
+
+{.pop.}
+
+
+proc orbitControl*() {.importc.}
 
 
 
