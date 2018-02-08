@@ -279,7 +279,7 @@ proc saveFrames*(filename, extension: cstring, duration, framerate: PNumber, cal
 {.pop.}
 
 var
-    pixels* {.importc.}: seq[Color]
+    pixels* {.importc.}: seq[float]
 
 {.push importc.}
 
