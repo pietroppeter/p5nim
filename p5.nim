@@ -6,22 +6,19 @@ type PNumber = int or float
 
 type
     Color* = ref ColorObj
-    ColorObj {.importc.} = object
+    ColorObj {.importcpp.} = object
 
     Touche* = ref ToucheObj
-    ToucheObj* {.importc.} = object
+    ToucheObj* {.importcpp.} = object
         x: float
         y: float
         id: int
-
-    Element* = ref ElementObj
-    ElementObj {.importc.} = object
     
     File* = ref FileObj
-    FileObj {.importc.} = object
+    FileObj {.importcpp.} = object
 
     Image* = ref ImageObj
-    ImageObj {.importc.} = object
+    ImageObj {.importcpp.} = object
       width* {.importc.}: float
       height* {.importc.}: float
       pixels* {.importc.}: seq[float]
@@ -33,19 +30,22 @@ type
         z*: float
 
     Graphics* = ref GraphicsObj
-    GraphicsObj {.importc.} = object
+    GraphicsObj {.importcpp.} = object
 
     Font* = ref FontObj
     FontObj* {.importcpp.} = object
 
     Geometry = ref GeometryObj
-    GeometryObj {.importc.} = object
+    GeometryObj {.importcpp.} = object
 
     Shader* = ref ShaderObj
-    ShaderObj {.importc.} = object
+    ShaderObj {.importcpp.} = object
 
     XML* = ref XMLObj
     XMLObj {.importcpp.} = object
+
+    PrintWriter* = ref PrintWriterObj
+    PrintWriterObj {.importcpp.} = object
 
 #[
     use overloadable p5 functions with exportc pragma, i.e. proc setup(): void {.exportc.} =
@@ -263,6 +263,8 @@ proc blend*(image: Image, source: Image, sx, sy, sw, sh, dx, dy, dw, dh: int, bl
 proc save*(image: Image, filename, extension: cstring)
 
 {.pop.}
+
+var a:  
 
 {.push importc.}
 
@@ -838,8 +840,66 @@ proc sqrt*(n: PNumber): PNumber
 
 proc orbitControl*() {.importc.}
 
+{.push importc.}
 
+proc loadJSON*(path: string): JsObject {.varargs.}
+proc loadStrings*(filename: string): seq[string]
+proc loadStrings*(filename: string, callback: proc): seq[string]
+proc loadStrings*(filename: string, callback, errorCallback: proc): seq[string]
+proc loadTable*(filename: string): JsObject
+proc loadTable*(filaneame: string, callback: proc): JsObject
+proc loadTable*(filaneame: string, callback, errorCallback: proc): JsObject
+proc loadTable*(filename, options: string): JsObject
+proc loadTable*(filaneame, options: string, callback: proc): JsObject
+proc loadTable*(filaneame, options: string, callback, errorCallback: proc): JsObject
+proc loadXML*(filename: string): JsObject
+proc loadXML*(filename: string, callback: proc): JsObject
+proc loadXML*(filename: string, callback, errorCallback: proc): JsObject
+proc httpGet*(path: string)
+proc httpGet*(path, datatype: string)
+proc httpGet*(path, datatype: string, data: JsObject)
+proc httpGet*(path, datatype: string, data: JsObject, callback: proc)
+proc httpGet*(path, datatype: string, data: JsObject, callback, errorCallback: proc)
+proc httpPost*(path: string)
+proc httpPost*(path, datatype: string)
+proc httpPost*(path, datatype: string, data: JsObject)
+proc httpPost*(path, datatype: string, data: JsObject, callback: proc)
+proc httpPost*(path, datatype: string, data: JsObject, callback, errorCallback: proc)
+proc httpDo*(path: string)
+proc httpDo*(path, reqMethod: string)
+proc httpDo*(path, reqMethod, datatype: string)
+proc httpDo*(path, reqMethod, datatype: string, data: JsObject)
+proc httpDo*(path, reqMethod, datatype: string, data: JsObject, callback: proc)
+proc httpDo*(path, reqMethod, datatype: string, data: JsObject, callback, errorCallback: proc)
+proc httpDo*(path, options: string)
+proc httpDo*(path, options: string, callback: proc)
+proc httpDo*(path, options: string, callback, errorCallback: proc)
+proc createWrite*(name: string): PrintWriter
+proc createWrite*(name, extension: string): PrintWriter
+proc save*()
+proc save*(objectOrFilename: string | JsObject)
+proc save*(objectOrFilename: string | JsObject, filename: string)
+proc save*(objectOrFilename: string | JsObject, options: bool | string)
+proc saveJSON*(json: seq[any] | JsObject, filename:: string)
+proc saveJSON*(json: seq[any] | JsObject, filename:: string, optimize: bool)
+proc saveStrings*(list: seq[string], filename: string)
+proc saveStrings*(list: seq[string], filename, extension: string)
+proc saveTable*(table: Table, filename: string)
+proc saveTable*(table: Table, filename, options: string)
+proc downloadFile*(data: string | Blob)
+proc downloadFile*(data: string | Blob, filename: string)
+proc downloadFile*(data: string | Blob, filename, extension: string)
 
+{.pop.}
+
+{.push importcpp.}
+
+proc write*(self: PrintWriter, data: seq[JsObject] | seq[any])
+proc print*(self: PrintWriter, data: seq[JsObject] | seq[any])
+proc clear*(self: PrintWriter)
+proc close*(self: PrintWriter)
+
+{.pop.}
 
 
 
