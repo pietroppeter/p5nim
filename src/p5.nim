@@ -31,6 +31,9 @@ type
 
     Graphics* = ref GraphicsObj
     GraphicsObj {.importcpp.} = object
+        pixels*{.importcpp.}: seq[float]
+        width*{.importcpp.}: float
+        height*{importcpp.}: float
 
     Font* = ref FontObj
     FontObj* {.importcpp.} = object
@@ -46,6 +49,12 @@ type
 
     PrintWriter* = ref PrintWriterObj
     PrintWriterObj {.importcpp.} = object
+
+    Table* = ref TableObj
+    TableObj {.importcpp.} = object
+
+    Blob* = ref BlobObj
+    BlobObj {.importcpp.} = object
 
 #[
     use overloadable p5 functions with exportc pragma, i.e. proc setup(): void {.exportc.} =
@@ -264,8 +273,6 @@ proc save*(image: Image, filename, extension: cstring)
 
 {.pop.}
 
-var a:  
-
 {.push importc.}
 
 proc createImage*(w, h: int): Image
@@ -277,6 +284,20 @@ proc saveCanvas*(filename: cstring)
 proc saveCanvas*(filename, extension: cstring)
 proc saveFrames*(filename, extension: cstring, duration, framerate: PNumber)
 proc saveFrames*(filename, extension: cstring, duration, framerate: PNumber, callback: proc(framesObj: openArray[JsObject]): void)
+
+{.pop.}
+{.push importcpp.}
+
+proc createImage*(graphics: Graphics, w, h: int): Image
+proc saveCanvas*(graphics: Graphics)
+proc saveCanvas*(graphics: Graphics, selectedCanvas: Element #[ TODO: | HTMLCanvasElement ]#)
+proc saveCanvas*(graphics: Graphics, selectedCanvas: Element #[ TODO: | HTMLCanvasElement ]#, filename: cstring)
+proc saveCanvas*(graphics: Graphics, selectedCanvas: Element #[ TODO: | HTMLCanvasElement ]#, filename, extension: cstring)
+proc saveCanvas*(graphics: Graphics, filename: cstring)
+proc saveCanvas*(graphics: Graphics, filename, extension: cstring)
+proc saveFrames*(graphics: Graphics, filename, extension: cstring, duration, framerate: PNumber)
+proc saveFrames*(graphics: Graphics, filename, extension: cstring, duration, framerate: PNumber, callback: proc(framesObj: openArray[JsObject]): void)
+
 
 {.pop.}
 
@@ -313,6 +334,39 @@ proc tint*(values: openArray[PNumber])
 proc tint*(color: Color)
 proc noTint*()
 proc imageMode*(mode: any)
+
+{.pop.}
+
+{.push importcpp.}
+
+proc blend*(graphics: Graphics, source: Image | Element, sx, sy, sw, sh, dx, dy, dw, dh: int, blendMode: any)
+proc blend*(graphics: Graphics, sx, sy, sw, sh, dx, dy, dw, dh: int, blendMode: any)
+proc copy*(graphics: Graphics, source: Image | Element, sx, sy, sw, sh, dx, dy, dw, dh: int)
+proc copy*(graphics: Graphics, sx, sy, sw, sh, dx, dy, dw, dh: int)
+proc filter*(graphics: Graphics, filterType: any)
+proc filter*(graphics: Graphics, filterType: any, filterParam: PNumber)
+proc get*(graphics: Graphics): Image
+proc get*(graphics: Graphics, x, y: PNumber): openArray[float]
+proc get*(graphics: Graphics, x, y, w, h: PNumber): Image
+proc loadPixels*(graphics: Graphics)
+proc set*(graphics: Graphics, x, y: PNumber, value: PNumber | openArray[PNumber] | Color | Image)
+proc updatePixels*(graphics: Graphics)
+proc updatePixels*(graphics: Graphics, x, y, w, h: PNumber)
+proc loadImage*(graphics: Graphics, path: cstring): Image
+proc loadImage*(graphics: Graphics, path: cstring, successCallback: proc(img: Image)): Image
+proc loadImage*(graphics: Graphics, path: cstring, successCallback: proc(img: Image), failureCallback: proc(#[ TODO: Event ]#)): Image
+proc image*(graphics: Graphics, img: Image | Element, x, y: PNumber)
+proc image*(graphics: Graphics, img: Image | Element, x, y, w, h: PNumber)
+proc image*(graphics: Graphics, img: Image | Element, dx, dy, dw, dh, sx, sy: PNumber)
+proc image*(graphics: Graphics, img: Image | Element, dx, dy, dw, dh, sx, sy, sw, sh: PNumber)
+proc tint*(graphics: Graphics, v1, v2, v3: PNumber)
+proc tint*(graphics: Graphics, v1, v2, v3, alpha: PNumber)
+proc tint*(graphics: Graphics, value: cstring)
+proc tint*(graphics: Graphics, value: cstring, alpha: PNumber)
+proc tint*(graphics: Graphics, values: openArray[PNumber])
+proc tint*(graphics: Graphics, color: Color)
+proc noTint*(graphics: Graphics)
+proc imageMode*(graphics: Graphics, mode: any)
 
 {.pop.}
 
@@ -429,6 +483,52 @@ proc push*()
 proc pop*()
 proc redraw*()
 proc redraw*(n: int)
+
+{.pop.}
+
+{.push importcpp.}
+
+proc blendMode*(self: Graphics, mode: any)
+proc background*(self: Graphics, channel1, channel2, channel3: PNumber)
+proc background*(self: Graphics, channel1, channel2, channel3, alpha: PNumber)
+proc background*(self: Graphics, gray: PNumber)
+proc background*(self: Graphics, gray, alpha: PNumber)
+proc background*(self: Graphics, str: cstring)
+proc background*(self: Graphics, color: Color)
+proc background*(self: Graphics, image: Image)
+proc beginCountour*(self: Graphics)
+proc beginShape*(self: Graphics)
+proc beginShape*(self: Graphics, mode: any)
+proc bezierVertex*(self: Graphics, x2, y2, x3, y3, x4, y4: PNumber)
+proc curveVertex*(self: Graphics, x, y: PNumber)
+proc endContour*(self: Graphics)
+proc endShape*(self: Graphics, mode: any)
+proc quadraticVertex*(self: Graphics, cx, cy, x3, y3: PNumber)
+proc vertex*(self: Graphics, x, y: PNumber)
+proc vertex*(self: Graphics, x, y, z, u, v: PNumber)
+proc clear*(self: Graphics)
+proc colorMode*(self: Graphics, mode: any)
+proc colorMode*(self: Graphics, mode: any, max: PNumber)
+proc colorMode*(self: Graphics, mode: any, max1, max2, max3: PNumber)
+proc colorMode*(self: Graphics, mode: any, max1, max2, max3, maxAlpha: PNumber)
+proc fill*(self: Graphics, channel1, channel2, channel3: PNumber)
+proc fill*(self: Graphics, channel1, channel2, channel3: PNumber, alpha: PNumber)
+proc fill*(self: Graphics, gray: PNumber)
+proc fill*(self: Graphics, gray: PNumber, alpha: PNumber)
+proc fill*(self: Graphics, str: cstring)
+proc fill*(self: Graphics, str: cstring, alpha: PNumber)
+proc fill*(self: Graphics, color: Color)
+proc fill*(self: Graphics, color: Color, alpha: PNumber)
+proc noFill*(self: Graphics)
+proc noStroke*(self: Graphics)
+proc stroke*(self: Graphics, channel1, channel2, channel3: PNumber)
+proc stroke*(self: Graphics, channel1, channel2, channel3: PNumber, alpha: PNumber)
+proc stroke*(self: Graphics, gray: PNumber)
+proc stroke*(self: Graphics, gray: PNumber, alpha: PNumber)
+proc stroke*(self: Graphics, str: cstring)
+proc stroke*(self: Graphics, str: cstring, alpha: PNumber)
+proc stroke*(self: Graphics, color: Color)
+proc stroke*(self: Graphics, color: Color, alpha: PNumber)
 
 {.pop.}
 
@@ -880,8 +980,8 @@ proc save*()
 proc save*(objectOrFilename: string | JsObject)
 proc save*(objectOrFilename: string | JsObject, filename: string)
 proc save*(objectOrFilename: string | JsObject, options: bool | string)
-proc saveJSON*(json: seq[any] | JsObject, filename:: string)
-proc saveJSON*(json: seq[any] | JsObject, filename:: string, optimize: bool)
+proc saveJSON*(json: seq[any] | JsObject, filename: string)
+proc saveJSON*(json: seq[any] | JsObject, filename: string, optimize: bool)
 proc saveStrings*(list: seq[string], filename: string)
 proc saveStrings*(list: seq[string], filename, extension: string)
 proc saveTable*(table: Table, filename: string)
