@@ -529,6 +529,35 @@ proc stroke*(self: Graphics, str: cstring)
 proc stroke*(self: Graphics, str: cstring, alpha: PNumber)
 proc stroke*(self: Graphics, color: Color)
 proc stroke*(self: Graphics, color: Color, alpha: PNumber)
+proc arc*(self: Graphics, x, y, width, height, start, stop: PNumber)
+proc arc*(self: Graphics, x, y, width, height, start, stop: PNumber, mode: cstring)
+proc ellipse*(self: Graphics, x, y, diameter: PNumber)
+proc ellipse*(self: Graphics, x, y, width, height: PNumber)
+proc line*(self: Graphics, x1, y1, x2, y2: PNumber)
+proc point*(self: Graphics, x, y: PNumber)
+proc quad*(self: Graphics, x1, y1, x2, y2, x3, y3, x4, y4: PNumber)
+proc rect*(self: Graphics, x, y, width, height: PNumber)
+proc rect*(self: Graphics, x, y, width, height, tl, tr, bl, br: PNumber)
+proc rect*(self: Graphics, x, y, width, height, detailX, detailY: PNumber)
+proc triangle*(self: Graphics, x1, y1, x2, y2, x3, y3: PNumber)
+proc ellipseMode*(self: Graphics, mode: cstring)
+proc noSmooth*(self: Graphics)
+proc rectMode*(self: Graphics, mode: cstring)
+proc smooth*(self: Graphics, )
+proc strokeCap*(self: Graphics, mode: cstring)
+proc strokeJoin*(self: Graphics, mode: cstring)
+proc strokeWeight*(self: Graphics, weight: PNumber)
+proc bezier*(self: Graphics, x1, y1, x2, y2, x3, y3, x4, y4: PNumber)
+proc bezier*(self: Graphics, x1, y1, z1, x2, y2, z2, x3, y3, z3, x4, y4, z4: PNumber)
+proc bezierDetail*(self: Graphics, detail: PNumber)
+proc bezierPoint*(self: Graphics, a, b, c, d, t: PNumber): PNumber
+proc bezierTangent*(self: Graphics, a, b, c, d, t: PNumber): PNumber
+proc curve*(self: Graphics, x1, y1, x2, y2, x3, y3, x4, y4: PNumber)
+proc curve*(self: Graphics, x1, y1, z1, x2, y2, z2, x3, y3, z3, x4, y4, z4: PNumber)
+proc curveDetail*(self: Graphics, detail: PNumber)
+proc curveTightness*(self: Graphics, tightness: PNumber)
+proc curvePoint*(self: Graphics, a, b, c, d, t: PNumber): PNumber
+proc curveTangent*(self: Graphics, a, b, c, d, t: PNumber): PNumber
 
 {.pop.}
 
