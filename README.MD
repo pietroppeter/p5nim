@@ -38,4 +38,4 @@ somewhere on your computer.
     proc draw() {.exportc.} =
       background(newColor())
       
-As you see from the code above, using nimp5 is almost identical to using p5.js, save for the syntax. Just remember that all the procedures that p5 needs to know about (callbacks), have to be declared with the {.exportc.} pragma. There is a list of all such procedures in the p5.nim source file.
+As you see from the code above, using nimp5 is almost identical to using p5.js, save for the syntax. Just remember that all the procedures that p5 needs to know about have to be declared with the {.exportc.} pragma. There is a list of all such procedures in the p5.nim source file.
