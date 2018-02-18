@@ -5,7 +5,8 @@ author        = "Jacob Romano"
 description   = "Nim bindings for p5.js"
 license       = "MIT"
 
+srcDir        = "src"
+
 # Dependencies
 
-requires "nim >= 0.17.2"
-
+requires "nim >= 0.17.0"
