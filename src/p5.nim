@@ -284,15 +284,15 @@ proc saveFrames*(filename, extension: cstring, duration, framerate: PNumber, cal
 {.pop.}
 {.push importcpp.}
 
-proc createImage*(graphics: Graphics, w, h: int): Image
-proc saveCanvas*(graphics: Graphics)
-proc saveCanvas*(graphics: Graphics, selectedCanvas: Element #[ TODO: | HTMLCanvasElement ]#)
-proc saveCanvas*(graphics: Graphics, selectedCanvas: Element #[ TODO: | HTMLCanvasElement ]#, filename: cstring)
-proc saveCanvas*(graphics: Graphics, selectedCanvas: Element #[ TODO: | HTMLCanvasElement ]#, filename, extension: cstring)
-proc saveCanvas*(graphics: Graphics, filename: cstring)
-proc saveCanvas*(graphics: Graphics, filename, extension: cstring)
-proc saveFrames*(graphics: Graphics, filename, extension: cstring, duration, framerate: PNumber)
-proc saveFrames*(graphics: Graphics, filename, extension: cstring, duration, framerate: PNumber, callback: proc(framesObj: openArray[JsObject]): void)
+proc createImage*(self: Graphics, w, h: int): Image
+proc saveCanvas*(self: Graphics)
+proc saveCanvas*(self: Graphics, selectedCanvas: Element #[ TODO: | HTMLCanvasElement ]#)
+proc saveCanvas*(self: Graphics, selectedCanvas: Element #[ TODO: | HTMLCanvasElement ]#, filename: cstring)
+proc saveCanvas*(self: Graphics, selectedCanvas: Element #[ TODO: | HTMLCanvasElement ]#, filename, extension: cstring)
+proc saveCanvas*(self: Graphics, filename: cstring)
+proc saveCanvas*(self: Graphics, filename, extension: cstring)
+proc saveFrames*(self: Graphics, filename, extension: cstring, duration, framerate: PNumber)
+proc saveFrames*(self: Graphics, filename, extension: cstring, duration, framerate: PNumber, callback: proc(framesObj: openArray[JsObject]): void)
 
 
 {.pop.}
@@ -318,10 +318,10 @@ proc updatePixels*(x, y, w, h: PNumber)
 proc loadImage*(path: cstring): Image
 proc loadImage*(path: cstring, successCallback: proc(img: Image)): Image
 proc loadImage*(path: cstring, successCallback: proc(img: Image), failureCallback: proc(#[ TODO: Event ]#)): Image
-proc image*(img: Image | Element, x, y: PNumber)
-proc image*(img: Image | Element, x, y, w, h: PNumber)
-proc image*(img: Image | Element, dx, dy, dw, dh, sx, sy: PNumber)
-proc image*(img: Image | Element, dx, dy, dw, dh, sx, sy, sw, sh: PNumber)
+proc image*(img: Image | Element | Graphics, x, y: PNumber)
+proc image*(img: Image | Element | Graphics, x, y, w, h: PNumber)
+proc image*(img: Image | Element | Graphics, dx, dy, dw, dh, sx, sy: PNumber)
+proc image*(img: Image | Element | Graphics, dx, dy, dw, dh, sx, sy, sw, sh: PNumber)
 proc tint*(v1, v2, v3: PNumber)
 proc tint*(v1, v2, v3, alpha: PNumber)
 proc tint*(value: cstring)
