@@ -2,7 +2,7 @@ import jsffi
 import math
 import dom
 
-type PNumber = int or float
+type PNumber* = int or float
 
 type
     Color* = ref object
