@@ -2,7 +2,7 @@ import jsffi
 import math
 import dom
 
-type PNumber = int or float
+type PNumber* = int or float
 
 type
     Color* = ref object
@@ -87,7 +87,7 @@ var
     winMouseY* {.importc.}: float
     pwinMouseX* {.importc.}: float
     pwinMouseY* {.importc.}: float
-    mouseButton* {.importc.}: any
+    mouseButton* {.importc.}: cstring
     mouseIsPressed* {.importc.}: bool
 
 var
@@ -101,7 +101,7 @@ var
     touches* {.importc.}: seq[float]
 
 var
-    deviceOrientation* {.importc.}: any
+    deviceOrientation* {.importc.}: cstring
     accelerationX* {.importc.}: float
     accelerationY* {.importc.}: float
     accelerationZ* {.importc.}: float
@@ -261,10 +261,10 @@ proc set*(image: Image, x, y: PNumber, value: PNumber | openArray[PNumber] | Col
 proc resize*(image: Image, w, h: PNumber)
 proc copy*(image: Image, source: Image | Element, sx, sy, sw, sh, dx, dy, dw, dh: int)
 proc mask*(image, maskImage: Image)
-proc filter*(image: Image, filterType: any)
-proc filter*(image: Image, filterType: any, value: PNumber)
-proc blend*(image: Image, sx, sy, sw, sh, dx, dy, dw, dh: int, blendMode: any)
-proc blend*(image: Image, source: Image, sx, sy, sw, sh, dx, dy, dw, dh: int, blendMode: any)
+proc filter*(image: Image, filterType: cstring)
+proc filter*(image: Image, filterType: cstring, value: PNumber)
+proc blend*(image: Image, sx, sy, sw, sh, dx, dy, dw, dh: int, blendMode: cstring)
+proc blend*(image: Image, source: Image, sx, sy, sw, sh, dx, dy, dw, dh: int, blendMode: cstring)
 proc save*(image: Image, filename, extension: cstring)
 
 {.pop.}
@@ -302,12 +302,12 @@ var
 
 {.push importc.}
 
-proc blend*(source: Image | Element, sx, sy, sw, sh, dx, dy, dw, dh: int, blendMode: any)
-proc blend*(sx, sy, sw, sh, dx, dy, dw, dh: int, blendMode: any)
+proc blend*(source: Image | Element, sx, sy, sw, sh, dx, dy, dw, dh: int, blendMode: cstring)
+proc blend*(sx, sy, sw, sh, dx, dy, dw, dh: int, blendMode: cstring)
 proc copy*(source: Image | Element, sx, sy, sw, sh, dx, dy, dw, dh: int)
 proc copy*(sx, sy, sw, sh, dx, dy, dw, dh: int)
-proc filter*(filterType: any)
-proc filter*(filterType: any, filterParam: PNumber)
+proc filter*(filterType: cstring)
+proc filter*(filterType: cstring, filterParam: PNumber)
 proc get*(): Image
 proc get*(x, y: PNumber): openArray[float]
 proc get*(x, y, w, h: PNumber): Image
@@ -329,7 +329,7 @@ proc tint*(value: cstring, alpha: PNumber)
 proc tint*(values: openArray[PNumber])
 proc tint*(color: Color)
 proc noTint*()
-proc imageMode*(mode: any)
+proc imageMode*(mode: cstring)
 
 {.pop.}
 
@@ -432,13 +432,13 @@ proc brigthness*(color: cstring): float
 {.push importc.}
 
 proc createCanvas*(width, height: PNumber)
-proc createCanvas*(width, height: PNumber, renderMode: any)
+proc createCanvas*(width, height: PNumber, renderMode: cstring)
 proc resizeCanvas*(width, height: PNumber)
 proc resizeCanvas*(width, height: PNumber, noRedraw: bool)
 proc noCanvas*()
 proc createGraphics*(width, height: PNumber): Graphics
-proc createGraphics*(width, height: PNumber, renderMode: any): Graphics
-proc blendMode*(mode: any)
+proc createGraphics*(width, height: PNumber, renderMode: cstring): Graphics
+proc blendMode*(mode: cstring)
 
 proc noLoop*()
 proc loop*()
@@ -451,12 +451,12 @@ proc redraw*(n: int)
 
 {.push importcpp.}
 
-proc blend*(graphics: Graphics, source: Image | Element, sx, sy, sw, sh, dx, dy, dw, dh: int, blendMode: any)
-proc blend*(graphics: Graphics, sx, sy, sw, sh, dx, dy, dw, dh: int, blendMode: any)
+proc blend*(graphics: Graphics, source: Image | Element, sx, sy, sw, sh, dx, dy, dw, dh: int, blendMode: cstring)
+proc blend*(graphics: Graphics, sx, sy, sw, sh, dx, dy, dw, dh: int, blendMode: cstring)
 proc copy*(graphics: Graphics, source: Image | Element, sx, sy, sw, sh, dx, dy, dw, dh: int)
 proc copy*(graphics: Graphics, sx, sy, sw, sh, dx, dy, dw, dh: int)
-proc filter*(graphics: Graphics, filterType: any)
-proc filter*(graphics: Graphics, filterType: any, filterParam: PNumber)
+proc filter*(graphics: Graphics, filterType: cstring)
+proc filter*(graphics: Graphics, filterType: cstring, filterParam: PNumber)
 proc get*(graphics: Graphics): Image
 proc get*(graphics: Graphics, x, y: PNumber): openArray[float]
 proc get*(graphics: Graphics, x, y, w, h: PNumber): Image
@@ -478,8 +478,8 @@ proc tint*(graphics: Graphics, value: cstring, alpha: PNumber)
 proc tint*(graphics: Graphics, values: openArray[PNumber])
 proc tint*(graphics: Graphics, color: Color)
 proc noTint*(graphics: Graphics)
-proc imageMode*(graphics: Graphics, mode: any)
-proc blendMode*(self: Graphics, mode: any)
+proc imageMode*(graphics: Graphics, mode: cstring)
+proc blendMode*(self: Graphics, mode: cstring)
 proc background*(self: Graphics, channel1, channel2, channel3: PNumber)
 proc background*(self: Graphics, channel1, channel2, channel3, alpha: PNumber)
 proc background*(self: Graphics, gray: PNumber)
@@ -489,19 +489,19 @@ proc background*(self: Graphics, color: Color)
 proc background*(self: Graphics, image: Image)
 proc beginCountour*(self: Graphics)
 proc beginShape*(self: Graphics)
-proc beginShape*(self: Graphics, mode: any)
+proc beginShape*(self: Graphics, mode: cstring)
 proc bezierVertex*(self: Graphics, x2, y2, x3, y3, x4, y4: PNumber)
 proc curveVertex*(self: Graphics, x, y: PNumber)
 proc endContour*(self: Graphics)
-proc endShape*(self: Graphics, mode: any)
+proc endShape*(self: Graphics, mode: cstring)
 proc quadraticVertex*(self: Graphics, cx, cy, x3, y3: PNumber)
 proc vertex*(self: Graphics, x, y: PNumber)
 proc vertex*(self: Graphics, x, y, z, u, v: PNumber)
 proc clear*(self: Graphics)
-proc colorMode*(self: Graphics, mode: any)
-proc colorMode*(self: Graphics, mode: any, max: PNumber)
-proc colorMode*(self: Graphics, mode: any, max1, max2, max3: PNumber)
-proc colorMode*(self: Graphics, mode: any, max1, max2, max3, maxAlpha: PNumber)
+proc colorMode*(self: Graphics, mode: cstring)
+proc colorMode*(self: Graphics, mode: cstring, max: PNumber)
+proc colorMode*(self: Graphics, mode: cstring, max1, max2, max3: PNumber)
+proc colorMode*(self: Graphics, mode: cstring, max1, max2, max3, maxAlpha: PNumber)
 proc fill*(self: Graphics, channel1, channel2, channel3: PNumber)
 proc fill*(self: Graphics, channel1, channel2, channel3: PNumber, alpha: PNumber)
 proc fill*(self: Graphics, gray: PNumber)
@@ -567,14 +567,14 @@ proc shearX*(self: Graphics, angle: PNumber)
 proc shearY*(self: Graphics, angle: PNumber)
 proc translate*(self: Graphics, x, y: PNumber)
 proc translate*(self: Graphics, x, y, z: PNumber)
-proc textAlign*(self: Graphics, horizAlign: any): float
-proc textAlign*(self: Graphics, horizAlign, vertAlign: any): float
+proc textAlign*(self: Graphics, horizAlign: cstring): float
+proc textAlign*(self: Graphics, horizAlign, vertAlign: cstring): float
 proc textLeading*(self: Graphics): float
 proc textLeading*(self: Graphics, leading: PNumber)
 proc textSize*(self: Graphics): float
 proc textSize*(self: Graphics, size: PNumber)
 proc textStyle*(self: Graphics): cstring
-proc textStyle*(self: Graphics, style: any)
+proc textStyle*(self: Graphics, style: cstring)
 proc textWidth*(self: Graphics, text: cstring): float
 proc textAscent*(self: Graphics): float
 proc textDescent*(self: Graphics): float
@@ -657,11 +657,11 @@ proc torus*(self: Graphics, radius, tubeRadius: PNumber, detailX, detailY: int)
 
 proc beginCountour*()
 proc beginShape*()
-proc beginShape*(mode: any)
+proc beginShape*(mode: cstring)
 proc bezierVertex*(x2, y2, x3, y3, x4, y4: PNumber)
 proc curveVertex*(x, y: PNumber)
 proc endContour*()
-proc endShape*(mode: any)
+proc endShape*(mode: cstring)
 proc quadraticVertex*(cx, cy, x3, y3: PNumber)
 proc vertex*(x, y: PNumber)
 proc vertex*(x, y, z, u, v: PNumber)
@@ -679,10 +679,10 @@ proc background*(str: cstring)
 proc background*(color: Color)
 proc background*(image: Image)
 proc clear*()
-proc colorMode*(mode: any)
-proc colorMode*(mode: any, max: PNumber)
-proc colorMode*(mode: any, max1, max2, max3: PNumber)
-proc colorMode*(mode: any, max1, max2, max3, maxAlpha: PNumber)
+proc colorMode*(mode: cstring)
+proc colorMode*(mode: cstring, max: PNumber)
+proc colorMode*(mode: cstring, max1, max2, max3: PNumber)
+proc colorMode*(mode: cstring, max1, max2, max3, maxAlpha: PNumber)
 proc fill*(channel1, channel2, channel3: PNumber)
 proc fill*(channel1, channel2, channel3: PNumber, alpha: PNumber)
 proc fill*(gray: PNumber)
@@ -752,7 +752,7 @@ proc curveTangent*(a, b, c, d, t: PNumber): PNumber
 {.pop.}
 
 #Log helper
-proc print*(content: untyped) {.importc.}
+proc print*(content: cstring) {.importc.}
 
 var displayWidth* {.importc.}: float
 var displayHeight* {.importc.}: float
@@ -767,7 +767,7 @@ var focused*{.importc.}: bool
 {.push importc.}
 
 proc cursor*(imgagePath: cstring)
-proc cursor*(constant: any)
+proc cursor*(constant: cstring)
 proc frameRate*(fps: PNumber)
 proc frameRate*(): float
 proc noCursor*()
@@ -832,7 +832,7 @@ proc sin*(value: PNumber): float
 proc tan*(value: PNumber): float
 proc degrees*(value: PNumber): float
 proc radians*(value: PNumber): float
-proc angleMode*(mode: any)
+proc angleMode*(mode: cstring)
 
 {.pop.}
 
@@ -840,14 +840,14 @@ proc angleMode*(mode: any)
 
 {.push importc.}
 
-proc textAlign*(horizAlign: any): float
-proc textAlign*(horizAlign, vertAlign: any): float
+proc textAlign*(horizAlign: cstring): float
+proc textAlign*(horizAlign, vertAlign: cstring): float
 proc textLeading*(): float
 proc textLeading*(leading: PNumber)
 proc textSize*(): float
 proc textSize*(size: PNumber)
 proc textStyle*(): cstring
-proc textStyle*(style: any)
+proc textStyle*(style: cstring)
 proc textWidth*(text: cstring): float
 proc textAscent*(): float
 proc textDescent*(): float
@@ -1099,8 +1099,8 @@ proc save*()
 proc save*(objectOrFilename: string | JsObject)
 proc save*(objectOrFilename: string | JsObject, filename: string)
 proc save*(objectOrFilename: string | JsObject, options: bool | string)
-proc saveJSON*(json: seq[any] | JsObject, filename: string)
-proc saveJSON*(json: seq[any] | JsObject, filename: string, optimize: bool)
+proc saveJSON*(json: seq[cstring] | JsObject, filename: string)
+proc saveJSON*(json: seq[cstring] | JsObject, filename: string, optimize: bool)
 proc saveStrings*(list: seq[string], filename: string)
 proc saveStrings*(list: seq[string], filename, extension: string)
 proc saveTable*(table: Table, filename: string)
@@ -1113,8 +1113,8 @@ proc downloadFile*(data: string | Blob, filename, extension: string)
 
 {.push importcpp.}
 
-proc write*(self: PrintWriter, data: seq[JsObject] | seq[any])
-proc print*(self: PrintWriter, data: seq[JsObject] | seq[any])
+proc write*(self: PrintWriter, data: seq[JsObject] | seq[cstring])
+proc print*(self: PrintWriter, data: seq[JsObject] | seq[cstring])
 proc clear*(self: PrintWriter)
 proc close*(self: PrintWriter)
 
