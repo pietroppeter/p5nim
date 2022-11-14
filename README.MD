@@ -36,7 +36,7 @@ To install this library use:
     proc draw() {.exportc.} =
       background(newColor())
       
-As you see from the code above, using nimp5 is almost identical to using p5.js, save for the syntax. Just remember that all the procedures that p5 needs to know about have to be declared with the {.exportc.} pragma. This is the list of such procedures:
+As you see from the code above ([live](https://pietroppeter.github.io/nim-p5/flashing_canvas.html)), using nimp5 is almost identical to using p5.js, save for the syntax. Just remember that all the procedures that p5 needs to know about have to be declared with the {.exportc.} pragma. This is the list of such procedures:
 
 - preload
 - setup

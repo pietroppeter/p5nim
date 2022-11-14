@@ -10,3 +10,15 @@ srcDir        = "src"
 # Dependencies
 
 requires "nim >= 0.17.0"
+
+template build(name: string) = exec "nim r docsrc/" & name
+
+task index, "rebuild the index":
+  build "index"
+
+task examples, "rebuild all examples":
+  build "get_started"
+  build "flashing_canvas"
+  build "easing"
+  build "keyboard"
+  build "polygons"
