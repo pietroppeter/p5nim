@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+  <title>okazz_220919a.nim</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2280%22>🐳</text></svg>">
+  <meta content="text/html; charset=utf-8" http-equiv="content-type">
+  <meta content="width=device-width, initial-scale=1" name="viewport">
+  <link rel='stylesheet' href='https://unpkg.com/normalize.css'>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kognise/water.css@latest/dist/light.min.css">
+  <link rel='stylesheet' href='https://cdn.jsdelivr.net/gh/pietroppeter/nimib/assets/atom-one-light.css'>
+  <style>
+.nb-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.nb-small {
+  font-size: 0.8rem;
+}
+button.nb-small {
+  float: right;
+  padding: 2px;
+  padding-right: 5px;
+  padding-left: 5px;
+}
+section#source {
+  display:none
+}
+
+.nb-output {
+  line-height: 1.15;
+}
+</style>
+  
+</head>
+<body>
+<header>
+<div class="nb-box">
+  <span><a href=".">🏡</a></span>
+  <span><code>okazz_220919a.nim</code></span>
+  <span><a href="https://github.com/pietroppeter/nim-p5"><svg aria-hidden="true" width="1.2em" height="1.2em" style="vertical-align: middle;" preserveAspectRatio="xMidYMid meet" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59c.4.07.55-.17.55-.38c0-.19-.01-.82-.01-1.49c-2.01.37-2.53-.49-2.69-.94c-.09-.23-.48-.94-.82-1.13c-.28-.15-.68-.52-.01-.53c.63-.01 1.08.58 1.23.82c.72 1.21 1.87.87 2.33.66c.07-.52.28-.87.51-1.07c-1.78-.2-3.64-.89-3.64-3.95c0-.87.31-1.59.82-2.15c-.08-.2-.36-1.02.08-2.12c0 0 .67-.21 2.2.82c.64-.18 1.32-.27 2-.27c.68 0 1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82c.44 1.1.16 1.92.08 2.12c.51.56.82 1.27.82 2.15c0 3.07-1.87 3.75-3.65 3.95c.29.25.54.73.54 1.48c0 1.07-.01 1.93-.01 2.2c0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z" fill="#000"></path></svg></a></span>
+</div>
+<hr>
+</header><main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.2/p5.min.js" integrity="sha512-rCZdHNB0AePry6kAnKAVFMRfWPmUXSo+/vlGtrOUvhsxD0Punm/xWbEh+8vppPIOzKB9xnk42yCRZ5MD/jvvjQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<h2>6. Okazz 220919a</h2>
+<p>Mesmerizing art by <a href="https://openprocessing.org/user/128718?view=sketches&o=31">Okazz</a>,
+original at <a href="https://openprocessing.org/sketch/1653811">openprocessing.org/sketch/1653811</a>.</p>
+<p>License is <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/">CreativeCommons Attribution NonCommercial ShareAlike</a>.</p>
+<p>The original sketch has been ported from p5js to p5nim.</p>
+<pre><code class="nim hljs"><span class="hljs-keyword">import</span>
+  p5, std / lenientops
+
+<span class="hljs-keyword">converter</span> toFloat(n: <span class="hljs-built_in">int</span>): <span class="hljs-built_in">float</span> =
+  <span class="hljs-built_in">float</span>(n)
+
+<span class="hljs-keyword">var</span> colors = @[<span class="hljs-string">&quot;#f70640&quot;</span>, <span class="hljs-string">&quot;#f78e2c&quot;</span>, <span class="hljs-string">&quot;#fdd903&quot;</span>, <span class="hljs-string">&quot;#cae509&quot;</span>, <span class="hljs-string">&quot;#63be93&quot;</span>, <span class="hljs-string">&quot;#81cfe5&quot;</span>,
+               <span class="hljs-string">&quot;#299dbf&quot;</span>, <span class="hljs-string">&quot;#38187d&quot;</span>, <span class="hljs-string">&quot;#a4459f&quot;</span>, <span class="hljs-string">&quot;#f654a9&quot;</span>, <span class="hljs-string">&quot;#2F0A30&quot;</span>]
+<span class="hljs-keyword">type</span>
+  <span class="hljs-type">Form</span> = <span class="hljs-keyword">object</span>
+    x, y, x0, y0, r0, r, d0, d: <span class="hljs-built_in">float</span>
+    a, t, r1, r2, r3: <span class="hljs-built_in">float</span>
+    n: <span class="hljs-built_in">int</span>
+    col: <span class="hljs-built_in">string</span>
+
+<span class="hljs-keyword">var</span> forms: <span class="hljs-built_in">seq</span>[<span class="hljs-type">Form</span>]
+<span class="hljs-keyword">proc</span> initForm(x, y: <span class="hljs-built_in">float</span>): <span class="hljs-type">Form</span> =
+  <span class="hljs-literal">result</span>.x = x
+  <span class="hljs-literal">result</span>.y = y
+  <span class="hljs-literal">result</span>.x0 = x
+  <span class="hljs-literal">result</span>.y0 = y
+  <span class="hljs-literal">result</span>.r0 = random(<span class="hljs-number">10</span>, <span class="hljs-number">25</span>)
+  <span class="hljs-literal">result</span>.r = <span class="hljs-literal">result</span>.r0
+  <span class="hljs-literal">result</span>.d0 = random(<span class="hljs-number">15</span>) * random() + <span class="hljs-number">5</span>
+  <span class="hljs-literal">result</span>.d = <span class="hljs-literal">result</span>.d0
+  <span class="hljs-literal">result</span>.n = <span class="hljs-built_in">int</span>(random(<span class="hljs-number">3</span>, <span class="hljs-number">13</span>))
+  <span class="hljs-literal">result</span>.a = random(<span class="hljs-number">100</span>)
+  <span class="hljs-literal">result</span>.t = random(<span class="hljs-number">10000</span>)
+  <span class="hljs-literal">result</span>.r1 = random(<span class="hljs-number">0.01</span>)
+  <span class="hljs-literal">result</span>.r2 = random(<span class="hljs-number">0.01</span>)
+  <span class="hljs-literal">result</span>.r3 = random(<span class="hljs-number">0.01</span>)
+  <span class="hljs-literal">result</span>.col = random(colors)
+
+<span class="hljs-keyword">proc</span> show(form: <span class="hljs-type">Form</span>) =
+  noStroke()
+  fill(form.col)
+  push()
+  translate(form.x, form.y)
+  rotate(form.a)
+  <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-number">0</span> ..&lt; form.n:
+    <span class="hljs-keyword">let</span> theta = map(<span class="hljs-built_in">float</span>(i), <span class="hljs-number">0</span>, form.n, <span class="hljs-number">0</span>, <span class="hljs-type">PNumber</span>(<span class="hljs-type">TAU</span>))
+    ellipse(form.r * cos(theta), form.r * sin(theta), form.d, form.d)
+  pop()
+
+<span class="hljs-keyword">proc</span> move(form: <span class="hljs-keyword">var</span> <span class="hljs-type">Form</span>) =
+  form.t += <span class="hljs-number">1</span>
+  form.a = <span class="hljs-type">TAU</span> * sin(form.t * form.r1)
+  form.r = form.r0 * sin(form.t * form.r2)
+  form.d = form.d0 * sin(form.t * form.r3)
+  form.x += <span class="hljs-number">0.5</span>
+  form.y -= <span class="hljs-number">0.5</span>
+  <span class="hljs-keyword">if</span> form.x &gt; width:
+    form.x = <span class="hljs-number">0</span>
+  <span class="hljs-keyword">if</span> form.y &lt; <span class="hljs-number">0</span>:
+    form.y = height
+
+<span class="hljs-keyword">proc</span> setup() {.exportc.} =
+  createCanvas(<span class="hljs-number">900</span>, <span class="hljs-number">900</span>)
+  <span class="hljs-keyword">var</span> c = <span class="hljs-number">18</span>
+  <span class="hljs-keyword">var</span> w = width / c
+  <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-number">0</span> ..&lt; c:
+    <span class="hljs-keyword">for</span> j <span class="hljs-keyword">in</span> <span class="hljs-number">0</span> ..&lt; c:
+      <span class="hljs-keyword">let</span> x = i * w + w / <span class="hljs-number">2</span>
+      <span class="hljs-keyword">let</span> y = j * w + w / <span class="hljs-number">2</span>
+      <span class="hljs-keyword">if</span> ((i + j) <span class="hljs-keyword">mod</span> <span class="hljs-number">2</span> == <span class="hljs-number">0</span>):
+        <span class="hljs-keyword">for</span> k <span class="hljs-keyword">in</span> <span class="hljs-number">0</span> ..&lt; <span class="hljs-number">5</span>:
+          forms.add(initForm(x, y))
+  background(<span class="hljs-number">0</span>)
+
+<span class="hljs-keyword">proc</span> draw() {.exportc.} =
+  translate(width / <span class="hljs-number">2</span>, height / <span class="hljs-number">2</span>)
+  scale(<span class="hljs-number">1.1</span>)
+  translate(-width / <span class="hljs-number">2</span>, -height / <span class="hljs-number">2</span>)
+  background(<span class="hljs-number">255</span>)
+  <span class="hljs-keyword">for</span> f <span class="hljs-keyword">in</span> forms.mitems:
+    f.show()
+    f.move()
+</code></pre>
+<script defer>/* Generated by the Nim Compiler v1.6.0 */
+var framePtr = null;
+var excHandler = 0;
+var lastJSError = null;
+var NTI33554439 = {size: 0,kind: 28,base: null,node: null,finalizer: null};
+
+function makeNimstrLit(c_33556802) {
+      var result = [];
+  for (var i = 0; i < c_33556802.length; ++i) {
+    result[i] = c_33556802.charCodeAt(i);
+  }
+  return result;
+  
+
+  
+}
+
+function setConstr() {
+        var result = {};
+    for (var i = 0; i < arguments.length; ++i) {
+      var x = arguments[i];
+      if (typeof(x) == "object") {
+        for (var j = x[0]; j <= x[1]; ++j) {
+          result[j] = true;
+        }
+      } else {
+        result[x] = true;
+      }
+    }
+    return result;
+  
+
+  
+}
+var ConstSet1 = setConstr(17, 16, 4, 18, 27, 19, 23, 22, 21);
+
+function nimCopy(dest_33557141, src_33557142, ti_33557143) {
+  var result_33557152 = null;
+
+    switch (ti_33557143.kind) {
+    case 21:
+    case 22:
+    case 23:
+    case 5:
+      if (!(isFatPointer_33557132(ti_33557143))) {
+      result_33557152 = src_33557142;
+      }
+      else {
+        result_33557152 = [src_33557142[0], src_33557142[1]];
+      }
+      
+      break;
+    case 19:
+            if (dest_33557141 === null || dest_33557141 === undefined) {
+        dest_33557141 = {};
+      }
+      else {
+        for (var key in dest_33557141) { delete dest_33557141[key]; }
+      }
+      for (var key in src_33557142) { dest_33557141[key] = src_33557142[key]; }
+      result_33557152 = dest_33557141;
+    
+      break;
+    case 18:
+    case 17:
+      if (!((ti_33557143.base == null))) {
+      result_33557152 = nimCopy(dest_33557141, src_33557142, ti_33557143.base);
+      }
+      else {
+      if ((ti_33557143.kind == 17)) {
+      result_33557152 = (dest_33557141 === null || dest_33557141 === undefined) ? {m_type: ti_33557143} : dest_33557141;
+      }
+      else {
+        result_33557152 = (dest_33557141 === null || dest_33557141 === undefined) ? {} : dest_33557141;
+      }
+      }
+      nimCopyAux(result_33557152, src_33557142, ti_33557143.node);
+      break;
+    case 24:
+    case 4:
+    case 27:
+    case 16:
+            if (src_33557142 === null) {
+        result_33557152 = null;
+      }
+      else {
+        if (dest_33557141 === null || dest_33557141 === undefined || dest_33557141.length != src_33557142.length) {
+          dest_33557141 = new Array(src_33557142.length);
+        }
+        result_33557152 = dest_33557141;
+        for (var i = 0; i < src_33557142.length; ++i) {
+          result_33557152[i] = nimCopy(result_33557152[i], src_33557142[i], ti_33557143.base);
+        }
+      }
+    
+      break;
+    case 28:
+            if (src_33557142 !== null) {
+        result_33557152 = src_33557142.slice(0);
+      }
+    
+      break;
+    default: 
+      result_33557152 = src_33557142;
+      break;
+    }
+
+  return result_33557152;
+
+}
+
+function toJSStr(s_33556808) {
+                    var Temporary5;
+            var Temporary7;
+
+  var result_33556809 = null;
+
+    var res_33556843 = newSeq_33556826((s_33556808).length);
+    var i_33556844 = 0;
+    var j_33556845 = 0;
+    Label1: do {
+        Label2: while (true) {
+        if (!(i_33556844 < (s_33556808).length)) break Label2;
+          var c_33556846 = s_33556808[i_33556844];
+          if ((c_33556846 < 128)) {
+          res_33556843[j_33556845] = String.fromCharCode(c_33556846);
+          i_33556844 += 1;
+          }
+          else {
+            var helper_33556858 = newSeq_33556826(0);
+            Label3: do {
+                Label4: while (true) {
+                if (!true) break Label4;
+                  var code_33556859 = c_33556846.toString(16);
+                  if ((((code_33556859) == null ? 0 : (code_33556859).length) == 1)) {
+                  helper_33556858.push("%0");;
+                  }
+                  else {
+                  helper_33556858.push("%");;
+                  }
+                  
+                  helper_33556858.push(code_33556859);;
+                  i_33556844 += 1;
+                    if (((s_33556808).length <= i_33556844)) Temporary5 = true; else {                      Temporary5 = (s_33556808[i_33556844] < 128);                    }                  if (Temporary5) {
+                  break Label3;
+                  }
+                  
+                  c_33556846 = s_33556808[i_33556844];
+                }
+            } while (false);
+++excHandler;
+            Temporary7 = framePtr;
+            try {
+            res_33556843[j_33556845] = decodeURIComponent(helper_33556858.join(""));
+--excHandler;
+} catch (EXCEPTION) {
+ var prevJSError = lastJSError;
+ lastJSError = EXCEPTION;
+ --excHandler;
+            framePtr = Temporary7;
+            res_33556843[j_33556845] = helper_33556858.join("");
+            lastJSError = prevJSError;
+            } finally {
+            framePtr = Temporary7;
+            }
+          }
+          
+          j_33556845 += 1;
+        }
+    } while (false);
+    if (res_33556843.length < j_33556845) { for (var i = res_33556843.length ; i < j_33556845 ; ++i) res_33556843.push(null); }
+               else { res_33556843.length = j_33556845; };
+    result_33556809 = res_33556843.join("");
+
+  return result_33556809;
+
+}
+if (!Math.trunc) {
+  Math.trunc = function(v) {
+    v = +v;
+    if (!isFinite(v)) return v;
+    return (v - v % 1) || (v < 0 ? -0 : v === 0 ? v : 0);
+  };
+}
+
+var objectID_620757154 = [0];
+var colors_452984861 = [[makeNimstrLit("#f70640"), makeNimstrLit("#f78e2c"), makeNimstrLit("#fdd903"), makeNimstrLit("#cae509"), makeNimstrLit("#63be93"), makeNimstrLit("#81cfe5"), makeNimstrLit("#299dbf"), makeNimstrLit("#38187d"), makeNimstrLit("#a4459f"), makeNimstrLit("#f654a9"), makeNimstrLit("#2F0A30")]];
+var forms_452984878 = [[]];
+
+function toFloat_452984854(n_452984855) {
+  var result_452984856 = 0.0;
+
+    result_452984856 = n_452984855;
+
+  return result_452984856;
+
+}
+
+function isFatPointer_33557132(ti_33557133) {
+  var result_33557134 = false;
+
+  BeforeRet: do {
+    result_33557134 = !((ConstSet1[ti_33557133.base.kind] != undefined));
+    break BeforeRet;
+  } while (false);
+
+  return result_33557134;
+
+}
+
+function nimCopyAux(dest_33557145, src_33557146, n_33557147) {
+    switch (n_33557147.kind) {
+    case 0:
+      break;
+    case 1:
+            dest_33557145[n_33557147.offset] = nimCopy(dest_33557145[n_33557147.offset], src_33557146[n_33557147.offset], n_33557147.typ);
+    
+      break;
+    case 2:
+          for (var i = 0; i < n_33557147.sons.length; i++) {
+      nimCopyAux(dest_33557145, src_33557146, n_33557147.sons[i]);
+    }
+    
+      break;
+    case 3:
+            dest_33557145[n_33557147.offset] = nimCopy(dest_33557145[n_33557147.offset], src_33557146[n_33557147.offset], n_33557147.typ);
+      for (var i = 0; i < n_33557147.sons.length; ++i) {
+        nimCopyAux(dest_33557145, src_33557146, n_33557147.sons[i][1]);
+      }
+    
+      break;
+    }
+
+  
+}
+
+function initForm_452984897(x_452984898, y_452984899) {
+  var result_452984900 = ({x: 0.0, y: 0.0, x0: 0.0, y0: 0.0, r0: 0.0, r: 0.0, d0: 0.0, d: 0.0, a: 0.0, t: 0.0, r1: 0.0, r2: 0.0, r3: 0.0, n: 0, col: []});
+
+    result_452984900.x = x_452984898;
+    result_452984900.y = y_452984899;
+    result_452984900.x0 = x_452984898;
+    result_452984900.y0 = y_452984899;
+    result_452984900.r0 = random(10.0, 25.0);
+    result_452984900.r = result_452984900.r0;
+    result_452984900.d0 = ((random(15) * random()) + 5.0);
+    result_452984900.d = result_452984900.d0;
+    result_452984900.n = ((random(3.0, 13.0)) | 0);
+    result_452984900.a = random(100);
+    result_452984900.t = random(10000);
+    result_452984900.r1 = random(0.01);
+    result_452984900.r2 = random(0.01);
+    result_452984900.r3 = random(0.01);
+    result_452984900.col = nimCopy(null, random(colors_452984861[0]), NTI33554439);
+
+  return result_452984900;
+
+}
+
+function setup() {
+    createCanvas(900, 900);
+    var c_452984985 = 18;
+    var w_452984986 = (width / toFloat_452984854(c_452984985));
+    Label1: do {
+      var i_452984991 = 0;
+      var i_452985027 = 0;
+      Label2: do {
+          Label3: while (true) {
+          if (!(i_452985027 < c_452984985)) break Label3;
+            i_452984991 = i_452985027;
+            Label4: do {
+              var j_452984996 = 0;
+              var i_452985025 = 0;
+              Label5: do {
+                  Label6: while (true) {
+                  if (!(i_452985025 < c_452984985)) break Label6;
+                    j_452984996 = i_452985025;
+                    var x_452984997 = ((toFloat_452984854(i_452984991) * w_452984986) + (w_452984986 / 2.0));
+                    var y_452984998 = ((toFloat_452984854(j_452984996) * w_452984986) + (w_452984986 / 2.0));
+                    if ((Math.trunc((i_452984991 + j_452984996) % 2) == 0)) {
+                    Label7: do {
+                      var k_452985003 = 0;
+                      var i_452985023 = 0;
+                      Label8: do {
+                          Label9: while (true) {
+                          if (!(i_452985023 < 5)) break Label9;
+                            k_452985003 = i_452985023;
+                            forms_452984878[0].push(initForm_452984897(x_452984997, y_452984998));;
+                            i_452985023 += 1;
+                          }
+                      } while (false);
+                    } while (false);
+                    }
+                    
+                    i_452985025 += 1;
+                  }
+              } while (false);
+            } while (false);
+            i_452985027 += 1;
+          }
+      } while (false);
+    } while (false);
+    background(0);
+
+  
+}
+
+function newSeq_33556826(len_33556828) {
+  var result_33556829 = [];
+
+    result_33556829 = new Array(len_33556828); for (var i = 0 ; i < len_33556828 ; ++i) { result_33556829[i] = null; }
+  return result_33556829;
+
+}
+
+function show_452984922(form_452984923) {
+    noStroke();
+    fill(toJSStr(form_452984923.col));
+    push();
+    translate(form_452984923.x, form_452984923.y);
+    rotate(form_452984923.a);
+    Label1: do {
+      var i_452984935 = 0;
+      var i_452985088 = 0;
+      Label2: do {
+          Label3: while (true) {
+          if (!(i_452985088 < form_452984923.n)) break Label3;
+            i_452984935 = i_452985088;
+            var theta_452984944 = map(i_452984935, 0.0, toFloat_452984854(form_452984923.n), 0.0, TAU);
+            ellipse((form_452984923.r * cos(theta_452984944)), (form_452984923.r * sin(theta_452984944)), form_452984923.d, form_452984923.d);
+            i_452985088 += 1;
+          }
+      } while (false);
+    } while (false);
+    pop();
+
+  
+}
+
+function HEX2BHEX3D_855640050(x_855640052, x_855640052_Idx, y_855640053) {
+    x_855640052[x_855640052_Idx] = (x_855640052[x_855640052_Idx] + y_855640053);
+
+  
+}
+
+function HEX2DHEX3D_452984976(x_452984978, x_452984978_Idx, y_452984979) {
+    x_452984978[x_452984978_Idx] = (x_452984978[x_452984978_Idx] - y_452984979);
+
+  
+}
+
+function move_452984957(form_452984958) {
+    HEX2BHEX3D_855640050(form_452984958, "t", 1.0);
+    form_452984958.a = (TAU * sin((form_452984958.t * form_452984958.r1)));
+    form_452984958.r = (form_452984958.r0 * sin((form_452984958.t * form_452984958.r2)));
+    form_452984958.d = (form_452984958.d0 * sin((form_452984958.t * form_452984958.r3)));
+    HEX2BHEX3D_855640050(form_452984958, "x", 0.5);
+    HEX2DHEX3D_452984976(form_452984958, "y", 0.5);
+    if ((width < form_452984958.x)) {
+    form_452984958.x = 0.0;
+    }
+    
+    if ((form_452984958.y < 0.0)) {
+    form_452984958.y = height;
+    }
+    
+
+  
+}
+
+function draw() {
+    translate((width / 2.0), (height / 2.0));
+    scale(1.1);
+    translate((-(width) / 2.0), (-(height) / 2.0));
+    background(255);
+    Label1: do {
+      var f_452985063 = null;
+      var i_452985084 = 0;
+      var L_452985085 = (forms_452984878[0]).length;
+      Label2: do {
+          Label3: while (true) {
+          if (!(i_452985084 < L_452985085)) break Label3;
+            f_452985063 = forms_452984878[0][i_452985084];
+            show_452984922(f_452985063);
+            move_452984957(f_452985063);
+            i_452985084 += 1;
+          }
+      } while (false);
+    } while (false);
+
+  
+}
+</script>
+</main>
+<footer>
+<hr>
+<div class="nb-box">
+  <span><span class="nb-small">made with <a href="https://pietroppeter.github.io/nimib/">nimib 🐳</a></span></span>
+  <span></span>
+  <span><button class="nb-small" id="show" onclick="toggleSourceDisplay()">Show Source</button></span>
+</div>
+</footer>
+<section id="source">
+<pre><code class="nim hljs"><span class="hljs-keyword">import</span> nimib, index
+nbInit
+nbRawHtml: <span class="hljs-string">&quot;&quot;&quot;&lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.2/p5.min.js&quot; integrity=&quot;sha512-rCZdHNB0AePry6kAnKAVFMRfWPmUXSo+/vlGtrOUvhsxD0Punm/xWbEh+8vppPIOzKB9xnk42yCRZ5MD/jvvjQ==&quot; crossorigin=&quot;anonymous&quot; referrerpolicy=&quot;no-referrer&quot;&gt;&lt;/script&gt;&quot;&quot;&quot;</span>
+nb.addEntry(<span class="hljs-number">6</span>, <span class="hljs-string">&quot;Okazz 220919a&quot;</span>, <span class="hljs-string">&quot;&quot;&quot;
+Mesmerizing art by [Okazz](https://openprocessing.org/user/128718?view=sketches&amp;o=31),
+original at [openprocessing.org/sketch/1653811](https://openprocessing.org/sketch/1653811).
+
+License is [CreativeCommons Attribution NonCommercial ShareAlike](https://creativecommons.org/licenses/by-nc-sa/3.0/).
+
+The original sketch has been ported from p5js to p5nim.
+&quot;&quot;&quot;</span>)
+<span class="hljs-comment"># maybe this will be used to train an automatic translator</span>
+<span class="hljs-keyword">let</span> sourceOriginalJs = <span class="hljs-string">&quot;&quot;&quot;
+let forms = [];
+let colors = ['#f70640', '#f78e2c', '#fdd903', '#cae509', '#63be93', '#81cfe5', '#299dbf', '#38187d', '#a4459f', '#f654a9', '#2F0A30'];
+
+function setup() {
+	createCanvas(900, 900);
+
+	let c = 18;
+	let w = width / c;
+	for (let i = 0; i &lt; c; i++) {
+		for (let j = 0; j &lt; c; j++) {
+			let x = i * w + w / 2;
+			let y = j * w + w / 2;
+			if ((i + j) % 2 == 0) {
+				for (let k = 0; k &lt; 5; k++) {
+					forms.push(new Form(x, y));
+				}
+			}
+		}
+	}
+	background(0);
+
+}
+
+function draw() {
+
+	translate(width / 2, height / 2);
+	scale(1.1);
+	translate(-width / 2, -height / 2);
+	background(255);
+	for (let i of forms) {
+		i.show();
+		i.move();
+	}
+}
+
+class Form {
+	constructor(x, y) {
+		this.x = x;
+		this.y = y;
+		this.x0 = x;
+		this.y0 = y;
+		this.r0 = random(10, 25);
+		this.r = this.r0;
+		this.d0 = random(15) * random() + 5;
+		this.d = this.d0;
+		this.n = int(random(3, 13));
+		this.a = random(100);
+		this.t = random(10000);
+		this.r1 = random(0.01);
+		this.r2 = random(0.01);
+		this.r3 = random(0.01);
+		this.col = color(random(colors));
+	}
+
+	show() {
+		noStroke();
+		fill(this.col);
+		push();
+		translate(this.x, this.y);
+		rotate(this.a);
+		for (let i = 0; i &lt; this.n; i++) {
+			let theta = map(i, 0, this.n, 0, TAU);
+			ellipse(this.r * cos(theta), this.r * sin(theta), this.d, this.d);
+		}
+		pop();
+	}
+
+	move() {
+		this.t++;
+		this.a = TAU * sin(this.t * this.r1);
+		this.r = this.r0 * sin(this.t * this.r2);
+		this.d = this.d0 * sin(this.t * this.r3);
+		this.x += 0.5;
+		this.y -= 0.5;
+		if (this.x &gt; width) {
+			this.x = 0;
+		}
+		if (this.y &lt; 0) {
+			this.y = height;
+		}
+	}
+}
+&quot;&quot;&quot;</span>
+
+nbJsFromCode:
+  <span class="hljs-keyword">import</span> p5, std / lenientops
+  <span class="hljs-keyword">converter</span> toFloat(n: <span class="hljs-built_in">int</span>): <span class="hljs-built_in">float</span> = <span class="hljs-built_in">float</span>(n)
+  <span class="hljs-comment">#converter toPnumber(f: float): PNumber = PNumber(f)</span>
+
+  <span class="hljs-keyword">var</span> colors = @[<span class="hljs-string">&quot;#f70640&quot;</span>, <span class="hljs-string">&quot;#f78e2c&quot;</span>, <span class="hljs-string">&quot;#fdd903&quot;</span>, <span class="hljs-string">&quot;#cae509&quot;</span>, <span class="hljs-string">&quot;#63be93&quot;</span>, <span class="hljs-string">&quot;#81cfe5&quot;</span>, <span class="hljs-string">&quot;#299dbf&quot;</span>, <span class="hljs-string">&quot;#38187d&quot;</span>, <span class="hljs-string">&quot;#a4459f&quot;</span>, <span class="hljs-string">&quot;#f654a9&quot;</span>, <span class="hljs-string">&quot;#2F0A30&quot;</span>];
+
+  <span class="hljs-keyword">type</span>
+    <span class="hljs-type">Form</span> = <span class="hljs-keyword">object</span>
+      x, y, x0, y0, r0, r, d0, d: <span class="hljs-built_in">float</span>
+      a, t, r1, r2, r3: <span class="hljs-built_in">float</span> 
+      n: <span class="hljs-built_in">int</span>
+      col: <span class="hljs-built_in">string</span>
+
+  <span class="hljs-keyword">var</span> forms: <span class="hljs-built_in">seq</span>[<span class="hljs-type">Form</span>]
+
+  <span class="hljs-keyword">proc</span> initForm(x, y: <span class="hljs-built_in">float</span>): <span class="hljs-type">Form</span> =
+    <span class="hljs-literal">result</span>.x = x
+    <span class="hljs-literal">result</span>.y = y
+    <span class="hljs-literal">result</span>.x0 = x
+    <span class="hljs-literal">result</span>.y0 = y
+    <span class="hljs-literal">result</span>.r0 = random(<span class="hljs-number">10</span>, <span class="hljs-number">25</span>)
+    <span class="hljs-literal">result</span>.r = <span class="hljs-literal">result</span>.r0
+    <span class="hljs-literal">result</span>.d0 = random(<span class="hljs-number">15</span>) * random() + <span class="hljs-number">5</span>
+    <span class="hljs-literal">result</span>.d = <span class="hljs-literal">result</span>.d0
+    <span class="hljs-literal">result</span>.n = <span class="hljs-built_in">int</span>(random(<span class="hljs-number">3</span>, <span class="hljs-number">13</span>))
+    <span class="hljs-literal">result</span>.a = random(<span class="hljs-number">100</span>)
+    <span class="hljs-literal">result</span>.t = random(<span class="hljs-number">10000</span>)
+    <span class="hljs-literal">result</span>.r1 = random(<span class="hljs-number">0.01</span>)
+    <span class="hljs-literal">result</span>.r2 = random(<span class="hljs-number">0.01</span>)
+    <span class="hljs-literal">result</span>.r3 = random(<span class="hljs-number">0.01</span>)
+    <span class="hljs-literal">result</span>.col = random(colors)
+
+  <span class="hljs-keyword">proc</span> show(form: <span class="hljs-type">Form</span>) =
+    noStroke()
+    fill(form.col)
+    push()
+    translate(form.x, form.y)
+    rotate(form.a)
+    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-number">0</span> ..&lt; form.n:
+      <span class="hljs-keyword">let</span> theta = map(<span class="hljs-built_in">float</span>(i), <span class="hljs-number">0</span>, form.n, <span class="hljs-number">0</span>, <span class="hljs-type">PNumber</span>(<span class="hljs-type">TAU</span>))
+      ellipse(form.r * cos(theta), form.r * sin(theta), form.d, form.d)
+    pop()
+
+  <span class="hljs-keyword">proc</span> move(form: <span class="hljs-keyword">var</span> <span class="hljs-type">Form</span>) =
+    form.t += <span class="hljs-number">1</span>
+    form.a = <span class="hljs-type">TAU</span> * sin(form.t * form.r1);
+    form.r = form.r0 * sin(form.t * form.r2);
+    form.d = form.d0 * sin(form.t * form.r3);
+    form.x += <span class="hljs-number">0.5</span>;
+    form.y -= <span class="hljs-number">0.5</span>;
+    <span class="hljs-keyword">if</span> form.x &gt; width:
+      form.x = <span class="hljs-number">0</span>
+    <span class="hljs-keyword">if</span> form.y &lt; <span class="hljs-number">0</span>:
+      form.y = height
+
+  <span class="hljs-keyword">proc</span> setup {.exportc.} =
+    createCanvas(<span class="hljs-number">900</span>, <span class="hljs-number">900</span>)
+
+    <span class="hljs-keyword">var</span> c = <span class="hljs-number">18</span>
+    <span class="hljs-keyword">var</span> w = width / c
+    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-number">0</span> ..&lt; c:
+      <span class="hljs-keyword">for</span> j <span class="hljs-keyword">in</span> <span class="hljs-number">0</span> ..&lt; c:
+        <span class="hljs-keyword">let</span> x = i * w + w / <span class="hljs-number">2</span>;
+        <span class="hljs-keyword">let</span> y = j * w + w / <span class="hljs-number">2</span>;
+        <span class="hljs-keyword">if</span> ((i + j) <span class="hljs-keyword">mod</span> <span class="hljs-number">2</span> == <span class="hljs-number">0</span>):
+          <span class="hljs-keyword">for</span> k <span class="hljs-keyword">in</span> <span class="hljs-number">0</span> ..&lt; <span class="hljs-number">5</span>:
+            forms.add(initForm(x, y))
+    background(<span class="hljs-number">0</span>)
+
+  <span class="hljs-keyword">proc</span> draw {.exportc.} =
+
+    translate(width / <span class="hljs-number">2</span>, height / <span class="hljs-number">2</span>)
+    scale(<span class="hljs-number">1.1</span>)
+    translate(-width / <span class="hljs-number">2</span>, -height / <span class="hljs-number">2</span>)
+    background(<span class="hljs-number">255</span>)
+    <span class="hljs-keyword">for</span> f <span class="hljs-keyword">in</span> forms.mitems:
+      f.show()
+      f.move()
+
+nbJsShowSource()
+nbSave</code></pre>
+</section><script>
+function toggleSourceDisplay() {
+  var btn = document.getElementById("show")
+  var source = document.getElementById("source");
+  if (btn.innerHTML=="Show Source") {
+    btn.innerHTML = "Hide Source";
+    source.style.display = "block";
+  } else {
+    btn.innerHTML = "Show Source";
+    source.style.display = "none";
+  }
+}
+</script></body>
+</html>
