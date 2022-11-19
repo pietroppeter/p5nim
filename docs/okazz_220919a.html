@@ -57,14 +57,15 @@ original at <a href="https://openprocessing.org/sketch/1653811">openprocessing.o
 <span class="hljs-keyword">var</span> colors = @[<span class="hljs-string">&quot;#f70640&quot;</span>, <span class="hljs-string">&quot;#f78e2c&quot;</span>, <span class="hljs-string">&quot;#fdd903&quot;</span>, <span class="hljs-string">&quot;#cae509&quot;</span>, <span class="hljs-string">&quot;#63be93&quot;</span>, <span class="hljs-string">&quot;#81cfe5&quot;</span>,
                <span class="hljs-string">&quot;#299dbf&quot;</span>, <span class="hljs-string">&quot;#38187d&quot;</span>, <span class="hljs-string">&quot;#a4459f&quot;</span>, <span class="hljs-string">&quot;#f654a9&quot;</span>, <span class="hljs-string">&quot;#2F0A30&quot;</span>]
 <span class="hljs-keyword">type</span>
-  <span class="hljs-type">Form</span> = <span class="hljs-keyword">object</span>
+  <span class="hljs-type">Form</span> = <span class="hljs-keyword">ref</span> <span class="hljs-keyword">object</span>
     x, y, x0, y0, r0, r, d0, d: <span class="hljs-built_in">float</span>
     a, t, r1, r2, r3: <span class="hljs-built_in">float</span>
     n: <span class="hljs-built_in">int</span>
     col: <span class="hljs-built_in">string</span>
 
 <span class="hljs-keyword">var</span> forms: <span class="hljs-built_in">seq</span>[<span class="hljs-type">Form</span>]
-<span class="hljs-keyword">proc</span> initForm(x, y: <span class="hljs-built_in">float</span>): <span class="hljs-type">Form</span> =
+<span class="hljs-keyword">proc</span> newForm(x, y: <span class="hljs-built_in">float</span>): <span class="hljs-type">Form</span> =
+  <span class="hljs-literal">result</span> = <span class="hljs-keyword">new</span> <span class="hljs-type">Form</span>
   <span class="hljs-literal">result</span>.x = x
   <span class="hljs-literal">result</span>.y = y
   <span class="hljs-literal">result</span>.x0 = x
@@ -92,7 +93,7 @@ original at <a href="https://openprocessing.org/sketch/1653811">openprocessing.o
     ellipse(form.r * cos(theta), form.r * sin(theta), form.d, form.d)
   pop()
 
-<span class="hljs-keyword">proc</span> move(form: <span class="hljs-keyword">var</span> <span class="hljs-type">Form</span>) =
+<span class="hljs-keyword">proc</span> move(form: <span class="hljs-type">Form</span>) =
   form.t += <span class="hljs-number">1</span>
   form.a = <span class="hljs-type">TAU</span> * sin(form.t * form.r1)
   form.r = form.r0 * sin(form.t * form.r2)
@@ -114,7 +115,7 @@ original at <a href="https://openprocessing.org/sketch/1653811">openprocessing.o
       <span class="hljs-keyword">let</span> y = j * w + w / <span class="hljs-number">2</span>
       <span class="hljs-keyword">if</span> ((i + j) <span class="hljs-keyword">mod</span> <span class="hljs-number">2</span> == <span class="hljs-number">0</span>):
         <span class="hljs-keyword">for</span> k <span class="hljs-keyword">in</span> <span class="hljs-number">0</span> ..&lt; <span class="hljs-number">5</span>:
-          forms.add(initForm(x, y))
+          forms.add(newForm(x, y))
   background(<span class="hljs-number">0</span>)
 
 <span class="hljs-keyword">proc</span> draw() {.exportc.} =
@@ -122,7 +123,7 @@ original at <a href="https://openprocessing.org/sketch/1653811">openprocessing.o
   scale(<span class="hljs-number">1.1</span>)
   translate(-width / <span class="hljs-number">2</span>, -height / <span class="hljs-number">2</span>)
   background(<span class="hljs-number">255</span>)
-  <span class="hljs-keyword">for</span> f <span class="hljs-keyword">in</span> forms.mitems:
+  <span class="hljs-keyword">for</span> f <span class="hljs-keyword">in</span> forms:
     f.show()
     f.move()
 </code></pre>
@@ -313,7 +314,7 @@ if (!Math.trunc) {
 
 var objectID_620757154 = [0];
 var colors_452984861 = [[makeNimstrLit("#f70640"), makeNimstrLit("#f78e2c"), makeNimstrLit("#fdd903"), makeNimstrLit("#cae509"), makeNimstrLit("#63be93"), makeNimstrLit("#81cfe5"), makeNimstrLit("#299dbf"), makeNimstrLit("#38187d"), makeNimstrLit("#a4459f"), makeNimstrLit("#f654a9"), makeNimstrLit("#2F0A30")]];
-var forms_452984878 = [[]];
+var forms_452984879 = [[]];
 
 function toFloat_452984854(n_452984855) {
   var result_452984856 = 0.0;
@@ -321,6 +322,20 @@ function toFloat_452984854(n_452984855) {
     result_452984856 = n_452984855;
 
   return result_452984856;
+
+}
+
+function new_452984902() {
+  var result_452984905 = null;
+
+  BeforeRet: do {
+    var r_452984907 = null;
+    r_452984907 = ({x: 0.0, y: 0.0, x0: 0.0, y0: 0.0, r0: 0.0, r: 0.0, d0: 0.0, d: 0.0, a: 0.0, t: 0.0, r1: 0.0, r2: 0.0, r3: 0.0, n: 0, col: []});
+    result_452984905 = r_452984907;
+    break BeforeRet;
+  } while (false);
+
+  return result_452984905;
 
 }
 
@@ -362,69 +377,70 @@ function nimCopyAux(dest_33557145, src_33557146, n_33557147) {
   
 }
 
-function initForm_452984897(x_452984898, y_452984899) {
-  var result_452984900 = ({x: 0.0, y: 0.0, x0: 0.0, y0: 0.0, r0: 0.0, r: 0.0, d0: 0.0, d: 0.0, a: 0.0, t: 0.0, r1: 0.0, r2: 0.0, r3: 0.0, n: 0, col: []});
+function newForm_452984898(x_452984899, y_452984900) {
+  var result_452984901 = null;
 
-    result_452984900.x = x_452984898;
-    result_452984900.y = y_452984899;
-    result_452984900.x0 = x_452984898;
-    result_452984900.y0 = y_452984899;
-    result_452984900.r0 = random(10.0, 25.0);
-    result_452984900.r = result_452984900.r0;
-    result_452984900.d0 = ((random(15) * random()) + 5.0);
-    result_452984900.d = result_452984900.d0;
-    result_452984900.n = ((random(3.0, 13.0)) | 0);
-    result_452984900.a = random(100);
-    result_452984900.t = random(10000);
-    result_452984900.r1 = random(0.01);
-    result_452984900.r2 = random(0.01);
-    result_452984900.r3 = random(0.01);
-    result_452984900.col = nimCopy(null, random(colors_452984861[0]), NTI33554439);
+    result_452984901 = new_452984902();
+    result_452984901.x = x_452984899;
+    result_452984901.y = y_452984900;
+    result_452984901.x0 = x_452984899;
+    result_452984901.y0 = y_452984900;
+    result_452984901.r0 = random(10.0, 25.0);
+    result_452984901.r = result_452984901.r0;
+    result_452984901.d0 = ((random(15) * random()) + 5.0);
+    result_452984901.d = result_452984901.d0;
+    result_452984901.n = ((random(3.0, 13.0)) | 0);
+    result_452984901.a = random(100);
+    result_452984901.t = random(10000);
+    result_452984901.r1 = random(0.01);
+    result_452984901.r2 = random(0.01);
+    result_452984901.r3 = random(0.01);
+    result_452984901.col = nimCopy(null, random(colors_452984861[0]), NTI33554439);
 
-  return result_452984900;
+  return result_452984901;
 
 }
 
 function setup() {
     createCanvas(900, 900);
-    var c_452984985 = 18;
-    var w_452984986 = (width / toFloat_452984854(c_452984985));
+    var c_452985013 = 18;
+    var w_452985014 = (width / toFloat_452984854(c_452985013));
     Label1: do {
-      var i_452984991 = 0;
-      var i_452985027 = 0;
+      var i_452985019 = 0;
+      var i_452985046 = 0;
       Label2: do {
           Label3: while (true) {
-          if (!(i_452985027 < c_452984985)) break Label3;
-            i_452984991 = i_452985027;
+          if (!(i_452985046 < c_452985013)) break Label3;
+            i_452985019 = i_452985046;
             Label4: do {
-              var j_452984996 = 0;
-              var i_452985025 = 0;
+              var j_452985024 = 0;
+              var i_452985044 = 0;
               Label5: do {
                   Label6: while (true) {
-                  if (!(i_452985025 < c_452984985)) break Label6;
-                    j_452984996 = i_452985025;
-                    var x_452984997 = ((toFloat_452984854(i_452984991) * w_452984986) + (w_452984986 / 2.0));
-                    var y_452984998 = ((toFloat_452984854(j_452984996) * w_452984986) + (w_452984986 / 2.0));
-                    if ((Math.trunc((i_452984991 + j_452984996) % 2) == 0)) {
+                  if (!(i_452985044 < c_452985013)) break Label6;
+                    j_452985024 = i_452985044;
+                    var x_452985025 = ((toFloat_452984854(i_452985019) * w_452985014) + (w_452985014 / 2.0));
+                    var y_452985026 = ((toFloat_452984854(j_452985024) * w_452985014) + (w_452985014 / 2.0));
+                    if ((Math.trunc((i_452985019 + j_452985024) % 2) == 0)) {
                     Label7: do {
-                      var k_452985003 = 0;
-                      var i_452985023 = 0;
+                      var k_452985031 = 0;
+                      var i_452985042 = 0;
                       Label8: do {
                           Label9: while (true) {
-                          if (!(i_452985023 < 5)) break Label9;
-                            k_452985003 = i_452985023;
-                            forms_452984878[0].push(initForm_452984897(x_452984997, y_452984998));;
-                            i_452985023 += 1;
+                          if (!(i_452985042 < 5)) break Label9;
+                            k_452985031 = i_452985042;
+                            forms_452984879[0].push(newForm_452984898(x_452985025, y_452985026));;
+                            i_452985042 += 1;
                           }
                       } while (false);
                     } while (false);
                     }
                     
-                    i_452985025 += 1;
+                    i_452985044 += 1;
                   }
               } while (false);
             } while (false);
-            i_452985027 += 1;
+            i_452985046 += 1;
           }
       } while (false);
     } while (false);
@@ -441,22 +457,22 @@ function newSeq_33556826(len_33556828) {
 
 }
 
-function show_452984922(form_452984923) {
+function show_452984950(form_452984951) {
     noStroke();
-    fill(toJSStr(form_452984923.col));
+    fill(toJSStr(form_452984951.col));
     push();
-    translate(form_452984923.x, form_452984923.y);
-    rotate(form_452984923.a);
+    translate(form_452984951.x, form_452984951.y);
+    rotate(form_452984951.a);
     Label1: do {
-      var i_452984935 = 0;
-      var i_452985088 = 0;
+      var i_452984963 = 0;
+      var i_452985098 = 0;
       Label2: do {
           Label3: while (true) {
-          if (!(i_452985088 < form_452984923.n)) break Label3;
-            i_452984935 = i_452985088;
-            var theta_452984944 = map(i_452984935, 0.0, toFloat_452984854(form_452984923.n), 0.0, TAU);
-            ellipse((form_452984923.r * cos(theta_452984944)), (form_452984923.r * sin(theta_452984944)), form_452984923.d, form_452984923.d);
-            i_452985088 += 1;
+          if (!(i_452985098 < form_452984951.n)) break Label3;
+            i_452984963 = i_452985098;
+            var theta_452984972 = map(i_452984963, 0.0, toFloat_452984854(form_452984951.n), 0.0, TAU);
+            ellipse((form_452984951.r * cos(theta_452984972)), (form_452984951.r * sin(theta_452984972)), form_452984951.d, form_452984951.d);
+            i_452985098 += 1;
           }
       } while (false);
     } while (false);
@@ -471,25 +487,25 @@ function HEX2BHEX3D_855640050(x_855640052, x_855640052_Idx, y_855640053) {
   
 }
 
-function HEX2DHEX3D_452984976(x_452984978, x_452984978_Idx, y_452984979) {
-    x_452984978[x_452984978_Idx] = (x_452984978[x_452984978_Idx] - y_452984979);
+function HEX2DHEX3D_452985004(x_452985006, x_452985006_Idx, y_452985007) {
+    x_452985006[x_452985006_Idx] = (x_452985006[x_452985006_Idx] - y_452985007);
 
   
 }
 
-function move_452984957(form_452984958) {
-    HEX2BHEX3D_855640050(form_452984958, "t", 1.0);
-    form_452984958.a = (TAU * sin((form_452984958.t * form_452984958.r1)));
-    form_452984958.r = (form_452984958.r0 * sin((form_452984958.t * form_452984958.r2)));
-    form_452984958.d = (form_452984958.d0 * sin((form_452984958.t * form_452984958.r3)));
-    HEX2BHEX3D_855640050(form_452984958, "x", 0.5);
-    HEX2DHEX3D_452984976(form_452984958, "y", 0.5);
-    if ((width < form_452984958.x)) {
-    form_452984958.x = 0.0;
+function move_452984985(form_452984986) {
+    HEX2BHEX3D_855640050(form_452984986, "t", 1.0);
+    form_452984986.a = (TAU * sin((form_452984986.t * form_452984986.r1)));
+    form_452984986.r = (form_452984986.r0 * sin((form_452984986.t * form_452984986.r2)));
+    form_452984986.d = (form_452984986.d0 * sin((form_452984986.t * form_452984986.r3)));
+    HEX2BHEX3D_855640050(form_452984986, "x", 0.5);
+    HEX2DHEX3D_452985004(form_452984986, "y", 0.5);
+    if ((width < form_452984986.x)) {
+    form_452984986.x = 0.0;
     }
     
-    if ((form_452984958.y < 0.0)) {
-    form_452984958.y = height;
+    if ((form_452984986.y < 0.0)) {
+    form_452984986.y = height;
     }
     
 
@@ -502,16 +518,17 @@ function draw() {
     translate((-(width) / 2.0), (-(height) / 2.0));
     background(255);
     Label1: do {
-      var f_452985063 = null;
-      var i_452985084 = 0;
-      var L_452985085 = (forms_452984878[0]).length;
+      var f_452985082 = null;
+      var f_452985082_Idx = 0;
+      var i_452985094 = 0;
+      var L_452985095 = (forms_452984879[0]).length;
       Label2: do {
           Label3: while (true) {
-          if (!(i_452985084 < L_452985085)) break Label3;
-            f_452985063 = forms_452984878[0][i_452985084];
-            show_452984922(f_452985063);
-            move_452984957(f_452985063);
-            i_452985084 += 1;
+          if (!(i_452985094 < L_452985095)) break Label3;
+            f_452985082 = forms_452984879[0]; f_452985082_Idx = i_452985094;
+            show_452984950(f_452985082[f_452985082_Idx]);
+            move_452984985(f_452985082[f_452985082_Idx]);
+            i_452985094 += 1;
           }
       } while (false);
     } while (false);
@@ -634,7 +651,7 @@ nbJsFromCode:
   <span class="hljs-keyword">var</span> colors = @[<span class="hljs-string">&quot;#f70640&quot;</span>, <span class="hljs-string">&quot;#f78e2c&quot;</span>, <span class="hljs-string">&quot;#fdd903&quot;</span>, <span class="hljs-string">&quot;#cae509&quot;</span>, <span class="hljs-string">&quot;#63be93&quot;</span>, <span class="hljs-string">&quot;#81cfe5&quot;</span>, <span class="hljs-string">&quot;#299dbf&quot;</span>, <span class="hljs-string">&quot;#38187d&quot;</span>, <span class="hljs-string">&quot;#a4459f&quot;</span>, <span class="hljs-string">&quot;#f654a9&quot;</span>, <span class="hljs-string">&quot;#2F0A30&quot;</span>];
 
   <span class="hljs-keyword">type</span>
-    <span class="hljs-type">Form</span> = <span class="hljs-keyword">object</span>
+    <span class="hljs-type">Form</span> = <span class="hljs-keyword">ref</span> <span class="hljs-keyword">object</span>
       x, y, x0, y0, r0, r, d0, d: <span class="hljs-built_in">float</span>
       a, t, r1, r2, r3: <span class="hljs-built_in">float</span> 
       n: <span class="hljs-built_in">int</span>
@@ -642,7 +659,8 @@ nbJsFromCode:
 
   <span class="hljs-keyword">var</span> forms: <span class="hljs-built_in">seq</span>[<span class="hljs-type">Form</span>]
 
-  <span class="hljs-keyword">proc</span> initForm(x, y: <span class="hljs-built_in">float</span>): <span class="hljs-type">Form</span> =
+  <span class="hljs-keyword">proc</span> newForm(x, y: <span class="hljs-built_in">float</span>): <span class="hljs-type">Form</span> =
+    <span class="hljs-literal">result</span> = <span class="hljs-keyword">new</span> <span class="hljs-type">Form</span>
     <span class="hljs-literal">result</span>.x = x
     <span class="hljs-literal">result</span>.y = y
     <span class="hljs-literal">result</span>.x0 = x
@@ -670,7 +688,7 @@ nbJsFromCode:
       ellipse(form.r * cos(theta), form.r * sin(theta), form.d, form.d)
     pop()
 
-  <span class="hljs-keyword">proc</span> move(form: <span class="hljs-keyword">var</span> <span class="hljs-type">Form</span>) =
+  <span class="hljs-keyword">proc</span> move(form: <span class="hljs-type">Form</span>) =
     form.t += <span class="hljs-number">1</span>
     form.a = <span class="hljs-type">TAU</span> * sin(form.t * form.r1);
     form.r = form.r0 * sin(form.t * form.r2);
@@ -693,7 +711,7 @@ nbJsFromCode:
         <span class="hljs-keyword">let</span> y = j * w + w / <span class="hljs-number">2</span>;
         <span class="hljs-keyword">if</span> ((i + j) <span class="hljs-keyword">mod</span> <span class="hljs-number">2</span> == <span class="hljs-number">0</span>):
           <span class="hljs-keyword">for</span> k <span class="hljs-keyword">in</span> <span class="hljs-number">0</span> ..&lt; <span class="hljs-number">5</span>:
-            forms.add(initForm(x, y))
+            forms.add(newForm(x, y))
     background(<span class="hljs-number">0</span>)
 
   <span class="hljs-keyword">proc</span> draw {.exportc.} =
@@ -702,7 +720,7 @@ nbJsFromCode:
     scale(<span class="hljs-number">1.1</span>)
     translate(-width / <span class="hljs-number">2</span>, -height / <span class="hljs-number">2</span>)
     background(<span class="hljs-number">255</span>)
-    <span class="hljs-keyword">for</span> f <span class="hljs-keyword">in</span> forms.mitems:
+    <span class="hljs-keyword">for</span> f <span class="hljs-keyword">in</span> forms:
       f.show()
       f.move()
 

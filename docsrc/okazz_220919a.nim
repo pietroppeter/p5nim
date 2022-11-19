@@ -103,7 +103,7 @@ nbJsFromCode:
   var colors = @["#f70640", "#f78e2c", "#fdd903", "#cae509", "#63be93", "#81cfe5", "#299dbf", "#38187d", "#a4459f", "#f654a9", "#2F0A30"];
 
   type
-    Form = object
+    Form = ref object
       x, y, x0, y0, r0, r, d0, d: float
       a, t, r1, r2, r3: float 
       n: int
@@ -111,7 +111,8 @@ nbJsFromCode:
 
   var forms: seq[Form]
 
-  proc initForm(x, y: float): Form =
+  proc newForm(x, y: float): Form =
+    result = new Form
     result.x = x
     result.y = y
     result.x0 = x
@@ -139,7 +140,7 @@ nbJsFromCode:
       ellipse(form.r * cos(theta), form.r * sin(theta), form.d, form.d)
     pop()
 
-  proc move(form: var Form) =
+  proc move(form: Form) =
     form.t += 1
     form.a = TAU * sin(form.t * form.r1);
     form.r = form.r0 * sin(form.t * form.r2);
@@ -162,7 +163,7 @@ nbJsFromCode:
         let y = j * w + w / 2;
         if ((i + j) mod 2 == 0):
           for k in 0 ..< 5:
-            forms.add(initForm(x, y))
+            forms.add(newForm(x, y))
     background(0)
 
   proc draw {.exportc.} =
@@ -171,7 +172,7 @@ nbJsFromCode:
     scale(1.1)
     translate(-width / 2, -height / 2)
     background(255)
-    for f in forms.mitems:
+    for f in forms:
       f.show()
       f.move()
 
