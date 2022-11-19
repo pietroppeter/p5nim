@@ -1109,6 +1109,7 @@ proc saveTable*(table: Table, filename, options: string)
 proc downloadFile*(data: string | Blob)
 proc downloadFile*(data: string | Blob, filename: string)
 proc downloadFile*(data: string | Blob, filename, extension: string)
+proc saveGif*(filename: cstring, duration: float)
 
 {.pop.}
 
