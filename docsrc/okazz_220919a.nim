@@ -1,8 +1,8 @@
 import nimib, index
 nbInit
-nbRawHtml: """<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.2/p5.min.js" integrity="sha512-rCZdHNB0AePry6kAnKAVFMRfWPmUXSo+/vlGtrOUvhsxD0Punm/xWbEh+8vppPIOzKB9xnk42yCRZ5MD/jvvjQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>"""
+nbRawHtml: """<script src="p5.js"></script>"""
 nb.addEntry(6, "Okazz 220919a", """
-Mesmerizing art by [Okazz](https://openprocessing.org/user/128718?view=sketches&o=31),
+Art by [Okazz](https://openprocessing.org/user/128718?view=sketches&o=31),
 original at [openprocessing.org/sketch/1653811](https://openprocessing.org/sketch/1653811).
 
 License is [CreativeCommons Attribution NonCommercial ShareAlike](https://creativecommons.org/licenses/by-nc-sa/3.0/).
@@ -177,4 +177,10 @@ nbJsFromCode:
       f.move()
 
 nbJsShowSource()
+nbJsFromCode():
+  proc keyPressed {.exportc.} =
+    if $key == "s":
+      echo "saving gif okazz_229019a"
+      saveGif(cstring("okazz_229019a"), 2)
+nbText: "press 's' to export a 2 second gif"
 nbSave
