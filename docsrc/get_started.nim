@@ -9,6 +9,7 @@ nbJsFromCode:
 
   proc setup() {.exportc.} =
     createCanvas(400, 400)
+    background(200)
     
   proc draw() {.exportc.} =
     if mouseIsPressed:
