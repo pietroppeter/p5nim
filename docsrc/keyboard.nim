@@ -9,17 +9,17 @@ nbJsFromCode:
 
   var rectWidth: float
   
-  proc setup() {.exportc.} =
+  setup:
     createCanvas(720, 400)
     noStroke()
     background(230)
     rectWidth = width / 4
   
-  proc draw() {.exportc.} =
+  draw:
     ## keep draw() here to continue looping while waiting for keys
     discard
   
-  proc keyPressed() {.exportc.} =
+  keyPressed:
     var keyIndex = -1
     if $key >= "a" and $key <= "z":
       keyIndex = ord(key[0]) - ord('a')

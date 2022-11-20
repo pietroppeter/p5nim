@@ -152,7 +152,7 @@ nbJsFromCode:
     if form.y < 0:
       form.y = height
 
-  proc setup {.exportc.} =
+  setup:
     createCanvas(900, 900)
 
     var c = 18
@@ -166,7 +166,7 @@ nbJsFromCode:
             forms.add(newForm(x, y))
     background(0)
 
-  proc draw {.exportc.} =
+  draw:
 
     translate(width / 2, height / 2)
     scale(1.1)

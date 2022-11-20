@@ -1,2 +1,2 @@
-import p5 / p5js
-export p5js
+import p5 / [p5js, p5sugar]
+export p5js, p5sugar

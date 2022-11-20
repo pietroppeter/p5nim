@@ -11,11 +11,11 @@ nbJsFromCode:
   var y = 1.0
   var easing = 0.05
 
-  proc setup() {.exportc.} =
+  setup:
     createCanvas(400, 400)
     noStroke()
     
-  proc draw() {.exportc.} =
+  draw:
     background(237, 34, 93)
     let targetX = mouseX
     let dx = targetX - x

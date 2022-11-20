@@ -20,46 +20,24 @@ To install this library use:
 ## Basic usage
 
     import p5
-    
-    proc newColor(): Color =
-      let
-        r = random() * 255
-        g = random() * 255
-        b = random() * 255
-        
-      result = color(r, g, b)
-    
-    proc setup() {.exportc.} =
-      createCanvas(500, 500)
-      frameRate(3)
-      
-    proc draw() {.exportc.} =
-      background(newColor())
-      
-As you see from the code above ([live](https://pietroppeter.github.io/nim-p5/flashing_canvas.html)), using nimp5 is almost identical to using p5.js, save for the syntax. Just remember that all the procedures that p5 needs to know about have to be declared with the {.exportc.} pragma. This is the list of such procedures:
 
-- preload
-- setup
-- draw
-- remove
-- mouseMoved
-- mouseDragged
-- mousePressed
-- mouseReleased
-- mouseClicked
-- doubleClicked
-- mouseWheel
-- keyPressed
-- keyReleased
-- keyTyped
-- touchStarted
-- touchMoved
-- touchEnded
-- deviceMoved
-- deviceTurned
-- deviceShaken
+    setup:
+      createCanvas(400, 400)
+      background(200)
+      
+    draw:
+      if mouseIsPressed:
+        fill(0)
+      else:
+        fill(255)
+      ellipse(mouseX, mouseY, 40, 40)
+      
+As you see from the code above ([live](https://pietroppeter.github.io/p5nim/get_started.html)), using p5nim is almost identical to using p5.js, save for the syntax.
+
+There are a number of procedures that p5 needs to know about and they have to be declared with the {.exportc.} pragma. In p5nim we provide templates that remove the necessity to declare procs with {.exportc.}. The full list is in [src/p5/p5sugar.nim](src/p5/p5sugar.nim).
 
 When converting examples from p5js there are some common pitfalls:
+
 - functions are defined for a `type PNumber = int or float` and if there
   are multiple types in the call they must be all `int`s or all `float`s.
   Convert appropriately.
@@ -67,6 +45,9 @@ When converting examples from p5js there are some common pitfalls:
   It might be useful to use `std / lenientops`
 - some variables (e.g. `key`) are `cstring` (backend compatible strings)
   and you might need to convert them with `$` before using them
+- when porting an example containing objects you will need to change more stuff, see example [okazz_220919a](https://pietroppeter.github.io/p5nim/get_started.html):
+  - nim support for forward declaration is experimental, better to define your object before its usage in setup and draw.
+  - you will need to declare the type of object. You can pick it to be a `ref object` or a plain `object` (in the examples currently I am mostly using `ref object`, see [this commit](https://github.com/pietroppeter/p5nim/commit/c838f0be6b8871ed48e5c0c7f34f6696e68f1bd1#diff-741692b20db42d00eea54f57dc8b7536948a4dea0200c0c99fa7b9b5566195c9) for an example of changes between the two approaches)
 
 ## Contribute
 
@@ -74,4 +55,5 @@ When converting examples from p5js there are some common pitfalls:
   - you will have to commit the html in docs, and rerun also `nim r index`
     (which uses data from `docs\index.json`)
   - as you find out new conversion pitfalls update the readme up there
-- ideas on how to improve the bindings (do we really need that awkward `PNumber` typeclass)? I am all ears!
+- an excellent source of open art is [openprocessing](https://openprocessing.org)
+- ideas on how to improve the bindings (do we really need that awkward `PNumber` typeclass)? I am all ears! (currently considering to use float everywhere and add a converter from int to float)

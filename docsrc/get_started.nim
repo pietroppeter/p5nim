@@ -7,11 +7,11 @@ This program creates a canvas that is 400 pixels wide and 400 pixels high, and t
 nbJsFromCode:
   import p5
 
-  proc setup() {.exportc.} =
+  setup:
     createCanvas(400, 400)
     background(200)
     
-  proc draw() {.exportc.} =
+  draw:
     if mouseIsPressed:
       fill(0)
     else:

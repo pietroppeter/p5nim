@@ -13,11 +13,12 @@ nbJsFromCode:
       
     result = color(r, g, b)
   
-  proc setup() {.exportc.} =
+  setup:
     createCanvas(500, 500)
     frameRate(3)
     
-  proc draw() {.exportc.} =
+  draw:
     background(newColor())
+
 nbJsShowSource()
 nbSave

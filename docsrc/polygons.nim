@@ -18,10 +18,10 @@ nbJsFromCode:
       vertex(sx, sy)
     endShape(CLOSE)
 
-  proc setup() {.exportc.} =
+  setup:
     createCanvas(720, 400)
 
-  proc draw() {.exportc.} =
+  draw:
     background(102) ## grayscale
 
     push()

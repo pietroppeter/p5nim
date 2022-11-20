@@ -157,7 +157,7 @@ nbJsFromCode:
 
   # no move needed
 
-  proc setup {.exportc.} =
+  setup:
     createCanvas(900, 900)
     rectMode(CENTER)
     # randomSeed(SEED)
@@ -171,7 +171,7 @@ nbJsFromCode:
         let y = j * w + w / 2
         forms.add(newForm(x, y, w))       
 
-  proc draw {.exportc.} =
+  draw:
     background(255)
     for f in forms:
       f.show()
