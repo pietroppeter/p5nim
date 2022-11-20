@@ -22,3 +22,6 @@ task examples, "rebuild all examples":
   build "easing"
   build "keyboard"
   build "polygons"
+  build "okazz_220919a"
+  build "okazz_221026a"
+
