@@ -5,7 +5,7 @@ nb.addEntry(4, "Keyboard", """
 Click on the image to give it focus and press the letter keys to create forms in time and space. Each key has a unique identifying number. These numbers can be used to position shapes in space.
 """)
 nbJsFromCode:
-  import p5, math
+  import p5
 
   var rectWidth: float
   
@@ -33,8 +33,8 @@ nbJsFromCode:
         randFill_g = floor(random() * 255 + 1)
         randFill_b = floor(random() * 255 + 1)
       fill(randFill_r, randFill_g, randFill_b)
-      let x = map(keyIndex, 0, 25, 0, int(width - rectWidth))
-      rect(x, 0, int(rectWidth), int(height))
+      let x = map(keyIndex, 0, 25, 0, width - rectWidth)
+      rect(x, 0, rectWidth, height)
 
 nbJsShowSource()
 nbSave

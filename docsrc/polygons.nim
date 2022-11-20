@@ -5,7 +5,7 @@ nb.addEntry(5, "Polygons", """
 What is your favorite? Pentagon? Hexagon? Heptagon? No? What about the icosagon? The polygon() function created for this example is capable of drawing any regular polygon. Also shows [possible inputs for colors](https://p5js.org/reference/#/p5/fill).
 """)
 nbJsFromCode:
-  import p5, std / lenientops
+  import p5
 
   proc polygon(x, y, radius, npoints: PNumber) =
     let angle = TWO_PI / npoints

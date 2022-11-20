@@ -107,10 +107,9 @@ class Form {
 """
 
 nbJsFromCode:
-  import p5, std / lenientops
-  converter toFloat(n: int): float = float(n)
-  import math, random, sequtils
-  #converter toPnumber(f: float): PNumber = PNumber(f)
+  import p5
+  import std / [random, sequtils]
+  import std / math except sqrt
 
   var palettes = @[
     @["#6b2d5c", "#f0386b", "#ff5376", "#e391db", "#f8c0c8"],
@@ -120,7 +119,7 @@ nbJsFromCode:
     @["#03045e", "#0077b6", "#00b4d8", "#90e0ef", "#caf0f8"],
     @["#f8f9fa", "#dee2e6", "#adb5bd", "#495057", "#212529"]
   ]
-  let SEED = math.floor(random.rand(1.0) * 1000000);
+  let SEED = math.floor(random.rand(1.0) * 1000000) # using p5js.floor throws an error in console
 
   type
     Form = ref object
@@ -179,7 +178,7 @@ nbJsFromCode:
 
 nbJsShowSource()
 nbJsFromCode():
-  proc keyPressed {.exportc.} =
+  keyPressed:
     if $key == "s":
       echo "saving gif okazz_221026a"
       saveGif(cstring("okazz_221026a"), 5)

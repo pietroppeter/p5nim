@@ -96,9 +96,7 @@ class Form {
 """
 
 nbJsFromCode:
-  import p5, std / lenientops
-  converter toFloat(n: int): float = float(n)
-  #converter toPnumber(f: float): PNumber = PNumber(f)
+  import p5
 
   var colors = @["#f70640", "#f78e2c", "#fdd903", "#cae509", "#63be93", "#81cfe5", "#299dbf", "#38187d", "#a4459f", "#f654a9", "#2F0A30"];
 
@@ -136,7 +134,7 @@ nbJsFromCode:
     translate(form.x, form.y)
     rotate(form.a)
     for i in 0 ..< form.n:
-      let theta = map(float(i), 0, form.n, 0, PNumber(TAU))
+      let theta = map(i, 0, form.n, 0, TAU)
       ellipse(form.r * cos(theta), form.r * sin(theta), form.d, form.d)
     pop()
 
@@ -178,7 +176,7 @@ nbJsFromCode:
 
 nbJsShowSource()
 nbJsFromCode():
-  proc keyPressed {.exportc.} =
+  keyPressed:
     if $key == "s":
       echo "saving gif okazz_229019a"
       saveGif(cstring("okazz_229019a"), 2)

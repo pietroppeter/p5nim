@@ -46,7 +46,7 @@ section#source {
 <h2>5. Polygons</h2>
 <p>What is your favorite? Pentagon? Hexagon? Heptagon? No? What about the icosagon? The polygon() function created for this example is capable of drawing any regular polygon. Also shows <a href="https://p5js.org/reference/#/p5/fill">possible inputs for colors</a>.</p>
 <pre><code class="nim hljs"><span class="hljs-keyword">import</span>
-  p5, std / lenientops
+  p5
 
 <span class="hljs-keyword">proc</span> polygon(x, y, radius, npoints: <span class="hljs-type">PNumber</span>) =
   <span class="hljs-keyword">let</span> angle = <span class="hljs-type">TWO_PI</span> / npoints
@@ -96,44 +96,17 @@ if (!Math.trunc) {
 var objectID_620757154 = [0];
 
 function setup() {
-    createCanvas(720, 400);
+    createCanvas(720.0, 400.0);
 
   
 }
 
-function HEX2F_452984882(i_452984885, f_452984886) {
-  var result_452984887 = 0.0;
+function toFloat_1107296260(n_1107296261) {
+  var result_1107296262 = 0.0;
 
-    result_452984887 = (i_452984885 / f_452984886);
+    result_1107296262 = n_1107296261;
 
-  return result_452984887;
-
-}
-
-function HEX2F_452984897(f_452984900, i_452984901) {
-  var result_452984902 = 0.0;
-
-    result_452984902 = (f_452984900 / i_452984901);
-
-  return result_452984902;
-
-}
-
-function HEX2B_452984914(i_452984917, f_452984918) {
-  var result_452984919 = 0.0;
-
-    result_452984919 = (i_452984917 + f_452984918);
-
-  return result_452984919;
-
-}
-
-function HEX2A_452984908(f_452984911, i_452984912) {
-  var result_452984913 = 0.0;
-
-    result_452984913 = (f_452984911 * i_452984912);
-
-  return result_452984913;
+  return result_1107296262;
 
 }
 
@@ -143,17 +116,17 @@ function HEX2BHEX3D_855640050(x_855640052, x_855640052_Idx, y_855640053) {
   
 }
 
-function polygon_452984891(x_452984893, y_452984894, radius_452984895, npoints_452984896) {
-    var angle_452984903 = HEX2F_452984897(TWO_PI, npoints_452984896);
+function polygon_452984853(x_452984854, y_452984855, radius_452984856, npoints_452984857) {
+    var angle_452984858 = (TWO_PI / npoints_452984857);
     beginShape();
-    var a_452984904 = [0.0];
+    var a_452984859 = [0.0];
     Label1: do {
         Label2: while (true) {
-        if (!(a_452984904[0] < TWO_PI)) break Label2;
-          var sx_452984920 = HEX2B_452984914(x_452984893, HEX2A_452984908(cos(a_452984904[0]), radius_452984895));
-          var sy_452984934 = HEX2B_452984914(y_452984894, HEX2A_452984908(sin(a_452984904[0]), radius_452984895));
-          HEX2BHEX3D_855640050(a_452984904, 0, angle_452984903);
-          vertex(sx_452984920, sy_452984934);
+        if (!(a_452984859[0] < TWO_PI)) break Label2;
+          var sx_452984860 = (x_452984854 + (cos(a_452984859[0]) * radius_452984856));
+          var sy_452984861 = (y_452984855 + (sin(a_452984859[0]) * radius_452984856));
+          HEX2BHEX3D_855640050(a_452984859, 0, angle_452984858);
+          vertex(sx_452984860, sy_452984861);
         }
     } while (false);
     endShape(CLOSE);
@@ -162,24 +135,24 @@ function polygon_452984891(x_452984893, y_452984894, radius_452984895, npoints_4
 }
 
 function draw() {
-    background(102);
+    background(102.0);
     push();
-    fill(255, 204, 0);
+    fill(255.0, 204.0, 0.0);
     translate((width * 0.2), (height * 0.5));
-    rotate(HEX2F_452984882(frameCount, 200.0));
-    polygon_452984891(0, 0, 82, 3);
+    rotate((toFloat_1107296260(frameCount) / 200.0));
+    polygon_452984853(0.0, 0.0, 82.0, 3.0);
     pop();
     push();
     fill("red");
     translate((width * 0.5), (height * 0.5));
-    rotate(HEX2F_452984882(frameCount, 50.0));
-    polygon_452984891(0, 0, 80, 20);
+    rotate((toFloat_1107296260(frameCount) / 50.0));
+    polygon_452984853(0.0, 0.0, 80.0, 20.0);
     pop();
     push();
     fill("#fae");
     translate((width * 0.8), (height * 0.5));
-    rotate(HEX2F_452984882(frameCount, -100.0));
-    polygon_452984891(0, 0, 70, 7);
+    rotate((toFloat_1107296260(frameCount) / -100.0));
+    polygon_452984853(0.0, 0.0, 70.0, 7.0);
     pop();
 
   
@@ -202,7 +175,7 @@ nb.addEntry(<span class="hljs-number">5</span>, <span class="hljs-string">&quot;
 What is your favorite? Pentagon? Hexagon? Heptagon? No? What about the icosagon? The polygon() function created for this example is capable of drawing any regular polygon. Also shows [possible inputs for colors](https://p5js.org/reference/#/p5/fill).
 &quot;&quot;&quot;</span>)
 nbJsFromCode:
-  <span class="hljs-keyword">import</span> p5, std / lenientops
+  <span class="hljs-keyword">import</span> p5
 
   <span class="hljs-keyword">proc</span> polygon(x, y, radius, npoints: <span class="hljs-type">PNumber</span>) =
     <span class="hljs-keyword">let</span> angle = <span class="hljs-type">TWO_PI</span> / npoints

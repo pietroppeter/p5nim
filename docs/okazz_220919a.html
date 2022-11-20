@@ -49,10 +49,7 @@ original at <a href="https://openprocessing.org/sketch/1653811">openprocessing.o
 <p>License is <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/">CreativeCommons Attribution NonCommercial ShareAlike</a>.</p>
 <p>The original sketch has been ported from p5js to p5nim.</p>
 <pre><code class="nim hljs"><span class="hljs-keyword">import</span>
-  p5, std / lenientops
-
-<span class="hljs-keyword">converter</span> toFloat(n: <span class="hljs-built_in">int</span>): <span class="hljs-built_in">float</span> =
-  <span class="hljs-built_in">float</span>(n)
+  p5
 
 <span class="hljs-keyword">var</span> colors = @[<span class="hljs-string">&quot;#f70640&quot;</span>, <span class="hljs-string">&quot;#f78e2c&quot;</span>, <span class="hljs-string">&quot;#fdd903&quot;</span>, <span class="hljs-string">&quot;#cae509&quot;</span>, <span class="hljs-string">&quot;#63be93&quot;</span>, <span class="hljs-string">&quot;#81cfe5&quot;</span>,
                <span class="hljs-string">&quot;#299dbf&quot;</span>, <span class="hljs-string">&quot;#38187d&quot;</span>, <span class="hljs-string">&quot;#a4459f&quot;</span>, <span class="hljs-string">&quot;#f654a9&quot;</span>, <span class="hljs-string">&quot;#2F0A30&quot;</span>]
@@ -89,7 +86,7 @@ original at <a href="https://openprocessing.org/sketch/1653811">openprocessing.o
   translate(form.x, form.y)
   rotate(form.a)
   <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-number">0</span> ..&lt; form.n:
-    <span class="hljs-keyword">let</span> theta = map(<span class="hljs-built_in">float</span>(i), <span class="hljs-number">0</span>, form.n, <span class="hljs-number">0</span>, <span class="hljs-type">PNumber</span>(<span class="hljs-type">TAU</span>))
+    <span class="hljs-keyword">let</span> theta = map(i, <span class="hljs-number">0</span>, form.n, <span class="hljs-number">0</span>, <span class="hljs-type">TAU</span>)
     ellipse(form.r * cos(theta), form.r * sin(theta), form.d, form.d)
   pop()
 
@@ -378,29 +375,29 @@ if (!Math.trunc) {
 }
 
 var objectID_620757154 = [0];
-var colors_452984861 = [[makeNimstrLit("#f70640"), makeNimstrLit("#f78e2c"), makeNimstrLit("#fdd903"), makeNimstrLit("#cae509"), makeNimstrLit("#63be93"), makeNimstrLit("#81cfe5"), makeNimstrLit("#299dbf"), makeNimstrLit("#38187d"), makeNimstrLit("#a4459f"), makeNimstrLit("#f654a9"), makeNimstrLit("#2F0A30")]];
-var forms_452984879 = [[]];
+var colors_452984857 = [[makeNimstrLit("#f70640"), makeNimstrLit("#f78e2c"), makeNimstrLit("#fdd903"), makeNimstrLit("#cae509"), makeNimstrLit("#63be93"), makeNimstrLit("#81cfe5"), makeNimstrLit("#299dbf"), makeNimstrLit("#38187d"), makeNimstrLit("#a4459f"), makeNimstrLit("#f654a9"), makeNimstrLit("#2F0A30")]];
+var forms_452984875 = [[]];
 
-function toFloat_452984854(n_452984855) {
-  var result_452984856 = 0.0;
+function toFloat_1107296260(n_1107296261) {
+  var result_1107296262 = 0.0;
 
-    result_452984856 = n_452984855;
+    result_1107296262 = n_1107296261;
 
-  return result_452984856;
+  return result_1107296262;
 
 }
 
-function new_452984902() {
-  var result_452984905 = null;
+function new_452984898() {
+  var result_452984901 = null;
 
   BeforeRet: do {
-    var r_452984907 = null;
-    r_452984907 = ({x: 0.0, y: 0.0, x0: 0.0, y0: 0.0, r0: 0.0, r: 0.0, d0: 0.0, d: 0.0, a: 0.0, t: 0.0, r1: 0.0, r2: 0.0, r3: 0.0, n: 0, col: []});
-    result_452984905 = r_452984907;
+    var r_452984903 = null;
+    r_452984903 = ({x: 0.0, y: 0.0, x0: 0.0, y0: 0.0, r0: 0.0, r: 0.0, d0: 0.0, d: 0.0, a: 0.0, t: 0.0, r1: 0.0, r2: 0.0, r3: 0.0, n: 0, col: []});
+    result_452984901 = r_452984903;
     break BeforeRet;
   } while (false);
 
-  return result_452984905;
+  return result_452984901;
 
 }
 
@@ -442,74 +439,74 @@ function nimCopyAux(dest_33557145, src_33557146, n_33557147) {
   
 }
 
-function newForm_452984898(x_452984899, y_452984900) {
-  var result_452984901 = null;
+function newForm_452984894(x_452984895, y_452984896) {
+  var result_452984897 = null;
 
-    result_452984901 = new_452984902();
-    result_452984901.x = x_452984899;
-    result_452984901.y = y_452984900;
-    result_452984901.x0 = x_452984899;
-    result_452984901.y0 = y_452984900;
-    result_452984901.r0 = random(10.0, 25.0);
-    result_452984901.r = result_452984901.r0;
-    result_452984901.d0 = ((random(15) * random()) + 5.0);
-    result_452984901.d = result_452984901.d0;
-    result_452984901.n = ((random(3.0, 13.0)) | 0);
-    result_452984901.a = random(100);
-    result_452984901.t = random(10000);
-    result_452984901.r1 = random(0.01);
-    result_452984901.r2 = random(0.01);
-    result_452984901.r3 = random(0.01);
-    result_452984901.col = nimCopy(null, random(colors_452984861[0]), NTI33554439);
+    result_452984897 = new_452984898();
+    result_452984897.x = x_452984895;
+    result_452984897.y = y_452984896;
+    result_452984897.x0 = x_452984895;
+    result_452984897.y0 = y_452984896;
+    result_452984897.r0 = random(10.0, 25.0);
+    result_452984897.r = result_452984897.r0;
+    result_452984897.d0 = ((random(15.0) * random()) + 5.0);
+    result_452984897.d = result_452984897.d0;
+    result_452984897.n = ((random(3.0, 13.0)) | 0);
+    result_452984897.a = random(100.0);
+    result_452984897.t = random(10000.0);
+    result_452984897.r1 = random(0.01);
+    result_452984897.r2 = random(0.01);
+    result_452984897.r3 = random(0.01);
+    result_452984897.col = nimCopy(null, random(colors_452984857[0]), NTI33554439);
 
-  return result_452984901;
+  return result_452984897;
 
 }
 
 function setup() {
-    createCanvas(900, 900);
-    var c_452985013 = 18;
-    var w_452985014 = (width / toFloat_452984854(c_452985013));
+    createCanvas(900.0, 900.0);
+    var c_452984951 = 18;
+    var w_452984952 = (width / toFloat_1107296260(c_452984951));
     Label1: do {
-      var i_452985019 = 0;
-      var i_452985090 = 0;
+      var i_452984957 = 0;
+      var i_452985014 = 0;
       Label2: do {
           Label3: while (true) {
-          if (!(i_452985090 < c_452985013)) break Label3;
-            i_452985019 = i_452985090;
+          if (!(i_452985014 < c_452984951)) break Label3;
+            i_452984957 = i_452985014;
             Label4: do {
-              var j_452985024 = 0;
-              var i_452985088 = 0;
+              var j_452984962 = 0;
+              var i_452985012 = 0;
               Label5: do {
                   Label6: while (true) {
-                  if (!(i_452985088 < c_452985013)) break Label6;
-                    j_452985024 = i_452985088;
-                    var x_452985025 = ((toFloat_452984854(i_452985019) * w_452985014) + (w_452985014 / 2.0));
-                    var y_452985026 = ((toFloat_452984854(j_452985024) * w_452985014) + (w_452985014 / 2.0));
-                    if ((Math.trunc((i_452985019 + j_452985024) % 2) == 0)) {
+                  if (!(i_452985012 < c_452984951)) break Label6;
+                    j_452984962 = i_452985012;
+                    var x_452984963 = ((toFloat_1107296260(i_452984957) * w_452984952) + (w_452984952 / 2.0));
+                    var y_452984964 = ((toFloat_1107296260(j_452984962) * w_452984952) + (w_452984952 / 2.0));
+                    if ((Math.trunc((i_452984957 + j_452984962) % 2) == 0)) {
                     Label7: do {
-                      var k_452985031 = 0;
-                      var i_452985086 = 0;
+                      var k_452984969 = 0;
+                      var i_452985010 = 0;
                       Label8: do {
                           Label9: while (true) {
-                          if (!(i_452985086 < 5)) break Label9;
-                            k_452985031 = i_452985086;
-                            forms_452984879[0].push(newForm_452984898(x_452985025, y_452985026));;
-                            i_452985086 += 1;
+                          if (!(i_452985010 < 5)) break Label9;
+                            k_452984969 = i_452985010;
+                            forms_452984875[0].push(newForm_452984894(x_452984963, y_452984964));;
+                            i_452985010 += 1;
                           }
                       } while (false);
                     } while (false);
                     }
                     
-                    i_452985088 += 1;
+                    i_452985012 += 1;
                   }
               } while (false);
             } while (false);
-            i_452985090 += 1;
+            i_452985014 += 1;
           }
       } while (false);
     } while (false);
-    background(0);
+    background(0.0);
 
   
 }
@@ -522,22 +519,22 @@ function newSeq_33556826(len_33556828) {
 
 }
 
-function show_452984950(form_452984951) {
+function show_452984928(form_452984929) {
     noStroke();
-    fill(toJSStr(form_452984951.col));
+    fill(toJSStr(form_452984929.col));
     push();
-    translate(form_452984951.x, form_452984951.y);
-    rotate(form_452984951.a);
+    translate(form_452984929.x, form_452984929.y);
+    rotate(form_452984929.a);
     Label1: do {
-      var i_452984963 = 0;
-      var i_452985098 = 0;
+      var i_452984934 = 0;
+      var i_452985022 = 0;
       Label2: do {
           Label3: while (true) {
-          if (!(i_452985098 < form_452984951.n)) break Label3;
-            i_452984963 = i_452985098;
-            var theta_452984972 = map(i_452984963, 0.0, toFloat_452984854(form_452984951.n), 0.0, TAU);
-            ellipse((form_452984951.r * cos(theta_452984972)), (form_452984951.r * sin(theta_452984972)), form_452984951.d, form_452984951.d);
-            i_452985098 += 1;
+          if (!(i_452985022 < form_452984929.n)) break Label3;
+            i_452984934 = i_452985022;
+            var theta_452984935 = map(toFloat_1107296260(i_452984934), 0.0, toFloat_1107296260(form_452984929.n), 0.0, TAU);
+            ellipse((form_452984929.r * cos(theta_452984935)), (form_452984929.r * sin(theta_452984935)), form_452984929.d, form_452984929.d);
+            i_452985022 += 1;
           }
       } while (false);
     } while (false);
@@ -552,25 +549,25 @@ function HEX2BHEX3D_855640050(x_855640052, x_855640052_Idx, y_855640053) {
   
 }
 
-function HEX2DHEX3D_452985004(x_452985006, x_452985006_Idx, y_452985007) {
-    x_452985006[x_452985006_Idx] = (x_452985006[x_452985006_Idx] - y_452985007);
+function HEX2DHEX3D_452984946(x_452984948, x_452984948_Idx, y_452984949) {
+    x_452984948[x_452984948_Idx] = (x_452984948[x_452984948_Idx] - y_452984949);
 
   
 }
 
-function move_452984985(form_452984986) {
-    HEX2BHEX3D_855640050(form_452984986, "t", 1.0);
-    form_452984986.a = (TAU * sin((form_452984986.t * form_452984986.r1)));
-    form_452984986.r = (form_452984986.r0 * sin((form_452984986.t * form_452984986.r2)));
-    form_452984986.d = (form_452984986.d0 * sin((form_452984986.t * form_452984986.r3)));
-    HEX2BHEX3D_855640050(form_452984986, "x", 0.5);
-    HEX2DHEX3D_452985004(form_452984986, "y", 0.5);
-    if ((width < form_452984986.x)) {
-    form_452984986.x = 0.0;
+function move_452984936(form_452984937) {
+    HEX2BHEX3D_855640050(form_452984937, "t", 1.0);
+    form_452984937.a = (TAU * sin((form_452984937.t * form_452984937.r1)));
+    form_452984937.r = (form_452984937.r0 * sin((form_452984937.t * form_452984937.r2)));
+    form_452984937.d = (form_452984937.d0 * sin((form_452984937.t * form_452984937.r3)));
+    HEX2BHEX3D_855640050(form_452984937, "x", 0.5);
+    HEX2DHEX3D_452984946(form_452984937, "y", 0.5);
+    if ((width < form_452984937.x)) {
+    form_452984937.x = 0.0;
     }
     
-    if ((form_452984986.y < 0.0)) {
-    form_452984986.y = height;
+    if ((form_452984937.y < 0.0)) {
+    form_452984937.y = height;
     }
     
 
@@ -581,19 +578,19 @@ function draw() {
     translate((width / 2.0), (height / 2.0));
     scale(1.1);
     translate((-(width) / 2.0), (-(height) / 2.0));
-    background(255);
+    background(255.0);
     Label1: do {
-      var f_452985073 = null;
-      var f_452985073_Idx = 0;
-      var i_452985094 = 0;
-      var L_452985095 = (forms_452984879[0]).length;
+      var f_452984997 = null;
+      var f_452984997_Idx = 0;
+      var i_452985018 = 0;
+      var L_452985019 = (forms_452984875[0]).length;
       Label2: do {
           Label3: while (true) {
-          if (!(i_452985094 < L_452985095)) break Label3;
-            f_452985073 = forms_452984879[0]; f_452985073_Idx = i_452985094;
-            show_452984950(f_452985073[f_452985073_Idx]);
-            move_452984985(f_452985073[f_452985073_Idx]);
-            i_452985094 += 1;
+          if (!(i_452985018 < L_452985019)) break Label3;
+            f_452984997 = forms_452984875[0]; f_452984997_Idx = i_452985018;
+            show_452984928(f_452984997[f_452984997_Idx]);
+            move_452984936(f_452984997[f_452984997_Idx]);
+            i_452985018 += 1;
           }
       } while (false);
     } while (false);
@@ -719,9 +716,7 @@ class Form {
 &quot;&quot;&quot;</span>
 
 nbJsFromCode:
-  <span class="hljs-keyword">import</span> p5, std / lenientops
-  <span class="hljs-keyword">converter</span> toFloat(n: <span class="hljs-built_in">int</span>): <span class="hljs-built_in">float</span> = <span class="hljs-built_in">float</span>(n)
-  <span class="hljs-comment">#converter toPnumber(f: float): PNumber = PNumber(f)</span>
+  <span class="hljs-keyword">import</span> p5
 
   <span class="hljs-keyword">var</span> colors = @[<span class="hljs-string">&quot;#f70640&quot;</span>, <span class="hljs-string">&quot;#f78e2c&quot;</span>, <span class="hljs-string">&quot;#fdd903&quot;</span>, <span class="hljs-string">&quot;#cae509&quot;</span>, <span class="hljs-string">&quot;#63be93&quot;</span>, <span class="hljs-string">&quot;#81cfe5&quot;</span>, <span class="hljs-string">&quot;#299dbf&quot;</span>, <span class="hljs-string">&quot;#38187d&quot;</span>, <span class="hljs-string">&quot;#a4459f&quot;</span>, <span class="hljs-string">&quot;#f654a9&quot;</span>, <span class="hljs-string">&quot;#2F0A30&quot;</span>];
 
@@ -759,7 +754,7 @@ nbJsFromCode:
     translate(form.x, form.y)
     rotate(form.a)
     <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-number">0</span> ..&lt; form.n:
-      <span class="hljs-keyword">let</span> theta = map(<span class="hljs-built_in">float</span>(i), <span class="hljs-number">0</span>, form.n, <span class="hljs-number">0</span>, <span class="hljs-type">PNumber</span>(<span class="hljs-type">TAU</span>))
+      <span class="hljs-keyword">let</span> theta = map(i, <span class="hljs-number">0</span>, form.n, <span class="hljs-number">0</span>, <span class="hljs-type">TAU</span>)
       ellipse(form.r * cos(theta), form.r * sin(theta), form.d, form.d)
     pop()
 

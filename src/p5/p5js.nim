@@ -3,7 +3,10 @@ import jsffi
 import math
 import dom
 
-type PNumber* = int or float
+when defined(p5IntOrFloat):
+  type PNumber* = int or float
+else:
+  type PNumber* = float
 
 type
     Color* = ref object
