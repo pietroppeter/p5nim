@@ -150,46 +150,46 @@ proc setMoveThreshold*(value: PNumber) {.importc.}
 proc setShakeThreshold*(value: PNumber) {.importc.}
 
 var
-    P2D* {.importc.}: cstring 
+    P2D* {.importc.}: cstring
     WEBGL* {.importc.}: cstring
-    ARROW* {.importc.}: cstring 
-    CROSS* {.importc.}: cstring 
-    HAND* {.importc.}: cstring 
-    MOVE* {.importc.}: cstring 
-    TEXT* {.importc.}: cstring 
-    WAIT* {.importc.}: cstring 
-    PI* {.importc.}: float 
-    HALF_PI* {.importc.}: float 
-    QUARTER_PI* {.importc.}: float 
-    TAU* {.importc.}: float 
-    TWO_PI* {.importc.}: float 
-    DEGREES* {.importc.}: cstring 
-    RADIANS* {.importc.}: cstring 
-    DEG_TO_RAD* {.importc.}: float 
-    RAD_TO_DEG* {.importc.}: float 
-    CORNER* {.importc.}: cstring 
-    CORNERS* {.importc.}: cstring 
-    RADIUS* {.importc.}: cstring 
-    RIGHT* {.importc.}: cstring 
-    LEFT* {.importc.}: cstring 
-    CENTER* {.importc.}: cstring 
-    TOP* {.importc.}: cstring 
-    BOTTOM* {.importc.}: cstring 
-    BASELINE* {.importc.}: cstring 
-    POINTS* {.importc.}: float 
-    LINES* {.importc.}: float 
-    LINE_STRIP* {.importc.}: float 
-    LINE_LOOP* {.importc.}: float 
-    TRIANGLES* {.importc.}: float 
-    TRIANGLE_FAN* {.importc.}: float 
-    TRIANGLE_STRIP* {.importc.}: float 
-    QUADS* {.importc.}: cstring 
-    QUAD_STRIP* {.importc.}: cstring 
-    CLOSE* {.importc.}: cstring 
-    OPEN* {.importc.}: cstring 
-    CHORD* {.importc.}: cstring 
-    PIE* {.importc.}: cstring 
-    PROJECT* {.importc.}: cstring 
+    ARROW* {.importc.}: cstring
+    CROSS* {.importc.}: cstring
+    HAND* {.importc.}: cstring
+    MOVE* {.importc.}: cstring
+    TEXT* {.importc.}: cstring
+    WAIT* {.importc.}: cstring
+    PI* {.importc.}: float
+    HALF_PI* {.importc.}: float
+    QUARTER_PI* {.importc.}: float
+    TAU* {.importc.}: float
+    TWO_PI* {.importc.}: float
+    DEGREES* {.importc.}: cstring
+    RADIANS* {.importc.}: cstring
+    DEG_TO_RAD* {.importc.}: float
+    RAD_TO_DEG* {.importc.}: float
+    CORNER* {.importc.}: cstring
+    CORNERS* {.importc.}: cstring
+    RADIUS* {.importc.}: cstring
+    RIGHT* {.importc.}: cstring
+    LEFT* {.importc.}: cstring
+    CENTER* {.importc.}: cstring
+    TOP* {.importc.}: cstring
+    BOTTOM* {.importc.}: cstring
+    BASELINE* {.importc.}: cstring
+    POINTS* {.importc.}: float
+    LINES* {.importc.}: float
+    LINE_STRIP* {.importc.}: float
+    LINE_LOOP* {.importc.}: float
+    TRIANGLES* {.importc.}: float
+    TRIANGLE_FAN* {.importc.}: float
+    TRIANGLE_STRIP* {.importc.}: float
+    QUADS* {.importc.}: cstring
+    QUAD_STRIP* {.importc.}: cstring
+    CLOSE* {.importc.}: cstring
+    OPEN* {.importc.}: cstring
+    CHORD* {.importc.}: cstring
+    PIE* {.importc.}: cstring
+    PROJECT* {.importc.}: cstring
     SQUARE* {.importc.}: cstring
     ROUND* {.importc.}: cstring
     BEVEL* {.importc.}: cstring
@@ -378,7 +378,7 @@ proc add*(self: Vector, other: Vector | array[2, PNumber] | array[3, PNumber])
 proc add*(self: Vector, x, y: float, z: float = 0)
 proc sub*(self: Vector, other: Vector | array[2, PNumber] | array[3, PNumber])
 proc sub*(self: Vector, x, y: float, z: float = 0)
-proc mult*(self: Vector, scalar: PNumber) 
+proc mult*(self: Vector, scalar: PNumber)
 proc `div`*(self: Vector, scalar: PNumber)
 proc mag*(self: Vector): float
 proc magSqr*(self: Vector): float
