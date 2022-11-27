@@ -56,6 +56,32 @@ type
 
     Blob* = ref object
 
+    P5Instance* = ref object
+      mouseX*: float
+      mouseY*: float
+      pmouseX*: float
+      pmouseY*: float
+      winMouseX*: float
+      winMouseY*: float
+      pwinMouseX*: float
+      pwinMouseY*: float
+      mouseButton*: cstring
+      mouseIsPressed*: bool
+      keyIsPressed*: bool
+      key*: cstring
+      keyCode*: int
+      setup*: Closure
+      draw*: Closure
+
+    InstanceClosure* = proc(s: P5Instance) {.closure.}
+    Closure* = proc() {.closure.}
+
+# creates a new P5 instance for the "instance mode"
+proc newInstance*(s: InstanceClosure): P5Instance {.importcpp: "new p5(#)"}
+# same as above, but will place the given instance in the given HTML `<div>`
+proc newInstance*(s: InstanceClosure, divName: string): P5Instance {.importcpp: "new p5(#, #)"}
+
+
 #[
     use overloadable p5 functions with exportc pragma, i.e. proc setup(): void {.exportc.} =
 
