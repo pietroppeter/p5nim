@@ -108,6 +108,157 @@ proc newInstance*(s: InstanceClosure, divName: string): P5Instance {.importcpp: 
 
 ]#
 
+import std / [macros, macrocache]
+from std/strutils import `%`
+
+const Arg = "p5Inst"
+const WrappedProcs = CacheSeq"p5Procs"
+const P5InstanceFields = CacheSeq"p5Fields"
+static:
+  var tmp = new P5Instance
+  for field, typ in fieldPairs(tmp[]):
+    P5InstanceFields.add ident(field)
+
+proc contains(ct: CacheSeq, s: NimNode): bool =
+  ## XXX: think about this. Maybe better to use a real table so we don't pay the
+  ## price for this. Or just use a CT table for O(1) lookup?
+  for x in ct:
+    if x == s: return true
+
+proc replaceCallsImpl(n: NimNode): NimNode
+proc maybeReplaceCall(n: NimNode): NimNode =
+  ## Checks if this node refers to a known procedure wrapped by `globalAndLocal`.
+  ## If so, generate a call:
+  ##
+  ## `n(p5Inst, <other args>)`
+  ##
+  ## to call the correct overload.
+  doAssert n.kind == nnkCall
+  let name = n[0]
+  # check if this is known in `WrappedProcs`, if so wrap this one up,
+  # otherwise leave it alone!
+  if name in WrappedProcs:
+    result = nnkCall.newTree()
+    # first replace all possible arguments
+    for ch in n:
+      result.add replaceCallsImpl(ch)
+    # now insert the p5 instance argument
+    result.insert(1, ident(Arg)) # insert argument as first (0 is name of fn)
+  else:
+    result = n
+
+proc maybeReplaceSym(n: NimNode): NimNode =
+  ## Checks if this node refers to a field of the `P5Instance` type. If so
+  ## wrap it in a
+  ##
+  ## `p5Inst.n`
+  ##
+  ## dot expression to access the appropriate field or else leave it alone.
+  doAssert n.kind in {nnkSym, nnkIdent}
+  if n in P5InstanceFields:
+    result = nnkDotExpr.newTree(ident(Arg), n)
+  else:
+    result = n
+
+proc replaceCallsImpl(n: NimNode): NimNode =
+  ## Recursively walks the NimNode tree and possibly replaces calls and
+  ## syms if they appear either as a field of the `P5Instance` or
+  ## they were wrapped by the `globalAndLocal` macro.
+  if n.len == 0:
+    case n.kind
+    of nnkIdent, nnkSym: result = maybeReplaceSym(n)
+    else: result = n
+  else:
+    result = newTree(n.kind)
+    for ch in n:
+      case ch.kind
+      of nnkCall:
+        result.add maybeReplaceCall(ch)
+      else:
+        result.add replaceCallsImpl(ch)
+
+macro replaceCalls(body: untyped): untyped =
+  ## TODO: add support for dot expressions! This requires to rewrite the dot
+  ## expression. Assuming
+  ##
+  ## `mouseX.ellipse(mouseY, 40, 40)`
+  ##
+  ## must be rewritten to
+  ##
+  ## `p5Inst.ellipse(mouseX, mouseY, 40, 40)`
+  ##
+  ## where each symbol (including the `dotExpr` first element!) must be
+  ## checked for replacement.
+  result = newStmtList()
+  result.add replaceCallsImpl(body)
+
+macro globalAndLocal(args: untyped): untyped =
+  ## Generates all given procedures as `importc` once for the global case
+  ## and once as methods / attributes of a `P5Instance`.
+  ##
+  ## Each generated procedure is added to the `WrappedProcs` `CacheSeq` to
+  ## allow us to replace calls to them within the `instance` template.
+  # basic pragma string for the instance case, as we ``have`` to generate the
+  # call as a dot expression and not a regular call with a `p5` first argument
+  let pragmaStr = "#.$#(@)"
+  let localArg = nnkIdentDefs.newTree(ident"p5", ident"P5Instance", newEmptyNode())
+  result = newStmtList()
+  for arg in args: # walk all given procs
+    doAssert arg.kind == nnkProcDef
+    result.add arg # global version
+    # mutable copy and add argument
+    var marg = arg.copy()
+    let name = marg.name
+    let pragmaArg = pragmaStr % [name.strVal] # generate correct importcpp pragma string
+    let pragma = nnkPragma.newTree(nnkExprColonExpr.newTree(ident"importcpp", newLit(pragmaArg)))
+    var params = marg.params
+    # insert param at position 1, pushing all others back
+    params.insert(1, localArg)
+    marg.params = params
+    marg.pragma = pragma
+    result.add marg
+    # add the name of this procedure to list of "save to lift" procedures
+    WrappedProcs.add name
+
+template instanceImpl(): untyped {.dirty.} =
+  # bind `replaceCalls`, because the whole AST of `instance` will appear in the
+  # user's calling scope where `replaceCalls` is not defined
+  bind replaceCalls
+  # shadow global setup and draw with local one. It redefines the existing templates by
+  # a version which sets the given body to a closure assigned to the instance field
+  # of the same name. In the body of each we will replace calls & dot expressions by
+  # the corresponding methods of the p5 instance. For symbols / idents we encounter
+  # we also may replace them if their name matches a field of the `P5Instance` type.
+  template setup(bd: untyped): untyped =
+    p5Inst.setup = proc() =
+      replaceCalls(bd)
+
+  template draw(bd: untyped): untyped =
+    p5Inst.draw = proc() =
+      replaceCalls(bd)
+  ## XXX: define all templates from `p5sugar.nim`?
+
+template instance*(divName: untyped, body: untyped): untyped =
+  ## Generates an instance of a `P5Instance` for the "instance mode". The instance
+  ## will be placed into the HTML <div> `divName`. The `divName` should be
+  ## a `string`, but it's `untyped` to avoid early processnig of the two
+  ## `instance` templates!
+  # create the closure & generate a new instance from the given closure
+  instanceImpl()
+  # Inject the `p5Inst` argument so it's accessible by the user, but
+  # importantly by the `setup`, `draw` templates
+  let s = proc(p5Inst {.inject.}: P5Instance) {.closure.} = body
+  let p5Inst = newInstance(s, divName)
+
+template instance*(body: untyped): untyped =
+  ## Generates an instance of a `P5Instance` for the "instance mode".
+  instanceImpl()
+  # Inject the `p5Inst` argument so it's accessible by the user, but
+  # importantly by the `setup`, `draw` templates
+  let s = proc(p5Inst {.inject.}: P5Instance) {.closure.} = body
+  let p5Inst = newInstance(s)
+
+
 var
     mouseX* {.importc.}: float
     mouseY* {.importc.}: float
@@ -461,21 +612,22 @@ proc brigthness*(color: cstring): float
 
 {.push importc.}
 
-proc createCanvas*(width, height: PNumber)
-proc createCanvas*(width, height: PNumber, renderMode: cstring)
-proc resizeCanvas*(width, height: PNumber)
-proc resizeCanvas*(width, height: PNumber, noRedraw: bool)
-proc noCanvas*()
-proc createGraphics*(width, height: PNumber): Graphics
-proc createGraphics*(width, height: PNumber, renderMode: cstring): Graphics
-proc blendMode*(mode: cstring)
+globalAndLocal:
+  proc createCanvas*(width, height: PNumber)
+  proc createCanvas*(width, height: PNumber, renderMode: cstring)
+  proc resizeCanvas*(width, height: PNumber)
+  proc resizeCanvas*(width, height: PNumber, noRedraw: bool)
+  proc noCanvas*()
+  proc createGraphics*(width, height: PNumber): Graphics
+  proc createGraphics*(width, height: PNumber, renderMode: cstring): Graphics
+  proc blendMode*(mode: cstring)
 
-proc noLoop*()
-proc loop*()
-proc push*()
-proc pop*()
-proc redraw*()
-proc redraw*(n: int)
+  proc noLoop*()
+  proc loop*()
+  proc push*()
+  proc pop*()
+  proc redraw*()
+  proc redraw*(n: int)
 
 {.pop.}
 
@@ -685,100 +837,105 @@ proc torus*(self: Graphics, radius, tubeRadius: PNumber, detailX, detailY: int)
 #Vertex
 {.push importc.}
 
-proc beginCountour*()
-proc beginShape*()
-proc beginShape*(mode: cstring)
-proc bezierVertex*(x2, y2, x3, y3, x4, y4: PNumber)
-proc curveVertex*(x, y: PNumber)
-proc endContour*()
-proc endShape*(mode: cstring)
-proc quadraticVertex*(cx, cy, x3, y3: PNumber)
-proc vertex*(x, y: PNumber)
-proc vertex*(x, y, z, u, v: PNumber)
+globalAndLocal:
+  proc beginCountour*()
+  proc beginShape*()
+  proc beginShape*(mode: cstring)
+  proc bezierVertex*(x2, y2, x3, y3, x4, y4: PNumber)
+  proc curveVertex*(x, y: PNumber)
+  proc endContour*()
+  proc endShape*(mode: cstring)
+  proc quadraticVertex*(cx, cy, x3, y3: PNumber)
+  proc vertex*(x, y: PNumber)
+  proc vertex*(x, y, z, u, v: PNumber)
 
 {.pop.}
 
 #Global drawing procedures
 {.push importc.}
 
-proc background*(channel1, channel2, channel3: PNumber)
-proc background*(channel1, channel2, channel3, alpha: PNumber)
-proc background*(gray: PNumber)
-proc background*(gray, alpha: PNumber)
-proc background*(str: cstring)
-proc background*(color: Color)
-proc background*(image: Image)
-proc clear*()
-proc colorMode*(mode: cstring)
-proc colorMode*(mode: cstring, max: PNumber)
-proc colorMode*(mode: cstring, max1, max2, max3: PNumber)
-proc colorMode*(mode: cstring, max1, max2, max3, maxAlpha: PNumber)
-proc fill*(channel1, channel2, channel3: PNumber)
-proc fill*(channel1, channel2, channel3: PNumber, alpha: PNumber)
-proc fill*(gray: PNumber)
-proc fill*(gray: PNumber, alpha: PNumber)
-proc fill*(str: cstring)
-proc fill*(str: cstring, alpha: PNumber)
-proc fill*(color: Color)
-proc fill*(color: Color, alpha: PNumber)
-proc noFill*()
-proc noStroke*()
-proc stroke*(channel1, channel2, channel3: PNumber)
-proc stroke*(channel1, channel2, channel3: PNumber, alpha: PNumber)
-proc stroke*(gray: PNumber)
-proc stroke*(gray: PNumber, alpha: PNumber)
-proc stroke*(str: cstring)
-proc stroke*(str: cstring, alpha: PNumber)
-proc stroke*(color: Color)
-proc stroke*(color: Color, alpha: PNumber)
+globalAndLocal:
+  proc background*(channel1, channel2, channel3: PNumber)
+  proc background*(channel1, channel2, channel3, alpha: PNumber)
+  proc background*(gray: PNumber)
+  proc background*(gray, alpha: PNumber)
+  proc background*(str: cstring)
+  proc background*(color: Color)
+  proc background*(image: Image)
+  proc clear*()
+  proc colorMode*(mode: cstring)
+  proc colorMode*(mode: cstring, max: PNumber)
+  proc colorMode*(mode: cstring, max1, max2, max3: PNumber)
+  proc colorMode*(mode: cstring, max1, max2, max3, maxAlpha: PNumber)
+  proc fill*(channel1, channel2, channel3: PNumber)
+  proc fill*(channel1, channel2, channel3: PNumber, alpha: PNumber)
+  proc fill*(gray: PNumber)
+  proc fill*(gray: PNumber, alpha: PNumber)
+  proc fill*(str: cstring)
+  proc fill*(str: cstring, alpha: PNumber)
+  proc fill*(color: Color)
+  proc fill*(color: Color, alpha: PNumber)
+  proc noFill*()
+  proc noStroke*()
+  proc stroke*(channel1, channel2, channel3: PNumber)
+  proc stroke*(channel1, channel2, channel3: PNumber, alpha: PNumber)
+  proc stroke*(gray: PNumber)
+  proc stroke*(gray: PNumber, alpha: PNumber)
+  proc stroke*(str: cstring)
+  proc stroke*(str: cstring, alpha: PNumber)
+  proc stroke*(color: Color)
+  proc stroke*(color: Color, alpha: PNumber)
 
 {.pop.}
 
 #2D Primitives
 {.push importc.}
 
-proc arc*(x, y, width, height, start, stop: PNumber)
-proc arc*(x, y, width, height, start, stop: PNumber, mode: cstring)
-proc ellipse*(x, y, diameter: PNumber)
-proc ellipse*(x, y, width, height: PNumber)
-proc line*(x1, y1, x2, y2: PNumber)
-proc point*(x, y: PNumber)
-proc quad*(x1, y1, x2, y2, x3, y3, x4, y4: PNumber)
-proc rect*(x, y, width, height: PNumber)
-proc rect*(x, y, width, height, r: PNumber)
-proc rect*(x, y, width, height, tl, tr, bl, br: PNumber)
-proc rect*(x, y, width, height, detailX, detailY: PNumber)
-proc triangle*(x1, y1, x2, y2, x3, y3: PNumber)
+globalAndLocal:
+  proc arc*(x, y, width, height, start, stop: PNumber)
+  proc arc*(x, y, width, height, start, stop: PNumber, mode: cstring)
+  proc ellipse*(x, y, diameter: PNumber)
+  proc ellipse*(x, y, width, height: PNumber)
+  proc line*(x1, y1, x2, y2: PNumber)
+  proc point*(x, y: PNumber)
+  proc quad*(x1, y1, x2, y2, x3, y3, x4, y4: PNumber)
+  proc rect*(x, y, width, height: PNumber)
+  proc rect*(x, y, width, height, r: PNumber)
+  proc rect*(x, y, width, height, tl, tr, bl, br: PNumber)
+  proc rect*(x, y, width, height, detailX, detailY: PNumber)
+  proc triangle*(x1, y1, x2, y2, x3, y3: PNumber)
 
 {.pop.}
 
 #Rendering settings
 {.push importc.}
 
-proc ellipseMode*(mode: cstring)
-proc noSmooth*()
-proc rectMode*(mode: cstring)
-proc smooth*()
-proc strokeCap*(mode: cstring)
-proc strokeJoin*(mode: cstring)
-proc strokeWeight*(weight: PNumber)
+globalAndLocal:
+  proc ellipseMode*(mode: cstring)
+  proc noSmooth*()
+  proc rectMode*(mode: cstring)
+  proc smooth*()
+  proc strokeCap*(mode: cstring)
+  proc strokeJoin*(mode: cstring)
+  proc strokeWeight*(weight: PNumber)
 
 {.pop.}
 
 #Curves
 {.push importc.}
 
-proc bezier*(x1, y1, x2, y2, x3, y3, x4, y4: PNumber)
-proc bezier*(x1, y1, z1, x2, y2, z2, x3, y3, z3, x4, y4, z4: PNumber)
-proc bezierDetail*(detail: PNumber)
-proc bezierPoint*(a, b, c, d, t: PNumber): PNumber
-proc bezierTangent*(a, b, c, d, t: PNumber): PNumber
-proc curve*(x1, y1, x2, y2, x3, y3, x4, y4: PNumber)
-proc curve*(x1, y1, z1, x2, y2, z2, x3, y3, z3, x4, y4, z4: PNumber)
-proc curveDetail*(detail: PNumber)
-proc curveTightness*(tightness: PNumber)
-proc curvePoint*(a, b, c, d, t: PNumber): PNumber
-proc curveTangent*(a, b, c, d, t: PNumber): PNumber
+globalAndLocal:
+  proc bezier*(x1, y1, x2, y2, x3, y3, x4, y4: PNumber)
+  proc bezier*(x1, y1, z1, x2, y2, z2, x3, y3, z3, x4, y4, z4: PNumber)
+  proc bezierDetail*(detail: PNumber)
+  proc bezierPoint*(a, b, c, d, t: PNumber): PNumber
+  proc bezierTangent*(a, b, c, d, t: PNumber): PNumber
+  proc curve*(x1, y1, x2, y2, x3, y3, x4, y4: PNumber)
+  proc curve*(x1, y1, z1, x2, y2, z2, x3, y3, z3, x4, y4, z4: PNumber)
+  proc curveDetail*(detail: PNumber)
+  proc curveTightness*(tightness: PNumber)
+  proc curvePoint*(a, b, c, d, t: PNumber): PNumber
+  proc curveTangent*(a, b, c, d, t: PNumber): PNumber
 
 {.pop.}
 
@@ -816,24 +973,25 @@ proc getURLParams*(): JsObject
 #Transforms
 {.push importc.}
 
-proc applyMatrix*(a, b, c, d, e, f: PNumber)
-proc popMatrix*()
-proc pushMatrix*()
-proc printMatrix*()
-proc resetMatrix*()
-proc rotate*(angle: PNumber)
-proc rotate*(angle: PNumber, axis: array[3, PNumber] | Vector)
-proc rotateX*(radians: PNumber)
-proc rotateY*(radians: PNumber)
-proc rotateZ*(radians: PNumber)
-proc scale*(s: PNumber | Vector | array[3, PNumber])
-proc scale*(s: PNumber | Vector | array[3, PNumber], y: PNumber)
-proc scale*(s: PNumber | Vector | array[3, PNumber], z: PNumber)
-proc scale*(s: PNumber | Vector | array[3, PNumber], y, z: PNumber)
-proc shearX*(angle: PNumber)
-proc shearY*(angle: PNumber)
-proc translate*(x, y: PNumber)
-proc translate*(x, y, z: PNumber)
+globalAndLocal:
+  proc applyMatrix*(a, b, c, d, e, f: PNumber)
+  proc popMatrix*()
+  proc pushMatrix*()
+  proc printMatrix*()
+  proc resetMatrix*()
+  proc rotate*(angle: PNumber)
+  proc rotate*(angle: PNumber, axis: array[3, PNumber] | Vector)
+  proc rotateX*(radians: PNumber)
+  proc rotateY*(radians: PNumber)
+  proc rotateZ*(radians: PNumber)
+  proc scale*(s: PNumber | Vector | array[3, PNumber])
+  proc scale*(s: PNumber | Vector | array[3, PNumber], y: PNumber)
+  proc scale*(s: PNumber | Vector | array[3, PNumber], z: PNumber)
+  proc scale*(s: PNumber | Vector | array[3, PNumber], y, z: PNumber)
+  proc shearX*(angle: PNumber)
+  proc shearY*(angle: PNumber)
+  proc translate*(x, y: PNumber)
+  proc translate*(x, y, z: PNumber)
 
 {.pop.}
 
