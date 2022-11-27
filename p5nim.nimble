@@ -24,4 +24,4 @@ task examples, "rebuild all examples":
   build "polygons"
   build "okazz_220919a"
   build "okazz_221026a"
-
+  build "instances"
