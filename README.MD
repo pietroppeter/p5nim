@@ -19,12 +19,6 @@ From its website:
 
 > p5.js is a JavaScript library for creative coding, with a focus on making coding accessible and inclusive for artists, designers, educators, beginners, and anyone else! p5.js is free and open-source because we believe software, and the tools to learn it, should be accessible to everyone.
 
-[Nim]: https://nim-lang.org
-[nimib]: https://github.com/pietroppeter/nimib/
-[Processing]: https://processing.org
-[java applets]: https://en.wikipedia.org/wiki/Java_applet
-[p5.js]: https://p5js.org
-
 ## Status
 
 This project started as a fork of https://github.com/Foldover/nim-p5/, to fix some bugs.
@@ -58,11 +52,12 @@ You might want instead to clone it, in order to contribute fixing stuff and addi
       ellipse(mouseX, mouseY, 40, 40)
       
 As you see from the code above ([live](https://pietroppeter.github.io/p5nim/get_started.html)), using p5nim is almost identical to using p5.js, save for the syntax.
-To learn how to use this the best way is to port use [p5.js] documentation and port examples.
+To learn how to use this the best way is to use [p5.js] documentation and port examples.
 
 ## Porting from p5js to Nim
 
-There are a number of javascript procedures that p5js needs to know about and they have to be declared with the {.exportc.} pragma. In p5nim we provide templates that remove the necessity to declare procs with {.exportc.}. The full list is in [src/p5/p5sugar.nim](src/p5/p5sugar.nim).
+There are a number of javascript procedures that p5js needs to know about (like `setup` and `draw`) and they have to be declared with the {.exportc.} pragma.
+In p5nim we provide templates that remove the necessity to declare procs with {.exportc.}. The full list is in [src/p5/p5sugar.nim](src/p5/p5sugar.nim).
 
 Since [Number in javascript](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)
 is actually a float, in p5nim all procedures are defined with input a `float`.
@@ -88,7 +83,7 @@ When converting examples from p5js there are some common pitfalls:
   For an example see [okazz_221026a](https://pietroppeter.github.io/p5nim/okazz_221026a.html)
   and try removing the imports of `math` and `random`, use `floor` instead of `math.floor`
   or `random(1.0)` instead of `random.rand(1.0)`.
-  This is actually something for which a solution should be found in this library.
+  This is actually something for which a solution should be found in this library (remove them from bindings?).
 
 ## Contribute
 
@@ -96,4 +91,12 @@ When converting examples from p5js there are some common pitfalls:
   - you will have to commit the html in docs, and rerun also `nim r index`
     (which uses data from `docs\index.json`)
   - as you find out new conversion pitfalls update the readme up there
-- an excellent source of open art is [openprocessing](https://openprocessing.org)
+- an excellent source of open art is [openprocessing]
+
+
+[Nim]: https://nim-lang.org
+[nimib]: https://github.com/pietroppeter/nimib/
+[Processing]: https://processing.org
+[java applets]: https://en.wikipedia.org/wiki/Java_applet
+[p5.js]: https://p5js.org
+[openprocessing]: https://openprocessing.org/
