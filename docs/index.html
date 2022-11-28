@@ -1,129 +1,102 @@
 <!DOCTYPE html>
 <html lang="en-us">
-
 <head>
   <title>index.nim</title>
-  <link rel="icon"
-    href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2280%22>🐳</text></svg>">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2280%22>🐳</text></svg>">
   <meta content="text/html; charset=utf-8" http-equiv="content-type">
   <meta content="width=device-width, initial-scale=1" name="viewport">
   <link rel='stylesheet' href='https://unpkg.com/normalize.css'>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kognise/water.css@latest/dist/light.min.css">
   <link rel='stylesheet' href='https://cdn.jsdelivr.net/gh/pietroppeter/nimib/assets/atom-one-light.css'>
   <style>
-    .nb-box {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
+.nb-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.nb-small {
+  font-size: 0.8rem;
+}
+button.nb-small {
+  float: right;
+  padding: 2px;
+  padding-right: 5px;
+  padding-left: 5px;
+}
+section#source {
+  display:none
+}
 
-    .nb-small {
-      font-size: 0.8rem;
-    }
-
-    button.nb-small {
-      float: right;
-      padding: 2px;
-      padding-right: 5px;
-      padding-left: 5px;
-    }
-
-    section#source {
-      display: none
-    }
-
-    .nb-output {
-      line-height: 1.15;
-    }
-  </style>
-
+.nb-output {
+  line-height: 1.15;
+}
+</style>
+  
 </head>
-
 <body>
-  <header>
-    <div class="nb-box">
-      <span><a href=".">🏡</a></span>
-      <span><code>index.nim</code></span>
-      <span><a href="https://github.com/pietroppeter/nim-p5"><svg aria-hidden="true" width="1.2em" height="1.2em"
-            style="vertical-align: middle;" preserveAspectRatio="xMidYMid meet" viewBox="0 0 16 16">
-            <path fill-rule="evenodd"
-              d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59c.4.07.55-.17.55-.38c0-.19-.01-.82-.01-1.49c-2.01.37-2.53-.49-2.69-.94c-.09-.23-.48-.94-.82-1.13c-.28-.15-.68-.52-.01-.53c.63-.01 1.08.58 1.23.82c.72 1.21 1.87.87 2.33.66c.07-.52.28-.87.51-1.07c-1.78-.2-3.64-.89-3.64-3.95c0-.87.31-1.59.82-2.15c-.08-.2-.36-1.02.08-2.12c0 0 .67-.21 2.2.82c.64-.18 1.32-.27 2-.27c.68 0 1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82c.44 1.1.16 1.92.08 2.12c.51.56.82 1.27.82 2.15c0 3.07-1.87 3.75-3.65 3.95c.29.25.54.73.54 1.48c0 1.07-.01 1.93-.01 2.2c0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"
-              fill="#000"></path>
-          </svg></a></span>
-    </div>
-    <hr>
-  </header>
-  <main>
-    <h2>nimp5 documentation</h2>
-    <ol>
-      <li>
-        <p><a href="./get_started.html">Get started</a>: This program creates a canvas that is 400 pixels wide and 400
-          pixels high, and then starts drawing white circles at the position of the mouse. When a mouse button is
-          pressed, the circle color changes to black.</p>
-      </li>
-      <li>
-        <p><a href="./flashing_canvas.html">Flashing canvas</a>: A canvas that flashes random colors (shows how to
-          change frameRate)</p>
-      </li>
-      <li>
-        <p><a href="./easing.html">Easing</a>: Move the mouse across the screen and the symbol will follow.</p>
-      </li>
-      <li>
-        <p><a href="./keyboard.html">Keyboard</a>: Click on the image to give it focus and press the letter keys to
-          create forms in time and space. Each key has a unique identifying number. These numbers can be used to
-          position shapes in space.</p>
-      </li>
-      <li>
-        <p><a href="./polygons.html">Polygons</a>: What is your favorite? Pentagon? Hexagon? Heptagon? No? What about
-          the icosagon? The polygon() function created for this example is capable of drawing any regular polygon. Also
-          shows <a href="https://p5js.org/reference/#/p5/fill">possible inputs for colors</a>.</p>
-      </li>
-      <li>
-        <p><a href="./okazz_220919a.html">Okazz 220919a</a>: Art by <a
-            href="https://openprocessing.org/user/128718?view=sketches&o=31">Okazz</a>,
-          original at <a href="https://openprocessing.org/sketch/1653811">openprocessing.org/sketch/1653811</a>.</p>
-      </li>
-    </ol>
-    <p>License is <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/">CreativeCommons Attribution NonCommercial
-        ShareAlike</a>.</p>
-    <p>The original sketch has been ported from p5js to p5nim.</p>
-    <ol start="7">
-      <li><a href="./okazz_221026a.html">Okazz 221026a</a>: Art by <a
-          href="https://openprocessing.org/user/128718?view=sketches&o=31">Okazz</a>,
-        original at <a href="https://openprocessing.org/sketch/1711659">openprocessing.org/sketch/1653811</a>.</li>
-    </ol>
-    <p>License is <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/">CreativeCommons Attribution NonCommercial
-        ShareAlike</a>.</p>
-    <p>The original sketch has been ported from p5js to p5nim.</p>
-    <ol start="8">
-      <li><a href="./sinewave.html">Sine Wave</a>: Render a simple sine wave. Original by Daniel Shiffman
-        (https://p5js.org/examples/math-sine-wave.html)</li>
-    </ol>
-    <script defer>/* Generated by the Nim Compiler v1.6.10 */
-      var framePtr = null;
-      var excHandler = 0;
-      var lastJSError = null;
-      if (!Math.trunc) {
-        Math.trunc = function (v) {
-          v = +v;
-          if (!isFinite(v)) return v;
-          return (v - v % 1) || (v < 0 ? -0 : v === 0 ? v : 0);
-        };
-      }
-
-      var objectID_620757154 = [0];
-    </script>
-  </main>
-  <footer>
-    <hr>
-    <div class="nb-box">
-      <span><span class="nb-small">made with <a href="https://pietroppeter.github.io/nimib/">nimib 🐳</a></span></span>
-      <span></span>
-      <span><button class="nb-small" id="show" onclick="toggleSourceDisplay()">Show Source</button></span>
-    </div>
-  </footer>
-  <section id="source">
-    <pre><code class="nim hljs"><span class="hljs-keyword">import</span> std / [os, algorithm, sugar, strformat, strutils, tables]
+<header>
+<div class="nb-box">
+  <span><a href=".">🏡</a></span>
+  <span><code>index.nim</code></span>
+  <span><a href="https://github.com/pietroppeter/p5nim"><svg aria-hidden="true" width="1.2em" height="1.2em" style="vertical-align: middle;" preserveAspectRatio="xMidYMid meet" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59c.4.07.55-.17.55-.38c0-.19-.01-.82-.01-1.49c-2.01.37-2.53-.49-2.69-.94c-.09-.23-.48-.94-.82-1.13c-.28-.15-.68-.52-.01-.53c.63-.01 1.08.58 1.23.82c.72 1.21 1.87.87 2.33.66c.07-.52.28-.87.51-1.07c-1.78-.2-3.64-.89-3.64-3.95c0-.87.31-1.59.82-2.15c-.08-.2-.36-1.02.08-2.12c0 0 .67-.21 2.2.82c.64-.18 1.32-.27 2-.27c.68 0 1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82c.44 1.1.16 1.92.08 2.12c.51.56.82 1.27.82 2.15c0 3.07-1.87 3.75-3.65 3.95c.29.25.54.73.54 1.48c0 1.07-.01 1.93-.01 2.2c0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z" fill="#000"></path></svg></a></span>
+</div>
+<hr>
+</header><main>
+<h2>nimp5 documentation</h2>
+<ol>
+<li>
+<p><a href="./get_started.html">Get started</a>: This program creates a canvas that is 400 pixels wide and 400 pixels high, and then starts drawing white circles at the position of the mouse. When a mouse button is pressed, the circle color changes to black.</p>
+</li>
+<li>
+<p><a href="./flashing_canvas.html">Flashing canvas</a>: A canvas that flashes random colors (shows how to change frameRate)</p>
+</li>
+<li>
+<p><a href="./easing.html">Easing</a>: Move the mouse across the screen and the symbol will follow.</p>
+</li>
+<li>
+<p><a href="./keyboard.html">Keyboard</a>: Click on the image to give it focus and press the letter keys to create forms in time and space. Each key has a unique identifying number. These numbers can be used to position shapes in space.</p>
+</li>
+<li>
+<p><a href="./polygons.html">Polygons</a>: What is your favorite? Pentagon? Hexagon? Heptagon? No? What about the icosagon? The polygon() function created for this example is capable of drawing any regular polygon. Also shows <a href="https://p5js.org/reference/#/p5/fill">possible inputs for colors</a>.</p>
+</li>
+<li>
+<p><a href="./okazz_220919a.html">Okazz 220919a</a>: Art by <a href="https://openprocessing.org/user/128718?view=sketches&o=31">Okazz</a>,
+original at <a href="https://openprocessing.org/sketch/1653811">openprocessing.org/sketch/1653811</a>.</p>
+</li>
+</ol>
+<p>License is <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/">CreativeCommons Attribution NonCommercial ShareAlike</a>.</p>
+<p>The original sketch has been ported from p5js to p5nim.</p>
+<ol start="7">
+<li><a href="./okazz_221026a.html">Okazz 221026a</a>: Art by <a href="https://openprocessing.org/user/128718?view=sketches&o=31">Okazz</a>,
+original at <a href="https://openprocessing.org/sketch/1711659">openprocessing.org/sketch/1653811</a>.</li>
+</ol>
+<p>License is <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/">CreativeCommons Attribution NonCommercial ShareAlike</a>.</p>
+<p>The original sketch has been ported from p5js to p5nim.</p>
+<ol start="8">
+<li>
+<p><a href="./sinewave.html">Sine Wave</a>: Render a simple sine wave. Original by Daniel Shiffman (https://p5js.org/examples/math-sine-wave.html)</p>
+</li>
+<li>
+<p><a href="./instances.html">Instances</a>: This program creates a canvas in a local p5 instance using &quot;instance mode&quot;, which allows to place a P5 instance into a specific <code>&lt;div&gt;</code> if desired. Otherwise this is the same example as <code>get_started</code>.</p>
+</li>
+</ol>
+<script defer>/* Generated by the Nim Compiler v1.7.3 */
+var framePtr = null;
+var excHandler = 0;
+var lastJSError = null;
+var objectID_1224736930 = [0];
+</script>
+</main>
+<footer>
+<hr>
+<div class="nb-box">
+  <span><span class="nb-small">made with <a href="https://pietroppeter.github.io/nimib/">nimib 🐳</a></span></span>
+  <span></span>
+  <span><button class="nb-small" id="show" onclick="toggleSourceDisplay()">Show Source</button></span>
+</div>
+</footer>
+<section id="source">
+<pre><code class="nim hljs"><span class="hljs-keyword">import</span> std / [os, algorithm, sugar, strformat, strutils, tables]
 <span class="hljs-keyword">import</span> nimib <span class="hljs-keyword">except</span> toJson  <span class="hljs-comment"># we need to remove this from nimib exports! it breaks jsony!</span>
 <span class="hljs-keyword">import</span> jsony
 
@@ -177,20 +150,17 @@
     listEntries.add <span class="hljs-string">fmt&quot;{entry.numbering}. [{entry.title}]({entry.filename}): {entry.description}&quot;</span> &amp; <span class="hljs-string">&quot;</span><span class="hljs-meta">\n</span><span class="hljs-string">&quot;</span>
   nbText: listEntries
   nbSave</code></pre>
-  </section>
-  <script>
-    function toggleSourceDisplay() {
-      var btn = document.getElementById("show")
-      var source = document.getElementById("source");
-      if (btn.innerHTML == "Show Source") {
-        btn.innerHTML = "Hide Source";
-        source.style.display = "block";
-      } else {
-        btn.innerHTML = "Show Source";
-        source.style.display = "none";
-      }
-    }
-  </script>
-</body>
-
+</section><script>
+function toggleSourceDisplay() {
+  var btn = document.getElementById("show")
+  var source = document.getElementById("source");
+  if (btn.innerHTML=="Show Source") {
+    btn.innerHTML = "Hide Source";
+    source.style.display = "block";
+  } else {
+    btn.innerHTML = "Show Source";
+    source.style.display = "none";
+  }
+}
+</script></body>
 </html>
