@@ -13,9 +13,9 @@ else:
   type PNumber* = float
 
 # creates a new P5 instance for the "instance mode"
-proc newInstance*(s: InstanceClosure): P5Instance {.importcpp: "new p5(#)"}
+proc newInstance*(s: InstanceClosure): P5Instance {.importjs: "new p5(#)"}
 # same as above, but will place the given instance in the given HTML `<div>`
-proc newInstance*(s: InstanceClosure, divName: cstring): P5Instance {.importcpp: "new p5(#, #)"}
+proc newInstance*(s: InstanceClosure, divName: cstring): P5Instance {.importjs: "new p5(#, #)"}
 
 
 #[
