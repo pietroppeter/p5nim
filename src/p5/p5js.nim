@@ -3,58 +3,20 @@ import jsffi
 import math
 import dom
 
+# needed to define the p5 instance versions of all wrapped procedures
+from p5instance_logic import globalAndLocal
+import p5types
+
 when defined(p5IntOrFloat):
   type PNumber* = int or float
 else:
   type PNumber* = float
 
-type
-    Color* = ref object
+# creates a new P5 instance for the "instance mode"
+proc newInstance*(s: InstanceClosure): P5Instance {.importjs: "new p5(#)"}
+# same as above, but will place the given instance in the given HTML `<div>`
+proc newInstance*(s: InstanceClosure, divName: cstring): P5Instance {.importjs: "new p5(#, #)"}
 
-    Touche* = ref object
-        x {.importc.}: float
-        y {.importc.}: float
-        id {.importc.}: int
-    File* = ref object
-
-    Image* = ref object
-      width* {.importc.}: float
-      height* {.importc.}: float
-      pixels* {.importc.}: seq[float]
-
-    Vector* = ref object
-        x* {.importc.}: float
-        y* {.importc.}: float
-        z* {.importc.}: float
-
-    Graphics* = ref object
-        pixels*{.importc.}: seq[float]
-        width*{.importc.}: float
-        height*{.importc.}: float
-        mouseX* {.importc.}: float
-        mouseY* {.importc.}: float
-        pmouseX* {.importc.}: float
-        pmouseY* {.importc.}: float
-        winMouseX* {.importc.}: float
-        winMouseY* {.importc.}: float
-        pwinMouseX* {.importc.}: float
-        pwinMouseY* {.importc.}: float
-        mouseButton* {.importc.}: cstring
-        mouseIsPressed* {.importc.}: bool
-
-    Font* = ref object
-
-    Geometry = ref object
-
-    Shader* = ref object
-
-    XML* = ref object
-
-    PrintWriter* = ref object
-
-    Table* = ref object
-
-    Blob* = ref object
 
 #[
     use overloadable p5 functions with exportc pragma, i.e. proc setup(): void {.exportc.} =
@@ -124,46 +86,46 @@ proc setMoveThreshold*(value: PNumber) {.importc.}
 proc setShakeThreshold*(value: PNumber) {.importc.}
 
 var
-    P2D* {.importc.}: cstring 
+    P2D* {.importc.}: cstring
     WEBGL* {.importc.}: cstring
-    ARROW* {.importc.}: cstring 
-    CROSS* {.importc.}: cstring 
-    HAND* {.importc.}: cstring 
-    MOVE* {.importc.}: cstring 
-    TEXT* {.importc.}: cstring 
-    WAIT* {.importc.}: cstring 
-    PI* {.importc.}: float 
-    HALF_PI* {.importc.}: float 
-    QUARTER_PI* {.importc.}: float 
-    TAU* {.importc.}: float 
-    TWO_PI* {.importc.}: float 
-    DEGREES* {.importc.}: cstring 
-    RADIANS* {.importc.}: cstring 
-    DEG_TO_RAD* {.importc.}: float 
-    RAD_TO_DEG* {.importc.}: float 
-    CORNER* {.importc.}: cstring 
-    CORNERS* {.importc.}: cstring 
-    RADIUS* {.importc.}: cstring 
-    RIGHT* {.importc.}: cstring 
-    LEFT* {.importc.}: cstring 
-    CENTER* {.importc.}: cstring 
-    TOP* {.importc.}: cstring 
-    BOTTOM* {.importc.}: cstring 
-    BASELINE* {.importc.}: cstring 
-    POINTS* {.importc.}: float 
-    LINES* {.importc.}: float 
-    LINE_STRIP* {.importc.}: float 
-    LINE_LOOP* {.importc.}: float 
-    TRIANGLES* {.importc.}: float 
-    TRIANGLE_FAN* {.importc.}: float 
-    TRIANGLE_STRIP* {.importc.}: float 
-    QUADS* {.importc.}: cstring 
-    QUAD_STRIP* {.importc.}: cstring 
-    CLOSE* {.importc.}: cstring 
-    OPEN* {.importc.}: cstring 
-    CHORD* {.importc.}: cstring 
-    PIE* {.importc.}: cstring 
-    PROJECT* {.importc.}: cstring 
+    ARROW* {.importc.}: cstring
+    CROSS* {.importc.}: cstring
+    HAND* {.importc.}: cstring
+    MOVE* {.importc.}: cstring
+    TEXT* {.importc.}: cstring
+    WAIT* {.importc.}: cstring
+    PI* {.importc.}: float
+    HALF_PI* {.importc.}: float
+    QUARTER_PI* {.importc.}: float
+    TAU* {.importc.}: float
+    TWO_PI* {.importc.}: float
+    DEGREES* {.importc.}: cstring
+    RADIANS* {.importc.}: cstring
+    DEG_TO_RAD* {.importc.}: float
+    RAD_TO_DEG* {.importc.}: float
+    CORNER* {.importc.}: cstring
+    CORNERS* {.importc.}: cstring
+    RADIUS* {.importc.}: cstring
+    RIGHT* {.importc.}: cstring
+    LEFT* {.importc.}: cstring
+    CENTER* {.importc.}: cstring
+    TOP* {.importc.}: cstring
+    BOTTOM* {.importc.}: cstring
+    BASELINE* {.importc.}: cstring
+    POINTS* {.importc.}: float
+    LINES* {.importc.}: float
+    LINE_STRIP* {.importc.}: float
+    LINE_LOOP* {.importc.}: float
+    TRIANGLES* {.importc.}: float
+    TRIANGLE_FAN* {.importc.}: float
+    TRIANGLE_STRIP* {.importc.}: float
+    QUADS* {.importc.}: cstring
+    QUAD_STRIP* {.importc.}: cstring
+    CLOSE* {.importc.}: cstring
+    OPEN* {.importc.}: cstring
+    CHORD* {.importc.}: cstring
+    PIE* {.importc.}: cstring
+    PROJECT* {.importc.}: cstring
     SQUARE* {.importc.}: cstring
     ROUND* {.importc.}: cstring
     BEVEL* {.importc.}: cstring
@@ -247,7 +209,7 @@ proc touchMoved*(element: Element, arg: proc | bool)
 proc touchEnded*(element: Element, arg: proc | bool)
 proc dragOver*(element: Element, arg: proc | bool)
 proc dragLeave*(element: Element, arg: proc | bool)
-proc drop*(element: Element, callback: proc(file: File), fxn: proc)
+proc drop*(element: Element, callback: proc(file: p5types.File), fxn: proc)
 
 {.pop.}
 
@@ -352,7 +314,7 @@ proc add*(self: Vector, other: Vector | array[2, PNumber] | array[3, PNumber])
 proc add*(self: Vector, x, y: float, z: float = 0)
 proc sub*(self: Vector, other: Vector | array[2, PNumber] | array[3, PNumber])
 proc sub*(self: Vector, x, y: float, z: float = 0)
-proc mult*(self: Vector, scalar: PNumber) 
+proc mult*(self: Vector, scalar: PNumber)
 proc `div`*(self: Vector, scalar: PNumber)
 proc mag*(self: Vector): float
 proc magSqr*(self: Vector): float
@@ -435,21 +397,22 @@ proc brigthness*(color: cstring): float
 
 {.push importc.}
 
-proc createCanvas*(width, height: PNumber)
-proc createCanvas*(width, height: PNumber, renderMode: cstring)
-proc resizeCanvas*(width, height: PNumber)
-proc resizeCanvas*(width, height: PNumber, noRedraw: bool)
-proc noCanvas*()
-proc createGraphics*(width, height: PNumber): Graphics
-proc createGraphics*(width, height: PNumber, renderMode: cstring): Graphics
-proc blendMode*(mode: cstring)
+globalAndLocal:
+  proc createCanvas*(width, height: PNumber)
+  proc createCanvas*(width, height: PNumber, renderMode: cstring)
+  proc resizeCanvas*(width, height: PNumber)
+  proc resizeCanvas*(width, height: PNumber, noRedraw: bool)
+  proc noCanvas*()
+  proc createGraphics*(width, height: PNumber): Graphics
+  proc createGraphics*(width, height: PNumber, renderMode: cstring): Graphics
+  proc blendMode*(mode: cstring)
 
-proc noLoop*()
-proc loop*()
-proc push*()
-proc pop*()
-proc redraw*()
-proc redraw*(n: int)
+  proc noLoop*()
+  proc loop*()
+  proc push*()
+  proc pop*()
+  proc redraw*()
+  proc redraw*(n: int)
 
 {.pop.}
 
@@ -659,100 +622,105 @@ proc torus*(self: Graphics, radius, tubeRadius: PNumber, detailX, detailY: int)
 #Vertex
 {.push importc.}
 
-proc beginCountour*()
-proc beginShape*()
-proc beginShape*(mode: cstring)
-proc bezierVertex*(x2, y2, x3, y3, x4, y4: PNumber)
-proc curveVertex*(x, y: PNumber)
-proc endContour*()
-proc endShape*(mode: cstring)
-proc quadraticVertex*(cx, cy, x3, y3: PNumber)
-proc vertex*(x, y: PNumber)
-proc vertex*(x, y, z, u, v: PNumber)
+globalAndLocal:
+  proc beginCountour*()
+  proc beginShape*()
+  proc beginShape*(mode: cstring)
+  proc bezierVertex*(x2, y2, x3, y3, x4, y4: PNumber)
+  proc curveVertex*(x, y: PNumber)
+  proc endContour*()
+  proc endShape*(mode: cstring)
+  proc quadraticVertex*(cx, cy, x3, y3: PNumber)
+  proc vertex*(x, y: PNumber)
+  proc vertex*(x, y, z, u, v: PNumber)
 
 {.pop.}
 
 #Global drawing procedures
 {.push importc.}
 
-proc background*(channel1, channel2, channel3: PNumber)
-proc background*(channel1, channel2, channel3, alpha: PNumber)
-proc background*(gray: PNumber)
-proc background*(gray, alpha: PNumber)
-proc background*(str: cstring)
-proc background*(color: Color)
-proc background*(image: Image)
-proc clear*()
-proc colorMode*(mode: cstring)
-proc colorMode*(mode: cstring, max: PNumber)
-proc colorMode*(mode: cstring, max1, max2, max3: PNumber)
-proc colorMode*(mode: cstring, max1, max2, max3, maxAlpha: PNumber)
-proc fill*(channel1, channel2, channel3: PNumber)
-proc fill*(channel1, channel2, channel3: PNumber, alpha: PNumber)
-proc fill*(gray: PNumber)
-proc fill*(gray: PNumber, alpha: PNumber)
-proc fill*(str: cstring)
-proc fill*(str: cstring, alpha: PNumber)
-proc fill*(color: Color)
-proc fill*(color: Color, alpha: PNumber)
-proc noFill*()
-proc noStroke*()
-proc stroke*(channel1, channel2, channel3: PNumber)
-proc stroke*(channel1, channel2, channel3: PNumber, alpha: PNumber)
-proc stroke*(gray: PNumber)
-proc stroke*(gray: PNumber, alpha: PNumber)
-proc stroke*(str: cstring)
-proc stroke*(str: cstring, alpha: PNumber)
-proc stroke*(color: Color)
-proc stroke*(color: Color, alpha: PNumber)
+globalAndLocal:
+  proc background*(channel1, channel2, channel3: PNumber)
+  proc background*(channel1, channel2, channel3, alpha: PNumber)
+  proc background*(gray: PNumber)
+  proc background*(gray, alpha: PNumber)
+  proc background*(str: cstring)
+  proc background*(color: Color)
+  proc background*(image: Image)
+  proc clear*()
+  proc colorMode*(mode: cstring)
+  proc colorMode*(mode: cstring, max: PNumber)
+  proc colorMode*(mode: cstring, max1, max2, max3: PNumber)
+  proc colorMode*(mode: cstring, max1, max2, max3, maxAlpha: PNumber)
+  proc fill*(channel1, channel2, channel3: PNumber)
+  proc fill*(channel1, channel2, channel3: PNumber, alpha: PNumber)
+  proc fill*(gray: PNumber)
+  proc fill*(gray: PNumber, alpha: PNumber)
+  proc fill*(str: cstring)
+  proc fill*(str: cstring, alpha: PNumber)
+  proc fill*(color: Color)
+  proc fill*(color: Color, alpha: PNumber)
+  proc noFill*()
+  proc noStroke*()
+  proc stroke*(channel1, channel2, channel3: PNumber)
+  proc stroke*(channel1, channel2, channel3: PNumber, alpha: PNumber)
+  proc stroke*(gray: PNumber)
+  proc stroke*(gray: PNumber, alpha: PNumber)
+  proc stroke*(str: cstring)
+  proc stroke*(str: cstring, alpha: PNumber)
+  proc stroke*(color: Color)
+  proc stroke*(color: Color, alpha: PNumber)
 
 {.pop.}
 
 #2D Primitives
 {.push importc.}
 
-proc arc*(x, y, width, height, start, stop: PNumber)
-proc arc*(x, y, width, height, start, stop: PNumber, mode: cstring)
-proc ellipse*(x, y, diameter: PNumber)
-proc ellipse*(x, y, width, height: PNumber)
-proc line*(x1, y1, x2, y2: PNumber)
-proc point*(x, y: PNumber)
-proc quad*(x1, y1, x2, y2, x3, y3, x4, y4: PNumber)
-proc rect*(x, y, width, height: PNumber)
-proc rect*(x, y, width, height, r: PNumber)
-proc rect*(x, y, width, height, tl, tr, bl, br: PNumber)
-proc rect*(x, y, width, height, detailX, detailY: PNumber)
-proc triangle*(x1, y1, x2, y2, x3, y3: PNumber)
+globalAndLocal:
+  proc arc*(x, y, width, height, start, stop: PNumber)
+  proc arc*(x, y, width, height, start, stop: PNumber, mode: cstring)
+  proc ellipse*(x, y, diameter: PNumber)
+  proc ellipse*(x, y, width, height: PNumber)
+  proc line*(x1, y1, x2, y2: PNumber)
+  proc point*(x, y: PNumber)
+  proc quad*(x1, y1, x2, y2, x3, y3, x4, y4: PNumber)
+  proc rect*(x, y, width, height: PNumber)
+  proc rect*(x, y, width, height, r: PNumber)
+  proc rect*(x, y, width, height, tl, tr, bl, br: PNumber)
+  proc rect*(x, y, width, height, detailX, detailY: PNumber)
+  proc triangle*(x1, y1, x2, y2, x3, y3: PNumber)
 
 {.pop.}
 
 #Rendering settings
 {.push importc.}
 
-proc ellipseMode*(mode: cstring)
-proc noSmooth*()
-proc rectMode*(mode: cstring)
-proc smooth*()
-proc strokeCap*(mode: cstring)
-proc strokeJoin*(mode: cstring)
-proc strokeWeight*(weight: PNumber)
+globalAndLocal:
+  proc ellipseMode*(mode: cstring)
+  proc noSmooth*()
+  proc rectMode*(mode: cstring)
+  proc smooth*()
+  proc strokeCap*(mode: cstring)
+  proc strokeJoin*(mode: cstring)
+  proc strokeWeight*(weight: PNumber)
 
 {.pop.}
 
 #Curves
 {.push importc.}
 
-proc bezier*(x1, y1, x2, y2, x3, y3, x4, y4: PNumber)
-proc bezier*(x1, y1, z1, x2, y2, z2, x3, y3, z3, x4, y4, z4: PNumber)
-proc bezierDetail*(detail: PNumber)
-proc bezierPoint*(a, b, c, d, t: PNumber): PNumber
-proc bezierTangent*(a, b, c, d, t: PNumber): PNumber
-proc curve*(x1, y1, x2, y2, x3, y3, x4, y4: PNumber)
-proc curve*(x1, y1, z1, x2, y2, z2, x3, y3, z3, x4, y4, z4: PNumber)
-proc curveDetail*(detail: PNumber)
-proc curveTightness*(tightness: PNumber)
-proc curvePoint*(a, b, c, d, t: PNumber): PNumber
-proc curveTangent*(a, b, c, d, t: PNumber): PNumber
+globalAndLocal:
+  proc bezier*(x1, y1, x2, y2, x3, y3, x4, y4: PNumber)
+  proc bezier*(x1, y1, z1, x2, y2, z2, x3, y3, z3, x4, y4, z4: PNumber)
+  proc bezierDetail*(detail: PNumber)
+  proc bezierPoint*(a, b, c, d, t: PNumber): PNumber
+  proc bezierTangent*(a, b, c, d, t: PNumber): PNumber
+  proc curve*(x1, y1, x2, y2, x3, y3, x4, y4: PNumber)
+  proc curve*(x1, y1, z1, x2, y2, z2, x3, y3, z3, x4, y4, z4: PNumber)
+  proc curveDetail*(detail: PNumber)
+  proc curveTightness*(tightness: PNumber)
+  proc curvePoint*(a, b, c, d, t: PNumber): PNumber
+  proc curveTangent*(a, b, c, d, t: PNumber): PNumber
 
 {.pop.}
 
@@ -790,24 +758,25 @@ proc getURLParams*(): JsObject
 #Transforms
 {.push importc.}
 
-proc applyMatrix*(a, b, c, d, e, f: PNumber)
-proc popMatrix*()
-proc pushMatrix*()
-proc printMatrix*()
-proc resetMatrix*()
-proc rotate*(angle: PNumber)
-proc rotate*(angle: PNumber, axis: array[3, PNumber] | Vector)
-proc rotateX*(radians: PNumber)
-proc rotateY*(radians: PNumber)
-proc rotateZ*(radians: PNumber)
-proc scale*(s: PNumber | Vector | array[3, PNumber])
-proc scale*(s: PNumber | Vector | array[3, PNumber], y: PNumber)
-proc scale*(s: PNumber | Vector | array[3, PNumber], z: PNumber)
-proc scale*(s: PNumber | Vector | array[3, PNumber], y, z: PNumber)
-proc shearX*(angle: PNumber)
-proc shearY*(angle: PNumber)
-proc translate*(x, y: PNumber)
-proc translate*(x, y, z: PNumber)
+globalAndLocal:
+  proc applyMatrix*(a, b, c, d, e, f: PNumber)
+  proc popMatrix*()
+  proc pushMatrix*()
+  proc printMatrix*()
+  proc resetMatrix*()
+  proc rotate*(angle: PNumber)
+  proc rotate*(angle: PNumber, axis: array[3, PNumber] | Vector)
+  proc rotateX*(radians: PNumber)
+  proc rotateY*(radians: PNumber)
+  proc rotateZ*(radians: PNumber)
+  proc scale*(s: PNumber | Vector | array[3, PNumber])
+  proc scale*(s: PNumber | Vector | array[3, PNumber], y: PNumber)
+  proc scale*(s: PNumber | Vector | array[3, PNumber], z: PNumber)
+  proc scale*(s: PNumber | Vector | array[3, PNumber], y, z: PNumber)
+  proc shearX*(angle: PNumber)
+  proc shearY*(angle: PNumber)
+  proc translate*(x, y: PNumber)
+  proc translate*(x, y, z: PNumber)
 
 {.pop.}
 
@@ -1110,9 +1079,9 @@ proc saveStrings*(list: seq[string], filename: string)
 proc saveStrings*(list: seq[string], filename, extension: string)
 proc saveTable*(table: Table, filename: string)
 proc saveTable*(table: Table, filename, options: string)
-proc downloadFile*(data: string | Blob)
-proc downloadFile*(data: string | Blob, filename: string)
-proc downloadFile*(data: string | Blob, filename, extension: string)
+proc downloadFile*(data: string | p5types.Blob)
+proc downloadFile*(data: string | p5types.Blob, filename: string)
+proc downloadFile*(data: string | p5types.Blob, filename, extension: string)
 proc saveGif*(filename: cstring, duration: float)
 
 {.pop.}
