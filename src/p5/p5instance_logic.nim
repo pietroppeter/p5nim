@@ -26,11 +26,43 @@ proc maybeReplaceCall(n: NimNode): NimNode =
   ## `n(p5Inst, <other args>)`
   ##
   ## to call the correct overload.
-  doAssert n.kind == nnkCall
-  let name = n[0]
-  # check if this is known in `WrappedProcs`, if so wrap this one up,
-  # otherwise leave it alone!
-  if name in WrappedProcs:
+  doAssert n.kind in {nnkCall, nnkDotExpr}
+  # Note: `nnkDotExpr` *may* be a call
+  proc getName(n: NimNode): NimNode =
+    ## helper to extract the name from the following cases:
+    ## - nnkCall with an ident as first child: `ellipse(mouseX, mouseY, ...)`
+    ## - nnkCall with a nnkDotExpr as first child: `mouseX.ellipse(mouseY, ...)`
+    ## - pure nnkDotExpr (which may be a call): `fillBy.fill`
+    case n.kind
+    of nnkIdent, nnkSym: result = n
+    of nnkCall: result = getName(n[0])
+    of nnkDotExpr: result = getName(n[1]) # if it refers to a call, 2nd child is call
+    else: doAssert false, "Invalid branch as `maybeReplaceCall` expects nnkCall or nnkDotExpr"
+
+  let name = getName(n)
+  let nameIsWrapped = name in WrappedProcs
+  if n.kind == nnkDotExpr and nameIsWrapped:
+    # rewrite e.g.: `fillBy.fill` -> `fill(p5Inst, fillBy)`
+    let dotArg0 = replaceCallsImpl(n[0]) # the initial first elemen, e.g. `fillBy` in above
+    result = nnkCall.newTree(name,
+                             ident(Arg),
+                             dotArg0)
+    # NOTE: If I'm not missing something we can never have an `nnkDotExpr`, where the
+    # second child is a field of a P5Instance. In that case the first child would
+    # already refer to some instance (or the code would just be invalid)
+  elif n[0].kind == nnkDotExpr and nameIsWrapped:
+    # rewrite `mouseX.ellipse(mouseY, ...)` to `ellipse(p5Inst, mouseX, ...)` (and checking args)
+    let dotArg0 = replaceCallsImpl(n[0][0]) # the initial first element, e.g. `mouseX` in above
+    result = nnkCall.newTree(name,
+                             ident(Arg),
+                             dotArg0)
+    # now possibly replace remaining
+    for i in 1 ..< n.len:
+      let ch = n[i]
+      result.add replaceCallsImpl(ch)
+    # NOTE: this branch and the below could also be handled differently relying on recursing
+    # back to `replaceCallsImpl`, but this way is more obvious I believe
+  elif nameIsWrapped:
     result = nnkCall.newTree()
     # first replace all possible arguments
     for ch in n:
@@ -65,23 +97,15 @@ proc replaceCallsImpl(n: NimNode): NimNode =
     result = newTree(n.kind)
     for ch in n:
       case ch.kind
-      of nnkCall:
+      of nnkCall, nnkDotExpr:
         result.add maybeReplaceCall(ch)
       else:
         result.add replaceCallsImpl(ch)
 
 macro replaceCalls(body: untyped): untyped =
-  ## TODO: add support for dot expressions! This requires to rewrite the dot
-  ## expression. Assuming
-  ##
-  ## `mouseX.ellipse(mouseY, 40, 40)`
-  ##
-  ## must be rewritten to
-  ##
-  ## `p5Inst.ellipse(mouseX, mouseY, 40, 40)`
-  ##
-  ## where each symbol (including the `dotExpr` first element!) must be
-  ## checked for replacement.
+  ## Performs replacement of all function / field symbols used in the given
+  ## `body` based on known fields of `P5Instance` / wrapped procedures with
+  ## a `P5Instance` first argument for usage in `instance` templates.
   result = newStmtList()
   result.add replaceCallsImpl(body)
 

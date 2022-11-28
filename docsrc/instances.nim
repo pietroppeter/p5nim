@@ -13,7 +13,7 @@ nbJsFromCode:
     let x = 5
     let y = 10
     setup: # `setup` and `draw` are templates shadowing the global templates
-      let bar = foo() ## this won't be replaced, as there's no `foo` in p5 that we wrapped
+      let bar = foo() # this won't be replaced, as there's no `foo` in p5 that we wrapped
       createCanvas(bar, 400) # each call will be checked against calls wrapped in the p5nim wrapper.
                              # If a name matches, it will be replaced by `p5Inst.<the call>` instead.
       background(200)
@@ -24,8 +24,10 @@ nbJsFromCode:
       if mouseIsPressed:
         fill(0)
       else:
-        fill(255)
-      ellipse(mouseX, mouseY, 40, 40)
+        let fillBy = 255 # store in variable to test rewriting of real `nnkDotExpr`
+        fillBy.fill # not no `()`
+      mouseX.ellipse(mouseY, 40, 40) # even if used in dot expression, rewrite works
+                                     # (this is a `nnkCall` with `nnkDotExpr` first child)
 
 nbJsShowSource()
 nbSave
