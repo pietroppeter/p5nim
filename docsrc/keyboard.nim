@@ -1,12 +1,10 @@
-import nimib, index
+import nimib, index, p5
 nbInit
-nbRawHtml: """<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.2/p5.min.js" integrity="sha512-rCZdHNB0AePry6kAnKAVFMRfWPmUXSo+/vlGtrOUvhsxD0Punm/xWbEh+8vppPIOzKB9xnk42yCRZ5MD/jvvjQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>"""
+nbUseP5
 nb.addEntry(4, "Keyboard", """
 Click on the image to give it focus and press the letter keys to create forms in time and space. Each key has a unique identifying number. These numbers can be used to position shapes in space.
 """)
-nbJsFromCode:
-  import p5
-
+nbCodeDisplay(nbJsFromCode):
   var rectWidth: float
   
   setup:

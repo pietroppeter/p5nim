@@ -32,8 +32,8 @@ section#source {
 }
 </style>
   
-</head>
-<body>
+  <script defer data-domain="pietroppeter.github.io/p5nim" src="https://plausible.io/js/script.js"></script></head>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.5.0/p5.min.js"></script><body>
 <header>
 <div class="nb-box">
   <span><a href=".">🏡</a></span>
@@ -42,25 +42,24 @@ section#source {
 </div>
 <hr>
 </header><main>
-<script src="p5.js"></script>
+
 <h2>6. Okazz 220919a</h2>
 <p>Art by <a href="https://openprocessing.org/user/128718?view=sketches&o=31">Okazz</a>,
 original at <a href="https://openprocessing.org/sketch/1653811">openprocessing.org/sketch/1653811</a>.</p>
 <p>License is <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/">CreativeCommons Attribution NonCommercial ShareAlike</a>.</p>
 <p>The original sketch has been ported from p5js to p5nim.</p>
-<pre><code class="nim hljs"><span class="hljs-keyword">import</span>
-  p5
 
-<span class="hljs-keyword">var</span> colors = @[<span class="hljs-string">&quot;#f70640&quot;</span>, <span class="hljs-string">&quot;#f78e2c&quot;</span>, <span class="hljs-string">&quot;#fdd903&quot;</span>, <span class="hljs-string">&quot;#cae509&quot;</span>, <span class="hljs-string">&quot;#63be93&quot;</span>, <span class="hljs-string">&quot;#81cfe5&quot;</span>,
-               <span class="hljs-string">&quot;#299dbf&quot;</span>, <span class="hljs-string">&quot;#38187d&quot;</span>, <span class="hljs-string">&quot;#a4459f&quot;</span>, <span class="hljs-string">&quot;#f654a9&quot;</span>, <span class="hljs-string">&quot;#2F0A30&quot;</span>]
+<pre><code class="nim hljs"><span class="hljs-keyword">var</span> colors = @[<span class="hljs-string">&quot;#f70640&quot;</span>, <span class="hljs-string">&quot;#f78e2c&quot;</span>, <span class="hljs-string">&quot;#fdd903&quot;</span>, <span class="hljs-string">&quot;#cae509&quot;</span>, <span class="hljs-string">&quot;#63be93&quot;</span>, <span class="hljs-string">&quot;#81cfe5&quot;</span>, <span class="hljs-string">&quot;#299dbf&quot;</span>, <span class="hljs-string">&quot;#38187d&quot;</span>, <span class="hljs-string">&quot;#a4459f&quot;</span>, <span class="hljs-string">&quot;#f654a9&quot;</span>, <span class="hljs-string">&quot;#2F0A30&quot;</span>];
+
 <span class="hljs-keyword">type</span>
   <span class="hljs-type">Form</span> = <span class="hljs-keyword">ref</span> <span class="hljs-keyword">object</span>
     x, y, x0, y0, r0, r, d0, d: <span class="hljs-built_in">float</span>
-    a, t, r1, r2, r3: <span class="hljs-built_in">float</span>
+    a, t, r1, r2, r3: <span class="hljs-built_in">float</span> 
     n: <span class="hljs-built_in">int</span>
     col: <span class="hljs-built_in">string</span>
 
 <span class="hljs-keyword">var</span> forms: <span class="hljs-built_in">seq</span>[<span class="hljs-type">Form</span>]
+
 <span class="hljs-keyword">proc</span> newForm(x, y: <span class="hljs-built_in">float</span>): <span class="hljs-type">Form</span> =
   <span class="hljs-literal">result</span> = <span class="hljs-keyword">new</span> <span class="hljs-type">Form</span>
   <span class="hljs-literal">result</span>.x = x
@@ -92,11 +91,11 @@ original at <a href="https://openprocessing.org/sketch/1653811">openprocessing.o
 
 <span class="hljs-keyword">proc</span> move(form: <span class="hljs-type">Form</span>) =
   form.t += <span class="hljs-number">1</span>
-  form.a = <span class="hljs-type">TAU</span> * sin(form.t * form.r1)
-  form.r = form.r0 * sin(form.t * form.r2)
-  form.d = form.d0 * sin(form.t * form.r3)
-  form.x += <span class="hljs-number">0.5</span>
-  form.y -= <span class="hljs-number">0.5</span>
+  form.a = <span class="hljs-type">TAU</span> * sin(form.t * form.r1);
+  form.r = form.r0 * sin(form.t * form.r2);
+  form.d = form.d0 * sin(form.t * form.r3);
+  form.x += <span class="hljs-number">0.5</span>;
+  form.y -= <span class="hljs-number">0.5</span>;
   <span class="hljs-keyword">if</span> form.x &gt; width:
     form.x = <span class="hljs-number">0</span>
   <span class="hljs-keyword">if</span> form.y &lt; <span class="hljs-number">0</span>:
@@ -104,17 +103,20 @@ original at <a href="https://openprocessing.org/sketch/1653811">openprocessing.o
 
 setup:
   createCanvas(<span class="hljs-number">900</span>, <span class="hljs-number">900</span>)
+
   <span class="hljs-keyword">var</span> c = <span class="hljs-number">18</span>
   <span class="hljs-keyword">var</span> w = width / c
   <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-number">0</span> ..&lt; c:
     <span class="hljs-keyword">for</span> j <span class="hljs-keyword">in</span> <span class="hljs-number">0</span> ..&lt; c:
-      <span class="hljs-keyword">let</span> x = i * w + w / <span class="hljs-number">2</span>
-      <span class="hljs-keyword">let</span> y = j * w + w / <span class="hljs-number">2</span>
+      <span class="hljs-keyword">let</span> x = i * w + w / <span class="hljs-number">2</span>;
+      <span class="hljs-keyword">let</span> y = j * w + w / <span class="hljs-number">2</span>;
       <span class="hljs-keyword">if</span> ((i + j) <span class="hljs-keyword">mod</span> <span class="hljs-number">2</span> == <span class="hljs-number">0</span>):
         <span class="hljs-keyword">for</span> k <span class="hljs-keyword">in</span> <span class="hljs-number">0</span> ..&lt; <span class="hljs-number">5</span>:
           forms.add(newForm(x, y))
   background(<span class="hljs-number">0</span>)
+
 draw:
+
   translate(width / <span class="hljs-number">2</span>, height / <span class="hljs-number">2</span>)
   scale(<span class="hljs-number">1.1</span>)
   translate(-width / <span class="hljs-number">2</span>, -height / <span class="hljs-number">2</span>)
@@ -618,17 +620,18 @@ function keyPressed() {
 </div>
 </footer>
 <section id="source">
-<pre><code class="nim hljs"><span class="hljs-keyword">import</span> nimib, index
+<pre><code class="nim hljs"><span class="hljs-keyword">import</span> nimib, index, p5
 nbInit
-nbRawHtml: <span class="hljs-string">&quot;&quot;&quot;&lt;script src=&quot;p5.js&quot;&gt;&lt;/script&gt;&quot;&quot;&quot;</span>
+nbUseP5
 nb.addEntry(<span class="hljs-number">6</span>, <span class="hljs-string">&quot;Okazz 220919a&quot;</span>, <span class="hljs-string">&quot;&quot;&quot;
 Art by [Okazz](https://openprocessing.org/user/128718?view=sketches&amp;o=31),
 original at [openprocessing.org/sketch/1653811](https://openprocessing.org/sketch/1653811).
-
+&quot;&quot;&quot;</span>)
+nbText: <span class="hljs-string">&quot;&quot;&quot;
 License is [CreativeCommons Attribution NonCommercial ShareAlike](https://creativecommons.org/licenses/by-nc-sa/3.0/).
 
 The original sketch has been ported from p5js to p5nim.
-&quot;&quot;&quot;</span>)
+&quot;&quot;&quot;</span>
 <span class="hljs-comment"># maybe this will be used to train an automatic translator</span>
 <span class="hljs-keyword">let</span> sourceOriginalJs = <span class="hljs-string">&quot;&quot;&quot;
 let forms = [];
@@ -715,9 +718,7 @@ class Form {
 }
 &quot;&quot;&quot;</span>
 
-nbJsFromCode:
-  <span class="hljs-keyword">import</span> p5
-
+nbCodeDisplay(nbJsFromCode):
   <span class="hljs-keyword">var</span> colors = @[<span class="hljs-string">&quot;#f70640&quot;</span>, <span class="hljs-string">&quot;#f78e2c&quot;</span>, <span class="hljs-string">&quot;#fdd903&quot;</span>, <span class="hljs-string">&quot;#cae509&quot;</span>, <span class="hljs-string">&quot;#63be93&quot;</span>, <span class="hljs-string">&quot;#81cfe5&quot;</span>, <span class="hljs-string">&quot;#299dbf&quot;</span>, <span class="hljs-string">&quot;#38187d&quot;</span>, <span class="hljs-string">&quot;#a4459f&quot;</span>, <span class="hljs-string">&quot;#f654a9&quot;</span>, <span class="hljs-string">&quot;#2F0A30&quot;</span>];
 
   <span class="hljs-keyword">type</span>

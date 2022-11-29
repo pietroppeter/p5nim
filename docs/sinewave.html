@@ -32,8 +32,8 @@ section#source {
 }
 </style>
   
-</head>
-<body>
+  <script defer data-domain="pietroppeter.github.io/p5nim" src="https://plausible.io/js/script.js"></script></head>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.5.0/p5.min.js"></script><body>
 <header>
 <div class="nb-box">
   <span><a href=".">🏡</a></span>
@@ -42,39 +42,37 @@ section#source {
 </div>
 <hr>
 </header><main>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.2/p5.min.js" integrity="sha512-rCZdHNB0AePry6kAnKAVFMRfWPmUXSo+/vlGtrOUvhsxD0Punm/xWbEh+8vppPIOzKB9xnk42yCRZ5MD/jvvjQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
 <h2>8. Sine Wave</h2>
-<p>Render a simple sine wave. Original by Daniel Shiffman (https://p5js.org/examples/math-sine-wave.html)</p>
-<pre><code class="nim hljs"><span class="hljs-keyword">import</span>
-  p5
+<p>Render a simple sine wave. Original by Daniel Shiffman <a href="https://p5js.org/examples/math-sine-wave.html">https://p5js.org/examples/math-sine-wave.html</a></p>
 
-<span class="hljs-keyword">const</span>
-  xspacing = <span class="hljs-number">16</span>
-<span class="hljs-keyword">const</span>
-  amplitude = <span class="hljs-number">75.0</span>
-<span class="hljs-keyword">const</span>
-  period = <span class="hljs-number">500.0</span>
-<span class="hljs-keyword">var</span> theta: <span class="hljs-built_in">float</span>
+<pre><code class="nim hljs"><span class="hljs-keyword">const</span> xspacing = <span class="hljs-number">16</span> <span class="hljs-comment"># Distance between each horizontal location</span>
+<span class="hljs-keyword">const</span> amplitude = <span class="hljs-number">75.0</span> <span class="hljs-comment"># Height of wave</span>
+<span class="hljs-keyword">const</span> period = <span class="hljs-number">500.0</span> <span class="hljs-comment"># How many pixels before the wave repeats</span>
+
+<span class="hljs-keyword">var</span> theta: <span class="hljs-built_in">float</span> <span class="hljs-comment">#  Start angle at 0</span>
 <span class="hljs-keyword">var</span> yvalues: <span class="hljs-built_in">seq</span>[<span class="hljs-built_in">float</span>]
-<span class="hljs-keyword">proc</span> calcWave() =
-  theta += <span class="hljs-number">0.02</span>
-  <span class="hljs-keyword">let</span> dx = (<span class="hljs-type">TWO_PI</span> / period) * xspacing
-  <span class="hljs-keyword">for</span> x <span class="hljs-keyword">in</span> <span class="hljs-number">0</span> .. yvalues.len:
-    yvalues[x] = sin(x * dx + theta) * amplitude
 
-<span class="hljs-keyword">proc</span> renderWave() =
+<span class="hljs-keyword">proc</span> calcWave =
+  theta+=<span class="hljs-number">0.02</span>
+  <span class="hljs-keyword">let</span> dx = (<span class="hljs-type">TWO_PI</span> / period) * xspacing
+  <span class="hljs-keyword">for</span> x <span class="hljs-keyword">in</span> <span class="hljs-number">0.</span>.yvalues.len:
+    yvalues[x] = sin(x*dx+theta)*amplitude
+
+<span class="hljs-keyword">proc</span> renderWave =
   noStroke()
   colorMode(<span class="hljs-type">HSB</span>, <span class="hljs-number">100</span>)
   fill(<span class="hljs-number">0</span>)
-  <span class="hljs-keyword">for</span> x <span class="hljs-keyword">in</span> <span class="hljs-number">0</span> .. yvalues.len:
-    fill(<span class="hljs-number">25</span> + x * <span class="hljs-number">2</span>, <span class="hljs-number">100</span>, <span class="hljs-number">50</span>)
-    ellipse(x * xspacing, height / <span class="hljs-number">2</span> + yvalues[x], <span class="hljs-number">16</span>, <span class="hljs-number">16</span>)
+  <span class="hljs-keyword">for</span> x <span class="hljs-keyword">in</span> <span class="hljs-number">0.</span>.yvalues.len:
+    fill(<span class="hljs-number">25</span>+x*<span class="hljs-number">2</span>, <span class="hljs-number">100</span>, <span class="hljs-number">50</span>)
+    ellipse(x*xspacing, height/<span class="hljs-number">2</span>+yvalues[x], <span class="hljs-number">16</span>, <span class="hljs-number">16</span>)
 
 setup:
   theta = <span class="hljs-number">0.0</span>
   createCanvas(<span class="hljs-number">710</span>, <span class="hljs-number">400</span>)
-  <span class="hljs-keyword">let</span> nelements = (width + <span class="hljs-number">16</span>) / xspacing
+  <span class="hljs-keyword">let</span> nelements = (width+<span class="hljs-number">16</span>)/xspacing
   yvalues = newSeq[<span class="hljs-built_in">float</span>](nelements.<span class="hljs-built_in">int</span>)
+
 draw:
   background(<span class="hljs-number">0</span>)
   calcWave()
@@ -324,15 +322,13 @@ function draw() {
 </div>
 </footer>
 <section id="source">
-<pre><code class="nim hljs"><span class="hljs-keyword">import</span> nimib, index
+<pre><code class="nim hljs"><span class="hljs-keyword">import</span> nimib, index, p5
 nbInit
-nbRawHtml: <span class="hljs-string">&quot;&quot;&quot;&lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.2/p5.min.js&quot; integrity=&quot;sha512-rCZdHNB0AePry6kAnKAVFMRfWPmUXSo+/vlGtrOUvhsxD0Punm/xWbEh+8vppPIOzKB9xnk42yCRZ5MD/jvvjQ==&quot; crossorigin=&quot;anonymous&quot; referrerpolicy=&quot;no-referrer&quot;&gt;&lt;/script&gt;&quot;&quot;&quot;</span>
+nbUseP5
 nb.addEntry(<span class="hljs-number">8</span>, <span class="hljs-string">&quot;Sine Wave&quot;</span>, <span class="hljs-string">&quot;&quot;&quot;
-Render a simple sine wave. Original by Daniel Shiffman (https://p5js.org/examples/math-sine-wave.html)
+Render a simple sine wave. Original by Daniel Shiffman &lt;https://p5js.org/examples/math-sine-wave.html&gt;
 &quot;&quot;&quot;</span>)
-nbJsFromCode:
-  <span class="hljs-keyword">import</span> p5
-
+nbCodeDisplay(nbJsFromCode):
   <span class="hljs-keyword">const</span> xspacing = <span class="hljs-number">16</span> <span class="hljs-comment"># Distance between each horizontal location</span>
   <span class="hljs-keyword">const</span> amplitude = <span class="hljs-number">75.0</span> <span class="hljs-comment"># Height of wave</span>
   <span class="hljs-keyword">const</span> period = <span class="hljs-number">500.0</span> <span class="hljs-comment"># How many pixels before the wave repeats</span>

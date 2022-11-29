@@ -32,8 +32,8 @@ section#source {
 }
 </style>
   
-</head>
-<body>
+  <script defer data-domain="pietroppeter.github.io/p5nim" src="https://plausible.io/js/script.js"></script></head>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.5.0/p5.min.js"></script><body>
 <header>
 <div class="nb-box">
   <span><a href=".">🏡</a></span>
@@ -42,21 +42,22 @@ section#source {
 </div>
 <hr>
 </header><main>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.2/p5.min.js" integrity="sha512-rCZdHNB0AePry6kAnKAVFMRfWPmUXSo+/vlGtrOUvhsxD0Punm/xWbEh+8vppPIOzKB9xnk42yCRZ5MD/jvvjQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
 <h2>4. Keyboard</h2>
 <p>Click on the image to give it focus and press the letter keys to create forms in time and space. Each key has a unique identifying number. These numbers can be used to position shapes in space.</p>
-<pre><code class="nim hljs"><span class="hljs-keyword">import</span>
-  p5
 
-<span class="hljs-keyword">var</span> rectWidth: <span class="hljs-built_in">float</span>
+<pre><code class="nim hljs"><span class="hljs-keyword">var</span> rectWidth: <span class="hljs-built_in">float</span>
+
 setup:
   createCanvas(<span class="hljs-number">720</span>, <span class="hljs-number">400</span>)
   noStroke()
   background(<span class="hljs-number">230</span>)
   rectWidth = width / <span class="hljs-number">4</span>
+
 draw:
   <span class="hljs-comment">## keep draw() here to continue looping while waiting for keys</span>
   <span class="hljs-keyword">discard</span>
+
 keyPressed:
   <span class="hljs-keyword">var</span> keyIndex = -<span class="hljs-number">1</span>
   <span class="hljs-keyword">if</span> $key &gt;= <span class="hljs-string">&quot;a&quot;</span> <span class="hljs-keyword">and</span> $key &lt;= <span class="hljs-string">&quot;z&quot;</span>:
@@ -208,15 +209,13 @@ var rectWidth_452984853 = [0.0];
 </div>
 </footer>
 <section id="source">
-<pre><code class="nim hljs"><span class="hljs-keyword">import</span> nimib, index
+<pre><code class="nim hljs"><span class="hljs-keyword">import</span> nimib, index, p5
 nbInit
-nbRawHtml: <span class="hljs-string">&quot;&quot;&quot;&lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.2/p5.min.js&quot; integrity=&quot;sha512-rCZdHNB0AePry6kAnKAVFMRfWPmUXSo+/vlGtrOUvhsxD0Punm/xWbEh+8vppPIOzKB9xnk42yCRZ5MD/jvvjQ==&quot; crossorigin=&quot;anonymous&quot; referrerpolicy=&quot;no-referrer&quot;&gt;&lt;/script&gt;&quot;&quot;&quot;</span>
+nbUseP5
 nb.addEntry(<span class="hljs-number">4</span>, <span class="hljs-string">&quot;Keyboard&quot;</span>, <span class="hljs-string">&quot;&quot;&quot;
 Click on the image to give it focus and press the letter keys to create forms in time and space. Each key has a unique identifying number. These numbers can be used to position shapes in space.
 &quot;&quot;&quot;</span>)
-nbJsFromCode:
-  <span class="hljs-keyword">import</span> p5
-
+nbCodeDisplay(nbJsFromCode):
   <span class="hljs-keyword">var</span> rectWidth: <span class="hljs-built_in">float</span>
   
   setup:

@@ -42,14 +42,14 @@ section#source {
 </div>
 <hr>
 </header><main>
+
 <h2>1. Get started</h2>
 <p>This program creates a canvas that is 400 pixels wide and 400 pixels high, and then starts drawing white circles at the position of the mouse. When a mouse button is pressed, the circle color changes to black.</p>
-<pre><code class="nim hljs"><span class="hljs-keyword">import</span>
-  p5
 
-setup:
+<pre><code class="nim hljs">setup:
   createCanvas(<span class="hljs-number">400</span>, <span class="hljs-number">400</span>)
   background(<span class="hljs-number">200</span>)
+  
 draw:
   <span class="hljs-keyword">if</span> mouseIsPressed:
     fill(<span class="hljs-number">0</span>)
@@ -106,9 +106,7 @@ nbUseP5
 nb.addEntry(<span class="hljs-number">1</span>, <span class="hljs-string">&quot;Get started&quot;</span>, <span class="hljs-string">&quot;&quot;&quot;
 This program creates a canvas that is 400 pixels wide and 400 pixels high, and then starts drawing white circles at the position of the mouse. When a mouse button is pressed, the circle color changes to black.
 &quot;&quot;&quot;</span>)
-nbJsFromCode:
-  <span class="hljs-keyword">import</span> p5
-
+nbCodeDisplay(nbJsFromCode):
   setup:
     createCanvas(<span class="hljs-number">400</span>, <span class="hljs-number">400</span>)
     background(<span class="hljs-number">200</span>)
@@ -119,7 +117,6 @@ nbJsFromCode:
     <span class="hljs-keyword">else</span>:
       fill(<span class="hljs-number">255</span>)
     ellipse(mouseX, mouseY, <span class="hljs-number">40</span>, <span class="hljs-number">40</span>)
-nbJsShowSource()
 nbSave</code></pre>
 </section><script>
 function toggleSourceDisplay() {
