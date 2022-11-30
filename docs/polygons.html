@@ -32,8 +32,8 @@ section#source {
 }
 </style>
   
-</head>
-<body>
+  <script defer data-domain="pietroppeter.github.io/p5nim" src="https://plausible.io/js/script.js"></script></head>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.5.0/p5.min.js"></script><body>
 <header>
 <div class="nb-box">
   <span><a href=".">🏡</a></span>
@@ -42,13 +42,11 @@ section#source {
 </div>
 <hr>
 </header><main>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.2/p5.min.js" integrity="sha512-rCZdHNB0AePry6kAnKAVFMRfWPmUXSo+/vlGtrOUvhsxD0Punm/xWbEh+8vppPIOzKB9xnk42yCRZ5MD/jvvjQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
 <h2>5. Polygons</h2>
 <p>What is your favorite? Pentagon? Hexagon? Heptagon? No? What about the icosagon? The polygon() function created for this example is capable of drawing any regular polygon. Also shows <a href="https://p5js.org/reference/#/p5/fill">possible inputs for colors</a>.</p>
-<pre><code class="nim hljs"><span class="hljs-keyword">import</span>
-  p5
 
-<span class="hljs-keyword">proc</span> polygon(x, y, radius, npoints: <span class="hljs-type">PNumber</span>) =
+<pre><code class="nim hljs"><span class="hljs-keyword">proc</span> polygon(x, y, radius, npoints: <span class="hljs-type">PNumber</span>) =
   <span class="hljs-keyword">let</span> angle = <span class="hljs-type">TWO_PI</span> / npoints
   beginShape()
   <span class="hljs-keyword">var</span> a = <span class="hljs-number">0.0</span>
@@ -61,22 +59,26 @@ section#source {
 
 setup:
   createCanvas(<span class="hljs-number">720</span>, <span class="hljs-number">400</span>)
+
 draw:
-  background(<span class="hljs-number">102</span>)            <span class="hljs-comment">## grayscale</span>
+  background(<span class="hljs-number">102</span>) <span class="hljs-comment">## grayscale</span>
+
   push()
-  fill(<span class="hljs-number">255</span>, <span class="hljs-number">204</span>, <span class="hljs-number">0</span>)          <span class="hljs-comment">## RGB integer values</span>
+  fill(<span class="hljs-number">255</span>, <span class="hljs-number">204</span>, <span class="hljs-number">0</span>) <span class="hljs-comment">## RGB integer values</span>
   translate(width * <span class="hljs-number">0.2</span>, height * <span class="hljs-number">0.5</span>)
   rotate(frameCount / <span class="hljs-number">200.0</span>)
   polygon(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">82</span>, <span class="hljs-number">3</span>)
   pop()
+
   push()
-  fill(<span class="hljs-string">&quot;red&quot;</span>)                <span class="hljs-comment">## Named SVG/CSS color string</span>
+  fill(<span class="hljs-string">&quot;red&quot;</span>) <span class="hljs-comment">## Named SVG/CSS color string</span>
   translate(width * <span class="hljs-number">0.5</span>, height * <span class="hljs-number">0.5</span>)
   rotate(frameCount / <span class="hljs-number">50.0</span>)
   polygon(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">80</span>, <span class="hljs-number">20</span>)
   pop()
+
   push()
-  fill(<span class="hljs-string">&quot;#fae&quot;</span>)               <span class="hljs-comment">## three-digit (or six-digit) hexadecimal RGB notation</span>
+  fill(<span class="hljs-string">&quot;#fae&quot;</span>) <span class="hljs-comment">## three-digit (or six-digit) hexadecimal RGB notation</span>
   translate(width * <span class="hljs-number">0.8</span>, height * <span class="hljs-number">0.5</span>)
   rotate(frameCount / -<span class="hljs-number">100.0</span>)
   polygon(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">70</span>, <span class="hljs-number">7</span>)
@@ -168,15 +170,13 @@ function draw() {
 </div>
 </footer>
 <section id="source">
-<pre><code class="nim hljs"><span class="hljs-keyword">import</span> nimib, index
+<pre><code class="nim hljs"><span class="hljs-keyword">import</span> nimib, index, p5
 nbInit
-nbRawHtml: <span class="hljs-string">&quot;&quot;&quot;&lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.2/p5.min.js&quot; integrity=&quot;sha512-rCZdHNB0AePry6kAnKAVFMRfWPmUXSo+/vlGtrOUvhsxD0Punm/xWbEh+8vppPIOzKB9xnk42yCRZ5MD/jvvjQ==&quot; crossorigin=&quot;anonymous&quot; referrerpolicy=&quot;no-referrer&quot;&gt;&lt;/script&gt;&quot;&quot;&quot;</span>
+nbUseP5
 nb.addEntry(<span class="hljs-number">5</span>, <span class="hljs-string">&quot;Polygons&quot;</span>, <span class="hljs-string">&quot;&quot;&quot;
 What is your favorite? Pentagon? Hexagon? Heptagon? No? What about the icosagon? The polygon() function created for this example is capable of drawing any regular polygon. Also shows [possible inputs for colors](https://p5js.org/reference/#/p5/fill).
 &quot;&quot;&quot;</span>)
-nbJsFromCode:
-  <span class="hljs-keyword">import</span> p5
-
+nbCodeDisplay(nbJsFromCode):
   <span class="hljs-keyword">proc</span> polygon(x, y, radius, npoints: <span class="hljs-type">PNumber</span>) =
     <span class="hljs-keyword">let</span> angle = <span class="hljs-type">TWO_PI</span> / npoints
     beginShape()

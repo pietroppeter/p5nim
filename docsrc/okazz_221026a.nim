@@ -1,14 +1,15 @@
-import nimib, index
+import nimib, index, p5
 nbInit
-nbRawHtml: """<script src="p5.js"></script>"""
+nbUseP5
 nb.addEntry(7, "Okazz 221026a", """
 Art by [Okazz](https://openprocessing.org/user/128718?view=sketches&o=31),
 original at [openprocessing.org/sketch/1653811](https://openprocessing.org/sketch/1711659).
-
+""")
+nbText: """
 License is [CreativeCommons Attribution NonCommercial ShareAlike](https://creativecommons.org/licenses/by-nc-sa/3.0/).
 
 The original sketch has been ported from p5js to p5nim.
-""")
+"""
 # maybe this will be used to train an automatic translator
 let sourceOriginalJs = """
 let palettes = [
@@ -107,7 +108,6 @@ class Form {
 """
 
 nbJsFromCode:
-  import p5
   import std / [random, sequtils]
   import std / math except sqrt
 

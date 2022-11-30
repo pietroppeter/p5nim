@@ -32,8 +32,8 @@ section#source {
 }
 </style>
   
-</head>
-<body>
+  <script defer data-domain="pietroppeter.github.io/p5nim" src="https://plausible.io/js/script.js"></script></head>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.5.0/p5.min.js"></script><body>
 <header>
 <div class="nb-box">
   <span><a href=".">🏡</a></span>
@@ -42,16 +42,13 @@ section#source {
 </div>
 <hr>
 </header><main>
-<script src="p5.js"></script>
+
 <h2>7. Okazz 221026a</h2>
 <p>Art by <a href="https://openprocessing.org/user/128718?view=sketches&o=31">Okazz</a>,
 original at <a href="https://openprocessing.org/sketch/1711659">openprocessing.org/sketch/1653811</a>.</p>
 <p>License is <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/">CreativeCommons Attribution NonCommercial ShareAlike</a>.</p>
 <p>The original sketch has been ported from p5js to p5nim.</p>
 <pre><code class="nim hljs"><span class="hljs-keyword">import</span>
-  p5
-
-<span class="hljs-keyword">import</span>
   std / [random, sequtils]
 
 <span class="hljs-keyword">import</span> std / math <span class="hljs-keyword">except</span> sqrt
@@ -774,17 +771,18 @@ function keyPressed() {
 </div>
 </footer>
 <section id="source">
-<pre><code class="nim hljs"><span class="hljs-keyword">import</span> nimib, index
+<pre><code class="nim hljs"><span class="hljs-keyword">import</span> nimib, index, p5
 nbInit
-nbRawHtml: <span class="hljs-string">&quot;&quot;&quot;&lt;script src=&quot;p5.js&quot;&gt;&lt;/script&gt;&quot;&quot;&quot;</span>
+nbUseP5
 nb.addEntry(<span class="hljs-number">7</span>, <span class="hljs-string">&quot;Okazz 221026a&quot;</span>, <span class="hljs-string">&quot;&quot;&quot;
 Art by [Okazz](https://openprocessing.org/user/128718?view=sketches&amp;o=31),
 original at [openprocessing.org/sketch/1653811](https://openprocessing.org/sketch/1711659).
-
+&quot;&quot;&quot;</span>)
+nbText: <span class="hljs-string">&quot;&quot;&quot;
 License is [CreativeCommons Attribution NonCommercial ShareAlike](https://creativecommons.org/licenses/by-nc-sa/3.0/).
 
 The original sketch has been ported from p5js to p5nim.
-&quot;&quot;&quot;</span>)
+&quot;&quot;&quot;</span>
 <span class="hljs-comment"># maybe this will be used to train an automatic translator</span>
 <span class="hljs-keyword">let</span> sourceOriginalJs = <span class="hljs-string">&quot;&quot;&quot;
 let palettes = [
@@ -883,7 +881,6 @@ class Form {
 &quot;&quot;&quot;</span>
 
 nbJsFromCode:
-  <span class="hljs-keyword">import</span> p5
   <span class="hljs-keyword">import</span> std / [random, sequtils]
   <span class="hljs-keyword">import</span> std / math <span class="hljs-keyword">except</span> sqrt
 

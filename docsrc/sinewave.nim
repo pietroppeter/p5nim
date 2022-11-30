@@ -1,12 +1,10 @@
-import nimib, index
+import nimib, index, p5
 nbInit
-nbRawHtml: """<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.2/p5.min.js" integrity="sha512-rCZdHNB0AePry6kAnKAVFMRfWPmUXSo+/vlGtrOUvhsxD0Punm/xWbEh+8vppPIOzKB9xnk42yCRZ5MD/jvvjQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>"""
+nbUseP5
 nb.addEntry(8, "Sine Wave", """
-Render a simple sine wave. Original by Daniel Shiffman (https://p5js.org/examples/math-sine-wave.html)
+Render a simple sine wave. Original by Daniel Shiffman <https://p5js.org/examples/math-sine-wave.html>
 """)
-nbJsFromCode:
-  import p5
-
+nbCodeDisplay(nbJsFromCode):
   const xspacing = 16 # Distance between each horizontal location
   const amplitude = 75.0 # Height of wave
   const period = 500.0 # How many pixels before the wave repeats

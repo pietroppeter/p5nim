@@ -32,8 +32,8 @@ section#source {
 }
 </style>
   
-</head>
-<body>
+  <script defer data-domain="pietroppeter.github.io/p5nim" src="https://plausible.io/js/script.js"></script></head>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.5.0/p5.min.js"></script><body>
 <header>
 <div class="nb-box">
   <span><a href=".">🏡</a></span>
@@ -42,7 +42,7 @@ section#source {
 </div>
 <hr>
 </header><main>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.2/p5.min.js" integrity="sha512-rCZdHNB0AePry6kAnKAVFMRfWPmUXSo+/vlGtrOUvhsxD0Punm/xWbEh+8vppPIOzKB9xnk42yCRZ5MD/jvvjQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
 <h2>9. Instance mode</h2>
 <p>This program creates a canvas in a local p5 instance using
 <a href="https://github.com/processing/p5.js/wiki/Global-and-instance-mode">instance mode</a>.</p>
@@ -57,45 +57,548 @@ will have an additional <code>sketch</code> argument added.</p>
 The syntax here is explicitly contrived to make sure the <code>instance</code>
 is able to check all possible syntax variations allowed by nim.</p>
 <div id="canvas1"></div>
-<pre><code class="nim hljs"><span class="hljs-keyword">import</span>
-  p5
 
-<span class="hljs-keyword">proc</span> foo(): <span class="hljs-built_in">int</span> =
-  <span class="hljs-number">400</span>
+<pre><code class="nim hljs"><span class="hljs-comment"># to test that a local proc is not converted</span>
+<span class="hljs-keyword">proc</span> foo(): <span class="hljs-built_in">int</span> = <span class="hljs-number">400</span>
 
-instance(<span class="hljs-string">&quot;canvas1&quot;</span>):
+instance(<span class="hljs-string">&quot;canvas1&quot;</span>): <span class="hljs-comment"># call with `instance(&quot;&lt;name of my div&gt;&quot;)` to place into specific div</span>
   <span class="hljs-keyword">let</span> x = <span class="hljs-number">5</span>
   <span class="hljs-keyword">let</span> y = <span class="hljs-number">10</span>
-  setup:
-    <span class="hljs-keyword">let</span> bar = foo()
-    createCanvas(bar, <span class="hljs-number">400</span>)
+  setup: <span class="hljs-comment"># `setup` and `draw` are templates shadowing the global templates</span>
+    <span class="hljs-keyword">let</span> bar = foo() <span class="hljs-comment"># this won't be replaced, as there's no `foo` in p5 that we wrapped</span>
+    createCanvas(bar, <span class="hljs-number">400</span>) <span class="hljs-comment"># each call will be checked against calls wrapped in the p5nim wrapper.</span>
+                           <span class="hljs-comment"># If a name matches, it will be replaced by `p5Inst.&lt;the call&gt;` instead.</span>
     background(<span class="hljs-number">200</span>)
+
   draw:
+    <span class="hljs-comment"># similar to calls, idents are also compared with known fields of the</span>
+    <span class="hljs-comment"># `P5Instance` type and replaced by `p5Inst.&lt;field&gt;` in case of a match</span>
     <span class="hljs-keyword">if</span> mouseIsPressed:
       fill(<span class="hljs-number">0</span>)
     <span class="hljs-keyword">else</span>:
-      <span class="hljs-keyword">let</span> fillBy = <span class="hljs-number">255</span>
-      fillBy.fill
-    mouseX.ellipse(mouseY, <span class="hljs-number">40</span>, <span class="hljs-number">40</span>)</code></pre>
-<div id="canvas2"></div>
-<pre><code class="nim hljs">instance(<span class="hljs-string">&quot;canvas2&quot;</span>):
-  <span class="hljs-keyword">let</span> x = <span class="hljs-number">5</span>
-  <span class="hljs-keyword">let</span> y = <span class="hljs-number">10</span>
-  setup:
-    <span class="hljs-keyword">let</span> bar = foo()
-    createCanvas(bar, <span class="hljs-number">400</span>)
-    background(<span class="hljs-number">200</span>)
-  draw:
-    <span class="hljs-keyword">if</span> mouseIsPressed:
-      fill(<span class="hljs-number">0</span>)
-    <span class="hljs-keyword">else</span>:
-      <span class="hljs-keyword">let</span> fillBy = <span class="hljs-number">255</span>
-      fillBy.fill
-    mouseX.ellipse(mouseY, <span class="hljs-number">40</span>, <span class="hljs-number">40</span>)</code></pre>
+      <span class="hljs-keyword">let</span> fillBy = <span class="hljs-number">255</span> <span class="hljs-comment"># store in variable to test rewriting of real `nnkDotExpr`</span>
+      fillBy.fill <span class="hljs-comment"># not no `()`</span>
+    mouseX.ellipse(mouseY, <span class="hljs-number">40</span>, <span class="hljs-number">40</span>) <span class="hljs-comment"># even if used in dot expression, rewrite works</span>
+                                   <span class="hljs-comment"># (this is a `nnkCall` with `nnkDotExpr` first child)</span></code></pre>
+<p>In this second instance we make use of <code>nbP5Instance</code> nimib convenience template:</p>
+<div id="p5instance-0"></div>
+
+<pre><code class="nim hljs"><span class="hljs-keyword">let</span> x = <span class="hljs-number">5</span>
+<span class="hljs-keyword">let</span> y = <span class="hljs-number">10</span>
+setup: <span class="hljs-comment"># `setup` and `draw` are templates shadowing the global templates</span>
+  <span class="hljs-keyword">let</span> bar = foo() <span class="hljs-comment"># this won't be replaced, as there's no `foo` in p5 that we wrapped</span>
+  createCanvas(bar, <span class="hljs-number">400</span>) <span class="hljs-comment"># each call will be checked against calls wrapped in the p5nim wrapper.</span>
+                          <span class="hljs-comment"># If a name matches, it will be replaced by `p5Inst.&lt;the call&gt;` instead.</span>
+  background(<span class="hljs-number">200</span>)
+
+draw:
+  <span class="hljs-comment"># similar to calls, idents are also compared with known fields of the</span>
+  <span class="hljs-comment"># `P5Instance` type and replaced by `p5Inst.&lt;field&gt;` in case of a match</span>
+  <span class="hljs-keyword">if</span> mouseIsPressed:
+    fill(<span class="hljs-number">0</span>)
+  <span class="hljs-keyword">else</span>:
+    <span class="hljs-keyword">let</span> fillBy = <span class="hljs-number">255</span> <span class="hljs-comment"># store in variable to test rewriting of real `nnkDotExpr`</span>
+    fillBy.fill <span class="hljs-comment"># not no `()`</span>
+  mouseX.ellipse(mouseY, <span class="hljs-number">40</span>, <span class="hljs-number">40</span>) <span class="hljs-comment"># even if used in dot expression, rewrite works</span>
+                                  <span class="hljs-comment"># (this is a `nnkCall` with `nnkDotExpr` first child)</span></code></pre>
 <script defer>/* Generated by the Nim Compiler v1.6.0 */
 var framePtr = null;
 var excHandler = 0;
 var lastJSError = null;
+var NTI1040187400 = {size: 0, kind: 17, base: null, node: null, finalizer: null};
+var NTI33555114 = {size: 0, kind: 17, base: null, node: null, finalizer: null};
+var NTI33555125 = {size: 0, kind: 17, base: null, node: null, finalizer: null};
+var NTI33555126 = {size: 0, kind: 17, base: null, node: null, finalizer: null};
+var NTI603979798 = {size: 0, kind: 24, base: null, node: null, finalizer: null};
+var NTI33554435 = {size: 0,kind: 36,base: null,node: null,finalizer: null};
+var NTI33554474 = {size: 0,kind: 35,base: null,node: null,finalizer: null};
+var NTI33554466 = {size: 0,kind: 1,base: null,node: null,finalizer: null};
+var NTI603979781 = {size: 0, kind: 18, base: null, node: null, finalizer: null};
+var NTI603979780 = {size: 0, kind: 22, base: null, node: null, finalizer: null};
+var NTI33554456 = {size: 0,kind: 31,base: null,node: null,finalizer: null};
+var NTI620756995 = {size: 0,kind: 31,base: null,node: null,finalizer: null};
+var NTI603979796 = {size: 0, kind: 18, base: null, node: null, finalizer: null};
+var NTI603979793 = {size: 0, kind: 24, base: null, node: null, finalizer: null};
+var NTI603979790 = {size: 0, kind: 18, base: null, node: null, finalizer: null};
+var NTI603979779 = {size: 0, kind: 14, base: null, node: null, finalizer: null};
+var NTI33555083 = {size: 0, kind: 17, base: null, node: null, finalizer: null};
+var NTI33555165 = {size: 0, kind: 22, base: null, node: null, finalizer: null};
+var NTI33554439 = {size: 0,kind: 28,base: null,node: null,finalizer: null};
+var NTI33554440 = {size: 0,kind: 29,base: null,node: null,finalizer: null};
+var NTI33555164 = {size: 0, kind: 22, base: null, node: null, finalizer: null};
+var NTI33555112 = {size: 0, kind: 17, base: null, node: null, finalizer: null};
+var NTI33555113 = {size: 0, kind: 17, base: null, node: null, finalizer: null};
+var NTI33555129 = {size: 0, kind: 17, base: null, node: null, finalizer: null};
+var NNI33555129 = {kind: 2, len: 0, offset: 0, typ: null, name: null, sons: []};
+NTI33555129.node = NNI33555129;
+var NNI33555113 = {kind: 2, len: 0, offset: 0, typ: null, name: null, sons: []};
+NTI33555113.node = NNI33555113;
+NTI33555164.base = NTI33555112;
+NTI33555165.base = NTI33555112;
+var NNI33555112 = {kind: 2, len: 5, offset: 0, typ: null, name: null, sons: [{kind: 1, offset: "parent", len: 0, typ: NTI33555164, name: "parent", sons: null}, 
+{kind: 1, offset: "name", len: 0, typ: NTI33554440, name: "name", sons: null}, 
+{kind: 1, offset: "message", len: 0, typ: NTI33554439, name: "msg", sons: null}, 
+{kind: 1, offset: "trace", len: 0, typ: NTI33554439, name: "trace", sons: null}, 
+{kind: 1, offset: "up", len: 0, typ: NTI33555165, name: "up", sons: null}]};
+NTI33555112.node = NNI33555112;
+var NNI33555083 = {kind: 2, len: 0, offset: 0, typ: null, name: null, sons: []};
+NTI33555083.node = NNI33555083;
+NTI33555112.base = NTI33555083;
+NTI33555113.base = NTI33555112;
+NTI33555129.base = NTI33555113;
+var NNI603979779 = {kind: 2, offset: 0, typ: null, name: null, len: 7, sons: {"0": {kind: 1, offset: 0, typ: NTI603979779, name: "JNull", len: 0, sons: null}, 
+"1": {kind: 1, offset: 1, typ: NTI603979779, name: "JBool", len: 0, sons: null}, 
+"2": {kind: 1, offset: 2, typ: NTI603979779, name: "JInt", len: 0, sons: null}, 
+"3": {kind: 1, offset: 3, typ: NTI603979779, name: "JFloat", len: 0, sons: null}, 
+"4": {kind: 1, offset: 4, typ: NTI603979779, name: "JString", len: 0, sons: null}, 
+"5": {kind: 1, offset: 5, typ: NTI603979779, name: "JObject", len: 0, sons: null}, 
+"6": {kind: 1, offset: 6, typ: NTI603979779, name: "JArray", len: 0, sons: null}}};
+NTI603979779.node = NNI603979779;
+NTI603979798.base = NTI603979780;
+var NNI603979781 = {kind: 2, len: 2, offset: 0, typ: null, name: null, sons: [{kind: 1, offset: "isUnquoted", len: 0, typ: NTI33554466, name: "isUnquoted", sons: null}, 
+{kind: 3, offset: "kind", len: 7, typ: NTI603979779, name: "kind", sons: [[setConstr(4), {kind: 1, offset: "str", len: 0, typ: NTI33554439, name: "str", sons: null}], 
+[setConstr(2), {kind: 1, offset: "num", len: 0, typ: NTI33554474, name: "num", sons: null}], 
+[setConstr(3), {kind: 1, offset: "fnum", len: 0, typ: NTI33554435, name: "fnum", sons: null}], 
+[setConstr(1), {kind: 1, offset: "bval", len: 0, typ: NTI33554466, name: "bval", sons: null}], 
+[setConstr(0), {kind: 2, len: 0, offset: 0, typ: null, name: null, sons: []}], 
+[setConstr(5), {kind: 1, offset: "fields", len: 0, typ: NTI603979790, name: "fields", sons: null}], 
+[setConstr(6), {kind: 1, offset: "elems", len: 0, typ: NTI603979798, name: "elems", sons: null}]]}]};
+NTI603979781.node = NNI603979781;
+NTI603979780.base = NTI603979781;
+var NNI603979796 = {kind: 2, len: 4, offset: 0, typ: null, name: null, sons: [{kind: 1, offset: "Field0", len: 0, typ: NTI620756995, name: "Field0", sons: null}, 
+{kind: 1, offset: "Field1", len: 0, typ: NTI33554456, name: "Field1", sons: null}, 
+{kind: 1, offset: "Field2", len: 0, typ: NTI33554439, name: "Field2", sons: null}, 
+{kind: 1, offset: "Field3", len: 0, typ: NTI603979780, name: "Field3", sons: null}]};
+NTI603979796.node = NNI603979796;
+NTI603979793.base = NTI603979796;
+var NNI603979790 = {kind: 2, len: 4, offset: 0, typ: null, name: null, sons: [{kind: 1, offset: "data", len: 0, typ: NTI603979793, name: "data", sons: null}, 
+{kind: 1, offset: "counter", len: 0, typ: NTI33554456, name: "counter", sons: null}, 
+{kind: 1, offset: "first", len: 0, typ: NTI33554456, name: "first", sons: null}, 
+{kind: 1, offset: "last", len: 0, typ: NTI33554456, name: "last", sons: null}]};
+NTI603979790.node = NNI603979790;
+var NNI33555126 = {kind: 2, len: 0, offset: 0, typ: null, name: null, sons: []};
+NTI33555126.node = NNI33555126;
+var NNI33555125 = {kind: 2, len: 0, offset: 0, typ: null, name: null, sons: []};
+NTI33555125.node = NNI33555125;
+var NNI33555114 = {kind: 2, len: 0, offset: 0, typ: null, name: null, sons: []};
+NTI33555114.node = NNI33555114;
+NTI33555114.base = NTI33555112;
+NTI33555125.base = NTI33555114;
+NTI33555126.base = NTI33555125;
+var NNI1040187400 = {kind: 2, len: 0, offset: 0, typ: null, name: null, sons: []};
+NTI1040187400.node = NNI1040187400;
+NTI1040187400.base = NTI33555125;
+
+function eqStrings(a_33556932, b_33556933) {
+        if (a_33556932 == b_33556933) return true;
+    if (a_33556932 === null && b_33556933.length == 0) return true;
+    if (b_33556933 === null && a_33556932.length == 0) return true;
+    if ((!a_33556932) || (!b_33556933)) return false;
+    var alen = a_33556932.length;
+    if (alen != b_33556933.length) return false;
+    for (var i = 0; i < alen; ++i)
+      if (a_33556932[i] != b_33556933[i]) return false;
+    return true;
+  
+
+  
+}
+
+function setConstr() {
+        var result = {};
+    for (var i = 0; i < arguments.length; ++i) {
+      var x = arguments[i];
+      if (typeof(x) == "object") {
+        for (var j = x[0]; j <= x[1]; ++j) {
+          result[j] = true;
+        }
+      } else {
+        result[x] = true;
+      }
+    }
+    return result;
+  
+
+  
+}
+var ConstSet1 = setConstr(4);
+
+function makeNimstrLit(c_33556802) {
+      var result = [];
+  for (var i = 0; i < c_33556802.length; ++i) {
+    result[i] = c_33556802.charCodeAt(i);
+  }
+  return result;
+  
+
+  
+}
+
+function toJSStr(s_33556808) {
+                    var Temporary5;
+            var Temporary7;
+
+  var result_33556809 = null;
+
+    var res_33556843 = newSeq_33556826((s_33556808).length);
+    var i_33556844 = 0;
+    var j_33556845 = 0;
+    Label1: do {
+        Label2: while (true) {
+        if (!(i_33556844 < (s_33556808).length)) break Label2;
+          var c_33556846 = s_33556808[i_33556844];
+          if ((c_33556846 < 128)) {
+          res_33556843[j_33556845] = String.fromCharCode(c_33556846);
+          i_33556844 += 1;
+          }
+          else {
+            var helper_33556858 = newSeq_33556826(0);
+            Label3: do {
+                Label4: while (true) {
+                if (!true) break Label4;
+                  var code_33556859 = c_33556846.toString(16);
+                  if ((((code_33556859) == null ? 0 : (code_33556859).length) == 1)) {
+                  helper_33556858.push("%0");;
+                  }
+                  else {
+                  helper_33556858.push("%");;
+                  }
+                  
+                  helper_33556858.push(code_33556859);;
+                  i_33556844 += 1;
+                    if (((s_33556808).length <= i_33556844)) Temporary5 = true; else {                      Temporary5 = (s_33556808[i_33556844] < 128);                    }                  if (Temporary5) {
+                  break Label3;
+                  }
+                  
+                  c_33556846 = s_33556808[i_33556844];
+                }
+            } while (false);
+++excHandler;
+            Temporary7 = framePtr;
+            try {
+            res_33556843[j_33556845] = decodeURIComponent(helper_33556858.join(""));
+--excHandler;
+} catch (EXCEPTION) {
+ var prevJSError = lastJSError;
+ lastJSError = EXCEPTION;
+ --excHandler;
+            framePtr = Temporary7;
+            res_33556843[j_33556845] = helper_33556858.join("");
+            lastJSError = prevJSError;
+            } finally {
+            framePtr = Temporary7;
+            }
+          }
+          
+          j_33556845 += 1;
+        }
+    } while (false);
+    if (res_33556843.length < j_33556845) { for (var i = res_33556843.length ; i < j_33556845 ; ++i) res_33556843.push(null); }
+               else { res_33556843.length = j_33556845; };
+    result_33556809 = res_33556843.join("");
+
+  return result_33556809;
+
+}
+
+function raiseException(e_33556668, ename_33556669) {
+    e_33556668.name = ename_33556669;
+    if ((excHandler == 0)) {
+    unhandledException(e_33556668);
+    }
+    
+    throw e_33556668;
+
+  
+}
+
+function raiseFieldError2(f_33556779, discVal_33556780) {
+    raiseException({message: (f_33556779 || []).concat(discVal_33556780 || [],makeNimstrLit("\'") || []), parent: null, m_type: NTI33555129, name: null, trace: [], up: null}, "FieldDefect");
+
+  
+}
+var ConstSet2 = setConstr(17, 16, 4, 18, 27, 19, 23, 22, 21);
+
+function nimCopy(dest_33557141, src_33557142, ti_33557143) {
+  var result_33557152 = null;
+
+    switch (ti_33557143.kind) {
+    case 21:
+    case 22:
+    case 23:
+    case 5:
+      if (!(isFatPointer_33557132(ti_33557143))) {
+      result_33557152 = src_33557142;
+      }
+      else {
+        result_33557152 = [src_33557142[0], src_33557142[1]];
+      }
+      
+      break;
+    case 19:
+            if (dest_33557141 === null || dest_33557141 === undefined) {
+        dest_33557141 = {};
+      }
+      else {
+        for (var key in dest_33557141) { delete dest_33557141[key]; }
+      }
+      for (var key in src_33557142) { dest_33557141[key] = src_33557142[key]; }
+      result_33557152 = dest_33557141;
+    
+      break;
+    case 18:
+    case 17:
+      if (!((ti_33557143.base == null))) {
+      result_33557152 = nimCopy(dest_33557141, src_33557142, ti_33557143.base);
+      }
+      else {
+      if ((ti_33557143.kind == 17)) {
+      result_33557152 = (dest_33557141 === null || dest_33557141 === undefined) ? {m_type: ti_33557143} : dest_33557141;
+      }
+      else {
+        result_33557152 = (dest_33557141 === null || dest_33557141 === undefined) ? {} : dest_33557141;
+      }
+      }
+      nimCopyAux(result_33557152, src_33557142, ti_33557143.node);
+      break;
+    case 24:
+    case 4:
+    case 27:
+    case 16:
+            if (src_33557142 === null) {
+        result_33557152 = null;
+      }
+      else {
+        if (dest_33557141 === null || dest_33557141 === undefined || dest_33557141.length != src_33557142.length) {
+          dest_33557141 = new Array(src_33557142.length);
+        }
+        result_33557152 = dest_33557141;
+        for (var i = 0; i < src_33557142.length; ++i) {
+          result_33557152[i] = nimCopy(result_33557152[i], src_33557142[i], ti_33557143.base);
+        }
+      }
+    
+      break;
+    case 28:
+            if (src_33557142 !== null) {
+        result_33557152 = src_33557142.slice(0);
+      }
+    
+      break;
+    default: 
+      result_33557152 = src_33557142;
+      break;
+    }
+
+  return result_33557152;
+
+}
+
+function mnewString(len_33556894) {
+        return new Array(len_33556894);
+  
+
+  
+}
+
+function nimBoolToStr(x_33556515) {
+  var result_33556516 = [];
+
+    if (x_33556515) {
+    result_33556516 = nimCopy(null, makeNimstrLit("true"), NTI33554439);
+    }
+    else {
+      result_33556516 = nimCopy(null, makeNimstrLit("false"), NTI33554439);
+    }
+    
+
+  return result_33556516;
+
+}
+
+function reprDiscriminant(e_33557410, typ_33557411) {
+    var Temporary1;
+
+  var result_33557412 = [];
+
+    switch (typ_33557411.kind) {
+    case 14:
+      Temporary1 = reprEnum(e_33557410, typ_33557411);
+      break;
+    case 1:
+      Temporary1 = nimBoolToStr(!((e_33557410 == 0)));
+      break;
+    default: 
+      Temporary1 = HEX24_318767107(e_33557410);
+      break;
+    }
+    result_33557412 = nimCopy(null, Temporary1, NTI33554439);
+
+  return result_33557412;
+
+}
+var ConstSet3 = setConstr(4);
+var ConstSet4 = setConstr(2);
+var ConstSet5 = setConstr(2);
+var ConstSet6 = setConstr(3);
+var ConstSet7 = setConstr(3);
+var ConstSet8 = setConstr(1);
+var ConstSet9 = setConstr(1);
+var ConstSet10 = setConstr(6);
+var ConstSet11 = setConstr(6);
+var ConstSet12 = setConstr(5);
+var ConstSet13 = setConstr(5);
+var ConstSet14 = setConstr(5);
+var ConstSet15 = setConstr(5);
+var ConstSet16 = setConstr(5);
+var ConstSet17 = setConstr(4, 0);
+
+function addChar(x_33557256, c_33557257) {
+    x_33557256.push(c_33557257);
+
+  
+}
+var ConstSet18 = setConstr([48, 57]);
+var ConstSet19 = setConstr(0, 125);
+var ConstSet20 = setConstr([48, 57]);
+var ConstSet21 = setConstr([65, 90]);
+
+function nimMax(a_33556999, b_33557000) {
+    var Temporary1;
+
+  var result_33557001 = 0;
+
+  BeforeRet: do {
+    if ((b_33557000 <= a_33556999)) {
+    Temporary1 = a_33556999;
+    }
+    else {
+    Temporary1 = b_33557000;
+    }
+    
+    result_33557001 = Temporary1;
+    break BeforeRet;
+  } while (false);
+
+  return result_33557001;
+
+}
+
+function nimMin(a_33556995, b_33556996) {
+    var Temporary1;
+
+  var result_33556997 = 0;
+
+  BeforeRet: do {
+    if ((a_33556995 <= b_33556996)) {
+    Temporary1 = a_33556995;
+    }
+    else {
+    Temporary1 = b_33556996;
+    }
+    
+    result_33556997 = Temporary1;
+    break BeforeRet;
+  } while (false);
+
+  return result_33556997;
+
+}
+var ConstSet22 = setConstr([97, 122], [65, 90], [48, 57], [128, 255], 95);
+var ConstSet23 = setConstr(4, 0);
+var ConstSet24 = setConstr(4);
+
+function cstrToNimstr(c_33556805) {
+      var ln = c_33556805.length;
+  var result = new Array(ln);
+  var r = 0;
+  for (var i = 0; i < ln; ++i) {
+    var ch = c_33556805.charCodeAt(i);
+
+    if (ch < 128) {
+      result[r] = ch;
+    }
+    else {
+      if (ch < 2048) {
+        result[r] = (ch >> 6) | 192;
+      }
+      else {
+        if (ch < 55296 || ch >= 57344) {
+          result[r] = (ch >> 12) | 224;
+        }
+        else {
+            ++i;
+            ch = 65536 + (((ch & 1023) << 10) | (c_33556805.charCodeAt(i) & 1023));
+            result[r] = (ch >> 18) | 240;
+            ++r;
+            result[r] = ((ch >> 12) & 63) | 128;
+        }
+        ++r;
+        result[r] = ((ch >> 6) & 63) | 128;
+      }
+      ++r;
+      result[r] = (ch & 63) | 128;
+    }
+    ++r;
+  }
+  return result;
+  
+
+  
+}
+var ConstSet25 = setConstr(6);
+
+function genericReset(x_33557172, ti_33557173) {
+  var result_33557174 = null;
+
+    result_33557174 = null;
+    switch (ti_33557173.kind) {
+    case 21:
+    case 22:
+    case 23:
+    case 5:
+      if (isFatPointer_33557132(ti_33557173)) {
+              result_33557174 = [null, 0];
+      
+      }
+      
+      break;
+    case 19:
+            result_33557174 = {};
+    
+      break;
+    case 18:
+    case 17:
+      if ((ti_33557173.kind == 17)) {
+      result_33557174 = {m_type: ti_33557173};
+      }
+      else {
+        result_33557174 = {};
+      }
+      
+      break;
+    case 24:
+    case 27:
+    case 28:
+            result_33557174 = [];
+    
+      break;
+    case 4:
+    case 16:
+            result_33557174 = new Array(x_33557172.length);
+      for (var i = 0; i < x_33557172.length; ++i) {
+        result_33557174[i] = genericReset(x_33557172[i], ti_33557173.base);
+      }
+    
+      break;
+    default: 
+      break;
+    }
+
+  return result_33557174;
+
+}
+var ConstSet26 = setConstr(5);
 if (!Math.trunc) {
   Math.trunc = function(v) {
     v = +v;
@@ -156,41 +659,1552 @@ function HEX3Aanonymous_452984893() {
   
 }
 
-function HEX3Aanonymous_452984912(p5Inst_452984913) {
+function add_33556420(x_33556421, x_33556421_Idx, y_33556422) {
+          if (x_33556421[x_33556421_Idx] === null) { x_33556421[x_33556421_Idx] = []; }
+      var off = x_33556421[x_33556421_Idx].length;
+      x_33556421[x_33556421_Idx].length += y_33556422.length;
+      for (var i = 0; i < y_33556422.length; ++i) {
+        x_33556421[x_33556421_Idx][off+i] = y_33556422.charCodeAt(i);
+      }
     
-function HEX3Aanonymous_452984916() {
-        var bar_452984917 = foo_452984853();
-        p5Inst_452984913.createCanvas(toFloat_1107296262(bar_452984917), 400.0);
-        p5Inst_452984913.background(200.0);
 
-      
+  
+}
+
+function newSeq_33556826(len_33556828) {
+  var result_33556829 = [];
+
+    result_33556829 = new Array(len_33556828); for (var i = 0 ; i < len_33556828 ; ++i) { result_33556829[i] = null; }
+  return result_33556829;
+
+}
+
+function unhandledException(e_33556664) {
+    var buf_33556665 = [[]];
+    if (!(((e_33556664.message).length == 0))) {
+    buf_33556665[0].push.apply(buf_33556665[0], makeNimstrLit("Error: unhandled exception: "));;
+    buf_33556665[0].push.apply(buf_33556665[0], e_33556664.message);;
+    }
+    else {
+    buf_33556665[0].push.apply(buf_33556665[0], makeNimstrLit("Error: unhandled exception"));;
     }
     
-function HEX3Aanonymous_452984918() {
-        if (p5Inst_452984913.mouseIsPressed) {
-        p5Inst_452984913.fill(0.0);
+    buf_33556665[0].push.apply(buf_33556665[0], makeNimstrLit(" ["));;
+    add_33556420(buf_33556665, 0, e_33556664.name);
+    buf_33556665[0].push.apply(buf_33556665[0], makeNimstrLit("]\x0A"));;
+    var cbuf_33556666 = toJSStr(buf_33556665[0]);
+    framePtr = null;
+      if (typeof(Error) !== "undefined") {
+    throw new Error(cbuf_33556666);
+  }
+  else {
+    throw cbuf_33556666;
+  }
+  
+
+  
+}
+
+function isFatPointer_33557132(ti_33557133) {
+  var result_33557134 = false;
+
+  BeforeRet: do {
+    result_33557134 = !((ConstSet2[ti_33557133.base.kind] != undefined));
+    break BeforeRet;
+  } while (false);
+
+  return result_33557134;
+
+}
+
+function nimCopyAux(dest_33557145, src_33557146, n_33557147) {
+    switch (n_33557147.kind) {
+    case 0:
+      break;
+    case 1:
+            dest_33557145[n_33557147.offset] = nimCopy(dest_33557145[n_33557147.offset], src_33557146[n_33557147.offset], n_33557147.typ);
+    
+      break;
+    case 2:
+          for (var i = 0; i < n_33557147.sons.length; i++) {
+      nimCopyAux(dest_33557145, src_33557146, n_33557147.sons[i]);
+    }
+    
+      break;
+    case 3:
+            dest_33557145[n_33557147.offset] = nimCopy(dest_33557145[n_33557147.offset], src_33557146[n_33557147.offset], n_33557147.typ);
+      for (var i = 0; i < n_33557147.sons.length; ++i) {
+        nimCopyAux(dest_33557145, src_33557146, n_33557147.sons[i][1]);
+      }
+    
+      break;
+    }
+
+  
+}
+
+function addChars_251658415(result_251658417, result_251658417_Idx, x_251658418, start_251658419, n_251658420) {
+    var old_251658421 = (result_251658417[result_251658417_Idx]).length;
+    (result_251658417[result_251658417_Idx].length = (old_251658421 + n_251658420));
+    Label1: do {
+      var iHEX60gensym4_251658435 = 0;
+      var i_452984952 = 0;
+      Label2: do {
+          Label3: while (true) {
+          if (!(i_452984952 < n_251658420)) break Label3;
+            iHEX60gensym4_251658435 = i_452984952;
+            result_251658417[result_251658417_Idx][(old_251658421 + iHEX60gensym4_251658435)] = x_251658418.charCodeAt((start_251658419 + iHEX60gensym4_251658435));
+            i_452984952 += 1;
+          }
+      } while (false);
+    } while (false);
+
+  
+}
+
+function addChars_251658411(result_251658413, result_251658413_Idx, x_251658414) {
+    addChars_251658415(result_251658413, result_251658413_Idx, x_251658414, 0, ((x_251658414) == null ? 0 : (x_251658414).length));
+
+  
+}
+
+function addInt_251658436(result_251658437, result_251658437_Idx, x_251658438) {
+    addChars_251658411(result_251658437, result_251658437_Idx, ((x_251658438) + ""));
+
+  
+}
+
+function addInt_251658457(result_251658458, result_251658458_Idx, x_251658459) {
+    addInt_251658436(result_251658458, result_251658458_Idx, x_251658459);
+
+  
+}
+
+function HEX24_318767107(x_318767108) {
+  var result_318767109 = [[]];
+
+    addInt_251658457(result_318767109, 0, x_318767108);
+
+  return result_318767109[0];
+
+}
+
+function reprEnum(e_33557386, typ_33557387) {
+  var result_33557388 = [];
+
+    var tmp_33557389 = false;
+    var item_33557390 = typ_33557387.node.sons[e_33557386];
+    tmp_33557389 = item_33557390 !== undefined
+    if (tmp_33557389) {
+    result_33557388 = nimCopy(null, makeNimstrLit(item_33557390.name), NTI33554439);
+    }
+    else {
+      result_33557388 = nimCopy(null, (HEX24_318767107(e_33557386) || []).concat(makeNimstrLit(" (invalid data!)") || []), NTI33554439);
+    }
+    
+
+  return result_33557388;
+
+}
+
+function HEX3DHEX3D_603981849(x_603981851, y_603981852) {
+  var result_603981853 = false;
+
+  BeforeRet: do {
+    var sameObject_603981861 = false;
+    sameObject_603981861 = x_603981851 === y_603981852
+    if (sameObject_603981861) {
+    result_603981853 = true;
+    break BeforeRet;
+    }
+    
+    if (!(((x_603981851).length == (y_603981852).length))) {
+    result_603981853 = false;
+    break BeforeRet;
+    }
+    
+    Label1: do {
+      var i_603981875 = 0;
+      var colontmp__452984955 = 0;
+      colontmp__452984955 = ((x_603981851).length - 1);
+      var res_452984956 = 0;
+      Label2: do {
+          Label3: while (true) {
+          if (!(res_452984956 <= colontmp__452984955)) break Label3;
+            i_603981875 = res_452984956;
+            if (!(HEX3DHEX3D_603981832(x_603981851[i_603981875], y_603981852[i_603981875]))) {
+            result_603981853 = false;
+            break BeforeRet;
+            }
+            
+            res_452984956 += 1;
+          }
+      } while (false);
+    } while (false);
+    result_603981853 = true;
+    break BeforeRet;
+  } while (false);
+
+  return result_603981853;
+
+}
+
+function len_603981920(t_603981923) {
+  var result_603981924 = 0;
+
+    result_603981924 = t_603981923.counter;
+
+  return result_603981924;
+
+}
+
+function isFilled_704643103(hcode_704643104) {
+  var result_704643105 = false;
+
+    result_704643105 = !((hcode_704643104 == 0));
+
+  return result_704643105;
+
+}
+
+function imul_620757309(a_620757310, b_620757311) {
+  var result_620757312 = 0;
+
+    var mask_620757313 = 65535;
+    var aHi_620757318 = ((a_620757310 >>> 16) & mask_620757313);
+    var aLo_620757319 = (a_620757310 & mask_620757313);
+    var bHi_620757324 = ((b_620757311 >>> 16) & mask_620757313);
+    var bLo_620757325 = (b_620757311 & mask_620757313);
+    result_620757312 = ((((aLo_620757319 * bLo_620757325) >>> 0) + (((((aHi_620757318 * bLo_620757325) >>> 0) + ((aLo_620757319 * bHi_620757324) >>> 0)) >>> 0) << 16)) >>> 0);
+
+  return result_620757312;
+
+}
+
+function rotl32_620757330(x_620757331, r_620757332) {
+  var result_620757333 = 0;
+
+    result_620757333 = ((x_620757331 << r_620757332) | (x_620757331 >>> (32 - r_620757332)));
+
+  return result_620757333;
+
+}
+
+function murmurHash_620757342(x_620757343) {
+  var result_620757344 = 0;
+
+  BeforeRet: do {
+    var size_620757353 = (x_620757343).length;
+    var stepSize_620757354 = 4;
+    var n_620757355 = Math.trunc(size_620757353 / stepSize_620757354);
+    var h1_620757356 = 0;
+    var i_620757357 = 0;
+    Label1: do {
+        Label2: while (true) {
+        if (!(i_620757357 < (n_620757355 * stepSize_620757354))) break Label2;
+          var k1_620757358 = 0;
+          var j_620757359 = stepSize_620757354;
+          Label3: do {
+              Label4: while (true) {
+              if (!(0 < j_620757359)) break Label4;
+                j_620757359 -= 1;
+                k1_620757358 = ((k1_620757358 << 8) | x_620757343[(i_620757357 + j_620757359)]);
+              }
+          } while (false);
+          i_620757357 += stepSize_620757354;
+          k1_620757358 = imul_620757309(k1_620757358, 3432918353);
+          k1_620757358 = rotl32_620757330(k1_620757358, 15);
+          k1_620757358 = imul_620757309(k1_620757358, 461845907);
+          h1_620757356 = (h1_620757356 ^ k1_620757358);
+          h1_620757356 = rotl32_620757330(h1_620757356, 13);
+          h1_620757356 = ((((h1_620757356 * 5) >>> 0) + 3864292196) >>> 0);
         }
-        else {
-          var fillBy_452984919 = 255;
-          p5Inst_452984913.fill(toFloat_1107296262(fillBy_452984919));
+    } while (false);
+    var k1_620757376 = 0;
+    var rem_620757377 = Math.trunc(size_620757353 % stepSize_620757354);
+    Label5: do {
+        Label6: while (true) {
+        if (!(0 < rem_620757377)) break Label6;
+          rem_620757377 -= 1;
+          k1_620757376 = ((k1_620757376 << 8) | x_620757343[(i_620757357 + rem_620757377)]);
+        }
+    } while (false);
+    k1_620757376 = imul_620757309(k1_620757376, 3432918353);
+    k1_620757376 = rotl32_620757330(k1_620757376, 15);
+    k1_620757376 = imul_620757309(k1_620757376, 461845907);
+    h1_620757356 = (h1_620757356 ^ k1_620757376);
+    h1_620757356 = (h1_620757356 ^ size_620757353);
+    h1_620757356 = (h1_620757356 ^ (h1_620757356 >>> 16));
+    h1_620757356 = imul_620757309(h1_620757356, 2246822507);
+    h1_620757356 = (h1_620757356 ^ (h1_620757356 >>> 13));
+    h1_620757356 = imul_620757309(h1_620757356, 3266489909);
+    h1_620757356 = (h1_620757356 ^ (h1_620757356 >>> 16));
+    result_620757344 = (h1_620757356 | 0);
+    break BeforeRet;
+  } while (false);
+
+  return result_620757344;
+
+}
+
+function hash_620757441(x_620757442) {
+  var result_620757443 = 0;
+
+    result_620757443 = murmurHash_620757342((x_620757442.slice(0, (x_620757442).length - 1 + 1)));
+
+  return result_620757443;
+
+}
+
+function nextTry_704643106(h_704643107, maxHash_704643108) {
+  var result_704643109 = 0;
+
+    result_704643109 = ((h_704643107 + 1) & maxHash_704643108);
+
+  return result_704643109;
+
+}
+
+function rawGet_603980131(t_603980134, key_603980135, hc_603980136, hc_603980136_Idx) {
+            var Temporary3;
+
+  var result_603980137 = 0;
+
+  BeforeRet: do {
+    hc_603980136[hc_603980136_Idx] = hash_620757441(key_603980135);
+    if ((hc_603980136[hc_603980136_Idx] == 0)) {
+    hc_603980136[hc_603980136_Idx] = 314159265;
+    }
+    
+    if (((t_603980134.data).length == 0)) {
+    result_603980137 = -1;
+    break BeforeRet;
+    }
+    
+    var h_603980188 = (hc_603980136[hc_603980136_Idx] & (t_603980134.data).length - 1);
+    Label1: do {
+        Label2: while (true) {
+        if (!isFilled_704643103(t_603980134.data[h_603980188].Field0)) break Label2;
+            if (!(t_603980134.data[h_603980188].Field0 == hc_603980136[hc_603980136_Idx])) Temporary3 = false; else {              Temporary3 = eqStrings(t_603980134.data[h_603980188].Field2, key_603980135);            }          if (Temporary3) {
+          result_603980137 = h_603980188;
+          break BeforeRet;
+          }
+          
+          h_603980188 = nextTry_704643106(h_603980188, (t_603980134.data).length - 1);
+        }
+    } while (false);
+    result_603980137 = (-1 - h_603980188);
+  } while (false);
+
+  return result_603980137;
+
+}
+
+function hasKey_603982342(t_603982345, key_603982346) {
+  var result_603982347 = false;
+
+    var hc_603982348 = [0];
+    result_603982347 = (0 <= rawGet_603980131(t_603982345, key_603982346, hc_603982348, 0));
+
+  return result_603982347;
+
+}
+
+function rawGet_603982423(t_603982426, key_603982427, hc_603982428, hc_603982428_Idx) {
+            var Temporary3;
+
+  var result_603982429 = 0;
+
+  BeforeRet: do {
+    hc_603982428[hc_603982428_Idx] = hash_620757441(key_603982427);
+    if ((hc_603982428[hc_603982428_Idx] == 0)) {
+    hc_603982428[hc_603982428_Idx] = 314159265;
+    }
+    
+    if (((t_603982426.data).length == 0)) {
+    result_603982429 = -1;
+    break BeforeRet;
+    }
+    
+    var h_603982480 = (hc_603982428[hc_603982428_Idx] & (t_603982426.data).length - 1);
+    Label1: do {
+        Label2: while (true) {
+        if (!isFilled_704643103(t_603982426.data[h_603982480].Field0)) break Label2;
+            if (!(t_603982426.data[h_603982480].Field0 == hc_603982428[hc_603982428_Idx])) Temporary3 = false; else {              Temporary3 = eqStrings(t_603982426.data[h_603982480].Field2, key_603982427);            }          if (Temporary3) {
+          result_603982429 = h_603982480;
+          break BeforeRet;
+          }
+          
+          h_603982480 = nextTry_704643106(h_603982480, (t_603982426.data).length - 1);
+        }
+    } while (false);
+    result_603982429 = (-1 - h_603982480);
+  } while (false);
+
+  return result_603982429;
+
+}
+
+function raiseKeyError_603982697(key_603982699) {
+    raiseException({message: (makeNimstrLit("key not found: ") || []).concat(key_603982699 || []), parent: null, m_type: NTI33555126, name: null, trace: [], up: null}, "KeyError");
+
+  
+}
+
+function HEX5BHEX5D_603982416(t_603982419, key_603982420) {
+  var result_603982421 = null;
+  var result_603982421_Idx = 0;
+
+    var hcHEX60gensym89_603982422 = [0];
+    var indexHEX60gensym89_603982643 = rawGet_603982423(t_603982419, key_603982420, hcHEX60gensym89_603982422, 0);
+    if ((0 <= indexHEX60gensym89_603982643)) {
+    result_603982421 = t_603982419.data[indexHEX60gensym89_603982643]; result_603982421_Idx = "Field3";
+    }
+    else {
+    raiseKeyError_603982697(key_603982420);
+    }
+    
+
+  return [result_603982421, result_603982421_Idx];
+
+}
+
+function HEX3DHEX3D_603981832(a_603981833, b_603981834) {
+      var Temporary1;
+        var Temporary2;
+        var Temporary3;
+        var Temporary4;
+        var Temporary5;
+        var Temporary6;
+        var Temporary7;
+        var Temporary8;
+        var Temporary9;
+        var Temporary10;
+        var Temporary11;
+          var Temporary12;
+          var Temporary13;
+          var Temporary15;
+                  var Temporary18;
+                  var Temporary19;
+                  var Temporary20;
+
+  var result_603981835 = false;
+
+  BeforeRet: do {
+    if ((a_603981833 == null)) {
+    if ((b_603981834 == null)) {
+    result_603981835 = true;
+    break BeforeRet;
+    }
+    
+    result_603981835 = false;
+    break BeforeRet;
+    }
+    else {
+      if ((b_603981834 == null)) Temporary1 = true; else {        Temporary1 = !((a_603981833.kind == b_603981834.kind));      }    if (Temporary1) {
+    result_603981835 = false;
+    break BeforeRet;
+    }
+    else {
+      switch (a_603981833.kind) {
+      case 4:
+        var Temporary2 = a_603981833;
+        if (ConstSet1[Temporary2.kind]===undefined) { raiseFieldError2(makeNimstrLit("field \'str\' is not accessible for type \'JsonNodeObj\' using \'kind = "), reprDiscriminant(Temporary2.kind, NTI603979779)); }
+        var Temporary3 = b_603981834;
+        if (ConstSet3[Temporary3.kind]===undefined) { raiseFieldError2(makeNimstrLit("field \'str\' is not accessible for type \'JsonNodeObj\' using \'kind = "), reprDiscriminant(Temporary3.kind, NTI603979779)); }
+        result_603981835 = eqStrings(Temporary2.str, Temporary3.str);
+        break;
+      case 2:
+        var Temporary4 = a_603981833;
+        if (ConstSet4[Temporary4.kind]===undefined) { raiseFieldError2(makeNimstrLit("field \'num\' is not accessible for type \'JsonNodeObj\' using \'kind = "), reprDiscriminant(Temporary4.kind, NTI603979779)); }
+        var Temporary5 = b_603981834;
+        if (ConstSet5[Temporary5.kind]===undefined) { raiseFieldError2(makeNimstrLit("field \'num\' is not accessible for type \'JsonNodeObj\' using \'kind = "), reprDiscriminant(Temporary5.kind, NTI603979779)); }
+        result_603981835 = (Temporary4.num == Temporary5.num);
+        break;
+      case 3:
+        var Temporary6 = a_603981833;
+        if (ConstSet6[Temporary6.kind]===undefined) { raiseFieldError2(makeNimstrLit("field \'fnum\' is not accessible for type \'JsonNodeObj\' using \'kind = "), reprDiscriminant(Temporary6.kind, NTI603979779)); }
+        var Temporary7 = b_603981834;
+        if (ConstSet7[Temporary7.kind]===undefined) { raiseFieldError2(makeNimstrLit("field \'fnum\' is not accessible for type \'JsonNodeObj\' using \'kind = "), reprDiscriminant(Temporary7.kind, NTI603979779)); }
+        result_603981835 = (Temporary6.fnum == Temporary7.fnum);
+        break;
+      case 1:
+        var Temporary8 = a_603981833;
+        if (ConstSet8[Temporary8.kind]===undefined) { raiseFieldError2(makeNimstrLit("field \'bval\' is not accessible for type \'JsonNodeObj\' using \'kind = "), reprDiscriminant(Temporary8.kind, NTI603979779)); }
+        var Temporary9 = b_603981834;
+        if (ConstSet9[Temporary9.kind]===undefined) { raiseFieldError2(makeNimstrLit("field \'bval\' is not accessible for type \'JsonNodeObj\' using \'kind = "), reprDiscriminant(Temporary9.kind, NTI603979779)); }
+        result_603981835 = (Temporary8.bval == Temporary9.bval);
+        break;
+      case 0:
+        result_603981835 = true;
+        break;
+      case 6:
+        var Temporary10 = a_603981833;
+        if (ConstSet10[Temporary10.kind]===undefined) { raiseFieldError2(makeNimstrLit("field \'elems\' is not accessible for type \'JsonNodeObj\' using \'kind = "), reprDiscriminant(Temporary10.kind, NTI603979779)); }
+        var Temporary11 = b_603981834;
+        if (ConstSet11[Temporary11.kind]===undefined) { raiseFieldError2(makeNimstrLit("field \'elems\' is not accessible for type \'JsonNodeObj\' using \'kind = "), reprDiscriminant(Temporary11.kind, NTI603979779)); }
+        result_603981835 = HEX3DHEX3D_603981849(Temporary10.elems, Temporary11.elems);
+        break;
+      case 5:
+          var Temporary12 = a_603981833;
+          if (ConstSet12[Temporary12.kind]===undefined) { raiseFieldError2(makeNimstrLit("field \'fields\' is not accessible for type \'JsonNodeObj\' using \'kind = "), reprDiscriminant(Temporary12.kind, NTI603979779)); }
+          var Temporary13 = b_603981834;
+          if (ConstSet13[Temporary13.kind]===undefined) { raiseFieldError2(makeNimstrLit("field \'fields\' is not accessible for type \'JsonNodeObj\' using \'kind = "), reprDiscriminant(Temporary13.kind, NTI603979779)); }
+        if (!((len_603981920(Temporary12.fields) == len_603981920(Temporary13.fields)))) {
+        result_603981835 = false;
+        break BeforeRet;
         }
         
-        p5Inst_452984913.ellipse(p5Inst_452984913.mouseX, p5Inst_452984913.mouseY, 40.0, 40.0);
+        Label14: do {
+          var key_603982300 = [];
+          var val_603982301 = null;
+          var colontmp__452984940 = ({data: [], counter: 0, first: 0, last: 0});
+          var Temporary15 = a_603981833;
+          if (ConstSet14[Temporary15.kind]===undefined) { raiseFieldError2(makeNimstrLit("field \'fields\' is not accessible for type \'JsonNodeObj\' using \'kind = "), reprDiscriminant(Temporary15.kind, NTI603979779)); }
+          colontmp__452984940 = nimCopy(colontmp__452984940, Temporary15.fields, NTI603979790);
+          var L_452984942 = len_603981920(colontmp__452984940);
+          if ((0 < colontmp__452984940.counter)) {
+          var h_452984943 = colontmp__452984940.first;
+          Label16: do {
+              Label17: while (true) {
+              if (!(0 <= h_452984943)) break Label17;
+                var nxt_452984945 = colontmp__452984940.data[h_452984943].Field1;
+                if (isFilled_704643103(colontmp__452984940.data[h_452984943].Field0)) {
+                key_603982300 = colontmp__452984940.data[h_452984943].Field2;
+                val_603982301 = colontmp__452984940.data[h_452984943].Field3;
+                  var Temporary18 = b_603981834;
+                  if (ConstSet15[Temporary18.kind]===undefined) { raiseFieldError2(makeNimstrLit("field \'fields\' is not accessible for type \'JsonNodeObj\' using \'kind = "), reprDiscriminant(Temporary18.kind, NTI603979779)); }
+                if (!(hasKey_603982342(Temporary18.fields, key_603982300))) {
+                result_603981835 = false;
+                break BeforeRet;
+                }
+                
+                  var Temporary19 = b_603981834;
+                  if (ConstSet16[Temporary19.kind]===undefined) { raiseFieldError2(makeNimstrLit("field \'fields\' is not accessible for type \'JsonNodeObj\' using \'kind = "), reprDiscriminant(Temporary19.kind, NTI603979779)); }
+                if (!(HEX3DHEX3D_603981832((Temporary20 = HEX5BHEX5D_603982416(Temporary19.fields, key_603982300), Temporary20)[0][Temporary20[1]], val_603982301))) {
+                result_603981835 = false;
+                break BeforeRet;
+                }
+                
+                }
+                
+                h_452984943 = nxt_452984945;
+              }
+          } while (false);
+          }
+          
+        } while (false);
+        result_603981835 = true;
+        break;
+      }
+    }
+    }
+  } while (false);
+
+  return result_603981835;
+
+}
+
+function invalidFormatString_855640080() {
+    raiseException({message: makeNimstrLit("invalid format string"), parent: null, m_type: NTI33555125, name: null, trace: [], up: null}, "ValueError");
+
+  
+}
+
+function toLowerAscii_973078529(c_973078530) {
+  var result_973078531 = 0;
+
+    if ((ConstSet21[c_973078530] != undefined)) {
+    result_973078531 = (c_973078530 + 32);
+    }
+    else {
+      result_973078531 = c_973078530;
+    }
+    
+
+  return result_973078531;
+
+}
+
+function nsuCmpIgnoreStyle(a_855638206, b_855638207) {
+          var Temporary7;
+          var Temporary8;
+
+  var result_855638208 = 0;
+
+  BeforeRet: do {
+    var aLenHEX60gensym25_855638217 = (a_855638206).length;
+    var bLenHEX60gensym25_855638218 = (b_855638207).length;
+    var iHEX60gensym25_855638219 = 0;
+    var jHEX60gensym25_855638220 = 0;
+    Label1: do {
+        Label2: while (true) {
+        if (!true) break Label2;
+          Label3: do {
+              Label4: while (true) {
+              if (!((iHEX60gensym25_855638219 < aLenHEX60gensym25_855638217) && (a_855638206[iHEX60gensym25_855638219] == 95))) break Label4;
+                iHEX60gensym25_855638219 += 1;
+              }
+          } while (false);
+          Label5: do {
+              Label6: while (true) {
+              if (!((jHEX60gensym25_855638220 < bLenHEX60gensym25_855638218) && (b_855638207[jHEX60gensym25_855638220] == 95))) break Label6;
+                jHEX60gensym25_855638220 += 1;
+              }
+          } while (false);
+          if ((iHEX60gensym25_855638219 < aLenHEX60gensym25_855638217)) {
+          Temporary7 = toLowerAscii_973078529(a_855638206[iHEX60gensym25_855638219]);
+          }
+          else {
+          Temporary7 = 0;
+          }
+          
+          var aaHEX60gensym25_855638229 = Temporary7;
+          if ((jHEX60gensym25_855638220 < bLenHEX60gensym25_855638218)) {
+          Temporary8 = toLowerAscii_973078529(b_855638207[jHEX60gensym25_855638220]);
+          }
+          else {
+          Temporary8 = 0;
+          }
+          
+          var bbHEX60gensym25_855638230 = Temporary8;
+          result_855638208 = (aaHEX60gensym25_855638229 - bbHEX60gensym25_855638230);
+          if (!((result_855638208 == 0))) {
+          break BeforeRet;
+          }
+          
+          if ((aLenHEX60gensym25_855638217 <= iHEX60gensym25_855638219)) {
+          if ((bLenHEX60gensym25_855638218 <= jHEX60gensym25_855638220)) {
+          result_855638208 = 0;
+          break BeforeRet;
+          }
+          
+          result_855638208 = -1;
+          break BeforeRet;
+          }
+          else {
+          if ((bLenHEX60gensym25_855638218 <= jHEX60gensym25_855638220)) {
+          result_855638208 = 1;
+          break BeforeRet;
+          }
+          }
+          iHEX60gensym25_855638219 += 1;
+          jHEX60gensym25_855638220 += 1;
+        }
+    } while (false);
+  } while (false);
+
+  return result_855638208;
+
+}
+
+function findNormalized_855640068(x_855640069, inArray_855640070) {
+  var result_855640071 = 0;
+
+  BeforeRet: do {
+    var i_855640072 = 0;
+    Label1: do {
+        Label2: while (true) {
+        if (!(i_855640072 < (inArray_855640070).length - 1)) break Label2;
+          if ((nsuCmpIgnoreStyle(x_855640069, inArray_855640070[i_855640072]) == 0)) {
+          result_855640071 = i_855640072;
+          break BeforeRet;
+          }
+          
+          i_855640072 += 2;
+        }
+    } while (false);
+    result_855640071 = -1;
+    break BeforeRet;
+  } while (false);
+
+  return result_855640071;
+
+}
+
+function substr_33557907(s_33557908, first_33557909, last_33557910) {
+  var result_33557911 = [];
+
+    var first_33557912 = nimMax(first_33557909, 0);
+    var L_33557913 = nimMax(((nimMin(last_33557910, (s_33557908).length - 1) - first_33557912) + 1), 0);
+    result_33557911 = nimCopy(null, mnewString(L_33557913), NTI33554439);
+    Label1: do {
+      var i_33557918 = 0;
+      var colontmp__452984968 = 0;
+      colontmp__452984968 = (L_33557913 - 1);
+      var res_452984969 = 0;
+      Label2: do {
+          Label3: while (true) {
+          if (!(res_452984969 <= colontmp__452984968)) break Label3;
+            i_33557918 = res_452984969;
+            result_33557911[i_33557918] = s_33557908[(i_33557918 + first_33557912)];
+            res_452984969 += 1;
+          }
+      } while (false);
+    } while (false);
+
+  return result_33557911;
+
+}
+
+function nsuAddf(s_855640083, s_855640083_Idx, formatstr_855640084, a_855640085) {
+                  var Temporary5;
+            var Temporary6;
+              var Temporary7;
+            var Temporary10;
+              var Temporary11;
+                var Temporary12;
+                  var Temporary15;
+              var Temporary16;
+
+    var i_855640087 = 0;
+    var num_855640088 = 0;
+    Label1: do {
+        Label2: while (true) {
+        if (!(i_855640087 < (formatstr_855640084).length)) break Label2;
+          if (((formatstr_855640084[i_855640087] == 36) && ((i_855640087 + 1) < (formatstr_855640084).length))) {
+          switch (formatstr_855640084[(i_855640087 + 1)]) {
+          case 35:
+            if (((a_855640085).length - 1 < num_855640088)) {
+            invalidFormatString_855640080();
+            }
+            
+            s_855640083[s_855640083_Idx].push.apply(s_855640083[s_855640083_Idx], a_855640085[num_855640088]);;
+            i_855640087 += 2;
+            num_855640088 += 1;
+            break;
+          case 36:
+            addChar(s_855640083[s_855640083_Idx], 36);;
+            i_855640087 += 2;
+            break;
+          case 49:
+          case 50:
+          case 51:
+          case 52:
+          case 53:
+          case 54:
+          case 55:
+          case 56:
+          case 57:
+          case 45:
+            var j_855640104 = 0;
+            i_855640087 += 1;
+            var negative_855640109 = (formatstr_855640084[i_855640087] == 45);
+            if (negative_855640109) {
+            i_855640087 += 1;
+            }
+            
+            Label3: do {
+                Label4: while (true) {
+                  if (!(i_855640087 < (formatstr_855640084).length)) Temporary5 = false; else {                    Temporary5 = (ConstSet18[formatstr_855640084[i_855640087]] != undefined);                  }                if (!Temporary5) break Label4;
+                  j_855640104 = (((j_855640104 * 10) + formatstr_855640084[i_855640087]) - 48);
+                  i_855640087 += 1;
+                }
+            } while (false);
+            if (!(negative_855640109)) {
+            Temporary6 = (j_855640104 - 1);
+            }
+            else {
+            Temporary6 = ((a_855640085).length - j_855640104);
+            }
+            
+            var idx_855640132 = Temporary6;
+              if ((idx_855640132 < 0)) Temporary7 = true; else {                Temporary7 = ((a_855640085).length - 1 < idx_855640132);              }            if (Temporary7) {
+            invalidFormatString_855640080();
+            }
+            
+            s_855640083[s_855640083_Idx].push.apply(s_855640083[s_855640083_Idx], a_855640085[idx_855640132]);;
+            break;
+          case 123:
+            var j_855640136 = (i_855640087 + 2);
+            var k_855640137 = 0;
+            var negative_855640138 = (formatstr_855640084[j_855640136] == 45);
+            if (negative_855640138) {
+            j_855640136 += 1;
+            }
+            
+            var isNumber_855640143 = 0;
+            Label8: do {
+                Label9: while (true) {
+                if (!((j_855640136 < (formatstr_855640084).length) && !((ConstSet19[formatstr_855640084[j_855640136]] != undefined)))) break Label9;
+                  if ((ConstSet20[formatstr_855640084[j_855640136]] != undefined)) {
+                  k_855640137 = (((k_855640137 * 10) + formatstr_855640084[j_855640136]) - 48);
+                  if ((isNumber_855640143 == 0)) {
+                  isNumber_855640143 = 1;
+                  }
+                  
+                  }
+                  else {
+                    isNumber_855640143 = -1;
+                  }
+                  
+                  j_855640136 += 1;
+                }
+            } while (false);
+            if ((isNumber_855640143 == 1)) {
+            if (!(negative_855640138)) {
+            Temporary10 = (k_855640137 - 1);
+            }
+            else {
+            Temporary10 = ((a_855640085).length - k_855640137);
+            }
+            
+            var idx_855640165 = Temporary10;
+              if ((idx_855640165 < 0)) Temporary11 = true; else {                Temporary11 = ((a_855640085).length - 1 < idx_855640165);              }            if (Temporary11) {
+            invalidFormatString_855640080();
+            }
+            
+            s_855640083[s_855640083_Idx].push.apply(s_855640083[s_855640083_Idx], a_855640085[idx_855640165]);;
+            }
+            else {
+              var x_855640169 = findNormalized_855640068(substr_33557907(formatstr_855640084, (i_855640087 + 2), (j_855640136 - 1)), a_855640085);
+                if (!(0 <= x_855640169)) Temporary12 = false; else {                  Temporary12 = (x_855640169 < (a_855640085).length - 1);                }              if (Temporary12) {
+              s_855640083[s_855640083_Idx].push.apply(s_855640083[s_855640083_Idx], a_855640085[(x_855640169 + 1)]);;
+              }
+              else {
+              invalidFormatString_855640080();
+              }
+              
+            }
+            
+            i_855640087 = (j_855640136 + 1);
+            break;
+          case 97:
+          case 98:
+          case 99:
+          case 100:
+          case 101:
+          case 102:
+          case 103:
+          case 104:
+          case 105:
+          case 106:
+          case 107:
+          case 108:
+          case 109:
+          case 110:
+          case 111:
+          case 112:
+          case 113:
+          case 114:
+          case 115:
+          case 116:
+          case 117:
+          case 118:
+          case 119:
+          case 120:
+          case 121:
+          case 122:
+          case 65:
+          case 66:
+          case 67:
+          case 68:
+          case 69:
+          case 70:
+          case 71:
+          case 72:
+          case 73:
+          case 74:
+          case 75:
+          case 76:
+          case 77:
+          case 78:
+          case 79:
+          case 80:
+          case 81:
+          case 82:
+          case 83:
+          case 84:
+          case 85:
+          case 86:
+          case 87:
+          case 88:
+          case 89:
+          case 90:
+          case 128:
+          case 129:
+          case 130:
+          case 131:
+          case 132:
+          case 133:
+          case 134:
+          case 135:
+          case 136:
+          case 137:
+          case 138:
+          case 139:
+          case 140:
+          case 141:
+          case 142:
+          case 143:
+          case 144:
+          case 145:
+          case 146:
+          case 147:
+          case 148:
+          case 149:
+          case 150:
+          case 151:
+          case 152:
+          case 153:
+          case 154:
+          case 155:
+          case 156:
+          case 157:
+          case 158:
+          case 159:
+          case 160:
+          case 161:
+          case 162:
+          case 163:
+          case 164:
+          case 165:
+          case 166:
+          case 167:
+          case 168:
+          case 169:
+          case 170:
+          case 171:
+          case 172:
+          case 173:
+          case 174:
+          case 175:
+          case 176:
+          case 177:
+          case 178:
+          case 179:
+          case 180:
+          case 181:
+          case 182:
+          case 183:
+          case 184:
+          case 185:
+          case 186:
+          case 187:
+          case 188:
+          case 189:
+          case 190:
+          case 191:
+          case 192:
+          case 193:
+          case 194:
+          case 195:
+          case 196:
+          case 197:
+          case 198:
+          case 199:
+          case 200:
+          case 201:
+          case 202:
+          case 203:
+          case 204:
+          case 205:
+          case 206:
+          case 207:
+          case 208:
+          case 209:
+          case 210:
+          case 211:
+          case 212:
+          case 213:
+          case 214:
+          case 215:
+          case 216:
+          case 217:
+          case 218:
+          case 219:
+          case 220:
+          case 221:
+          case 222:
+          case 223:
+          case 224:
+          case 225:
+          case 226:
+          case 227:
+          case 228:
+          case 229:
+          case 230:
+          case 231:
+          case 232:
+          case 233:
+          case 234:
+          case 235:
+          case 236:
+          case 237:
+          case 238:
+          case 239:
+          case 240:
+          case 241:
+          case 242:
+          case 243:
+          case 244:
+          case 245:
+          case 246:
+          case 247:
+          case 248:
+          case 249:
+          case 250:
+          case 251:
+          case 252:
+          case 253:
+          case 254:
+          case 255:
+          case 95:
+            var j_855640173 = (i_855640087 + 1);
+            Label13: do {
+                Label14: while (true) {
+                  if (!(j_855640173 < (formatstr_855640084).length)) Temporary15 = false; else {                    Temporary15 = (ConstSet22[formatstr_855640084[j_855640173]] != undefined);                  }                if (!Temporary15) break Label14;
+                  j_855640173 += 1;
+                }
+            } while (false);
+            var x_855640182 = findNormalized_855640068(substr_33557907(formatstr_855640084, (i_855640087 + 1), (j_855640173 - 1)), a_855640085);
+              if (!(0 <= x_855640182)) Temporary16 = false; else {                Temporary16 = (x_855640182 < (a_855640085).length - 1);              }            if (Temporary16) {
+            s_855640083[s_855640083_Idx].push.apply(s_855640083[s_855640083_Idx], a_855640085[(x_855640182 + 1)]);;
+            }
+            else {
+            invalidFormatString_855640080();
+            }
+            
+            i_855640087 = j_855640173;
+            break;
+          default: 
+            invalidFormatString_855640080();
+            break;
+          }
+          }
+          else {
+            addChar(s_855640083[s_855640083_Idx], formatstr_855640084[i_855640087]);;
+            i_855640087 += 1;
+          }
+          
+        }
+    } while (false);
+
+  
+}
+
+function nsuFormatOpenArray(formatstr_855640191, a_855640192) {
+  var result_855640193 = [[]];
+
+    result_855640193[0] = nimCopy(null, mnewString(0), NTI33554439);
+    nsuAddf(result_855640193, 0, formatstr_855640191, a_855640192);
+
+  return result_855640193[0];
+
+}
+
+function addQuoted_603985233(s_603985235, s_603985235_Idx, x_603985236) {
+    s_603985235[s_603985235_Idx].push.apply(s_603985235[s_603985235_Idx], reprEnum(x_603985236, NTI603979779));;
+
+  
+}
+
+function collectionToString_603985201(x_603985203, prefix_603985204, separator_603985205, suffix_603985206) {
+  var result_603985207 = [[]];
+
+    result_603985207[0] = nimCopy(null, prefix_603985204, NTI33554439);
+    var firstElement_603985208 = true;
+    Label1: do {
+      var value_603985229 = 0;
+      var i_452984973 = 0;
+      Label2: do {
+          Label3: while (true) {
+          if (!(i_452984973 <= 6)) break Label3;
+            if ((x_603985203[i_452984973] != undefined)) {
+            value_603985229 = i_452984973;
+            if (firstElement_603985208) {
+            firstElement_603985208 = false;
+            }
+            else {
+            result_603985207[0].push.apply(result_603985207[0], separator_603985205);;
+            }
+            
+            addQuoted_603985233(result_603985207, 0, value_603985229);
+            }
+            
+            i_452984973 += 1;
+          }
+      } while (false);
+    } while (false);
+    result_603985207[0].push.apply(result_603985207[0], suffix_603985206);;
+
+  return result_603985207[0];
+
+}
+
+function HEX24_603985197(x_603985199) {
+  var result_603985200 = [];
+
+    result_603985200 = nimCopy(null, collectionToString_603985201(x_603985199, makeNimstrLit("{"), makeNimstrLit(", "), makeNimstrLit("}")), NTI33554439);
+
+  return result_603985200;
+
+}
+
+function initFromJson_603985118(dst_603985119, dst_603985119_Idx, jsonNode_603985120, jsonPath_603985121, jsonPath_603985121_Idx) {
+      var Temporary1;
+
+    if (HEX3DHEX3D_603981832(jsonNode_603985120, null)) {
+    raiseException({message: (makeNimstrLit("key not found: ") || []).concat(jsonPath_603985121[jsonPath_603985121_Idx] || []), parent: null, m_type: NTI33555126, name: null, trace: [], up: null}, "KeyError");
+    }
+    else {
+    if (!((ConstSet17[jsonNode_603985120.kind] != undefined))) {
+    var msgHEX60gensym97_603985254 = nsuFormatOpenArray(makeNimstrLit("Incorrect JSON kind. Wanted \'$1\' in \'$2\' but got \'$3\'."), [HEX24_603985197(ConstSet23), nimCopy(null, jsonPath_603985121[jsonPath_603985121_Idx], NTI33554439), reprEnum(jsonNode_603985120.kind, NTI603979779)]);
+    raiseException({message: nimCopy(null, msgHEX60gensym97_603985254, NTI33554439), parent: null, m_type: NTI1040187400, name: null, trace: [], up: null}, "JsonKindError");
+    }
+    }
+    if ((jsonNode_603985120.kind == 0)) {
+    dst_603985119[dst_603985119_Idx] = nimCopy(null, [], NTI33554439);
+    }
+    else {
+      var Temporary1 = jsonNode_603985120;
+      if (ConstSet24[Temporary1.kind]===undefined) { raiseFieldError2(makeNimstrLit("field \'str\' is not accessible for type \'JsonNodeObj\' using \'kind = "), reprDiscriminant(Temporary1.kind, NTI603979779)); }
+      dst_603985119[dst_603985119_Idx] = nimCopy(null, Temporary1.str, NTI33554439);
+    }
+    
+
+  
+}
+
+function to_452984906(node_452984909) {
+  var result_452984911 = [[]];
+
+    var jsonPath_452984912 = [[]];
+    initFromJson_603985118(result_452984911, 0, node_452984909, jsonPath_452984912, 0);
+
+  return result_452984911[0];
+
+}
+
+function getVarType_603985042(x_603985043, isRawNumber_603985044, isRawNumber_603985044_Idx) {
+        var Temporary1;
+
+  var result_603985045 = 0;
+
+  BeforeRet: do {
+    result_603985045 = 0;
+    switch (toJSStr(cstrToNimstr(Object.prototype.toString.call(x_603985043)))) {
+    case "[object Array]":
+      result_603985045 = 6;
+      break BeforeRet;
+      break;
+    case "[object Object]":
+      result_603985045 = 5;
+      break BeforeRet;
+      break;
+    case "[object Number]":
+        if (!Number.isInteger(x_603985043)) Temporary1 = false; else {          Temporary1 = !(((1.0 / x_603985043) == -Infinity));        }      if (Temporary1) {
+      if (Number.isSafeInteger(x_603985043)) {
+      result_603985045 = 2;
+      break BeforeRet;
+      }
+      else {
+        isRawNumber_603985044[isRawNumber_603985044_Idx] = true;
+        result_603985045 = 4;
+        break BeforeRet;
+      }
+      
+      }
+      else {
+        result_603985045 = 3;
+        break BeforeRet;
+      }
+      
+      break;
+    case "[object Boolean]":
+      result_603985045 = 1;
+      break BeforeRet;
+      break;
+    case "[object Null]":
+      result_603985045 = 0;
+      break BeforeRet;
+      break;
+    case "[object String]":
+      result_603985045 = 4;
+      break BeforeRet;
+      break;
+    default: 
+      break;
+    }
+  } while (false);
+
+  return result_603985045;
+
+}
+
+function newJArray_603979898() {
+  var result_603979899 = null;
+
+    result_603979899 = {kind: 6, elems: [], isUnquoted: false, str: [], num: 0, fnum: 0.0, bval: false, fields: ({data: [], counter: 0, first: 0, last: 0})};
+
+  return result_603979899;
+
+}
+
+function len_603985061(x_603985062) {
+  var result_603985063 = 0;
+
+          result_603985063 = x_603985062.length;
+    
+
+  return result_603985063;
+
+}
+
+function add_603979997(father_603979998, child_603979999) {
+    var Temporary1;
+
+    var Temporary1 = father_603979998;
+    if (ConstSet25[Temporary1.kind]===undefined) { raiseFieldError2(makeNimstrLit("field \'elems\' is not accessible for type \'JsonNodeObj\' using \'kind = "), reprDiscriminant(Temporary1.kind, NTI603979779)); }
+    Temporary1.elems.push(child_603979999);;
+
+  
+}
+
+function nextPowerOfTwo_721420460(x_721420461) {
+  var result_721420462 = 0;
+
+    result_721420462 = (x_721420461 - 1);
+    result_721420462 = (result_721420462 | (result_721420462 >> 16));
+    result_721420462 = (result_721420462 | (result_721420462 >> 8));
+    result_721420462 = (result_721420462 | (result_721420462 >> 4));
+    result_721420462 = (result_721420462 | (result_721420462 >> 2));
+    result_721420462 = (result_721420462 | (result_721420462 >> 1));
+    result_721420462 += (1 + ((x_721420461 <= 0) ? 1 : 0));
+
+  return result_721420462;
+
+}
+
+function slotsNeeded_704643114(count_704643115) {
+  var result_704643116 = 0;
+
+    result_704643116 = nextPowerOfTwo_721420460((Math.trunc((count_704643115 * 3) / 2) + 4));
+
+  return result_704643116;
+
+}
+
+function initOrderedTable_603979869(initialSize_603979872) {
+  var result_603979873 = ({data: [], counter: 0, first: 0, last: 0});
+
+    var correctSizeHEX60gensym0_603979875 = slotsNeeded_704643114(initialSize_603979872);
+    result_603979873.counter = 0;
+    result_603979873.data = new Array(correctSizeHEX60gensym0_603979875); for (var i = 0 ; i < correctSizeHEX60gensym0_603979875 ; ++i) { result_603979873.data[i] = {Field0: 0, Field1: 0, Field2: [], Field3: null}; }    result_603979873.first = -1;
+    result_603979873.last = -1;
+
+  return result_603979873;
+
+}
+
+function newJObject_603979867() {
+  var result_603979868 = null;
+
+    result_603979868 = {kind: 5, fields: initOrderedTable_603979869(2), isUnquoted: false, str: [], num: 0, fnum: 0.0, bval: false, elems: []};
+
+  return result_603979868;
+
+}
+
+function mustRehash_603980467(t_603980469) {
+  var result_603980470 = false;
+
+    result_603980470 = ((((t_603980469.data).length * 2) < (t_603980469.counter * 3)) || (((t_603980469.data).length - t_603980469.counter) < 4));
+
+  return result_603980470;
+
+}
+
+function rawInsert_603981043(t_603981046, data_603981047, data_603981047_Idx, key_603981048, val_603981049, hc_603981050, h_603981051) {
+    data_603981047[data_603981047_Idx][h_603981051].Field2 = nimCopy(null, key_603981048, NTI33554439);
+    data_603981047[data_603981047_Idx][h_603981051].Field3 = val_603981049;
+    data_603981047[data_603981047_Idx][h_603981051].Field0 = hc_603981050;
+    data_603981047[data_603981047_Idx][h_603981051].Field1 = -1;
+    if ((t_603981046.first < 0)) {
+    t_603981046.first = h_603981051;
+    }
+    
+    if ((0 <= t_603981046.last)) {
+    data_603981047[data_603981047_Idx][t_603981046.last].Field1 = h_603981051;
+    }
+    
+    t_603981046.last = h_603981051;
+
+  
+}
+
+function enlarge_603980628(t_603980631) {
+          var Temporary6;
+          var Temporary7;
+
+    var n_603980634 = [];
+    n_603980634 = new Array(((t_603980631.data).length * 2)); for (var i = 0 ; i < ((t_603980631.data).length * 2) ; ++i) { n_603980634[i] = {Field0: 0, Field1: 0, Field2: [], Field3: null}; }    var h_603980686 = t_603980631.first;
+    t_603980631.first = -1;
+    t_603980631.last = -1;
+    var Temporary1 = t_603980631.data; t_603980631.data = n_603980634; n_603980634 = Temporary1;    Label2: do {
+        Label3: while (true) {
+        if (!(0 <= h_603980686)) break Label3;
+          var nxt_603980744 = n_603980634[h_603980686].Field1;
+          var eh_603980798 = n_603980634[h_603980686].Field0;
+          if (isFilled_704643103(eh_603980798)) {
+          var j_603980802 = (eh_603980798 & (t_603980631.data).length - 1);
+          Label4: do {
+              Label5: while (true) {
+              if (!isFilled_704643103(t_603980631.data[j_603980802].Field0)) break Label5;
+                j_603980802 = nextTry_704643106(j_603980802, (t_603980631.data).length - 1);
+              }
+          } while (false);
+          Temporary6 = n_603980634[h_603980686].Field2;
+          n_603980634[h_603980686].Field2 = genericReset(n_603980634[h_603980686].Field2, NTI33554439);
+          Temporary7 = n_603980634[h_603980686].Field3;
+          n_603980634[h_603980686].Field3 = genericReset(n_603980634[h_603980686].Field3, NTI603979780);
+          rawInsert_603981043(t_603980631, t_603980631, "data", Temporary6, Temporary7, n_603980634[h_603980686].Field0, j_603980802);
+          }
+          
+          h_603980686 = nxt_603980744;
+        }
+    } while (false);
+
+  
+}
+
+function rawGetKnownHC_603981325(t_603981328, key_603981329, hc_603981330) {
+  var result_603981331 = 0;
+
+  BeforeRet: do {
+    if (((t_603981328.data).length == 0)) {
+    result_603981331 = -1;
+    break BeforeRet;
+    }
+    
+    var h_603981382 = (hc_603981330 & (t_603981328.data).length - 1);
+    Label1: do {
+        Label2: while (true) {
+        if (!isFilled_704643103(t_603981328.data[h_603981382].Field0)) break Label2;
+          if (((t_603981328.data[h_603981382].Field0 == hc_603981330) && eqStrings(t_603981328.data[h_603981382].Field2, key_603981329))) {
+          result_603981331 = h_603981382;
+          break BeforeRet;
+          }
+          
+          h_603981382 = nextTry_704643106(h_603981382, (t_603981328.data).length - 1);
+        }
+    } while (false);
+    result_603981331 = (-1 - h_603981382);
+  } while (false);
+
+  return result_603981331;
+
+}
+
+function HEX5BHEX5DHEX3D_603980062(t_603980065, key_603980066, val_603980067) {
+    if (((t_603980065.data).length == 0)) {
+    var correctSizeHEX60gensym13_603980117 = slotsNeeded_704643114(32);
+    t_603980065.counter = 0;
+    t_603980065.data = new Array(correctSizeHEX60gensym13_603980117); for (var i = 0 ; i < correctSizeHEX60gensym13_603980117 ; ++i) { t_603980065.data[i] = {Field0: 0, Field1: 0, Field2: [], Field3: null}; }    t_603980065.first = -1;
+    t_603980065.last = -1;
+    }
+    
+    var hc_603980122 = [0];
+    var index_603980360 = rawGet_603980131(t_603980065, key_603980066, hc_603980122, 0);
+    if ((0 <= index_603980360)) {
+    t_603980065.data[index_603980360].Field3 = val_603980067;
+    }
+    else {
+      if (((t_603980065.data).length == 0)) {
+      var correctSizeHEX60gensym18_603980462 = slotsNeeded_704643114(32);
+      t_603980065.counter = 0;
+      t_603980065.data = new Array(correctSizeHEX60gensym18_603980462); for (var i = 0 ; i < correctSizeHEX60gensym18_603980462 ; ++i) { t_603980065.data[i] = {Field0: 0, Field1: 0, Field2: [], Field3: null}; }      t_603980065.first = -1;
+      t_603980065.last = -1;
+      }
+      
+      if (mustRehash_603980467(t_603980065)) {
+      enlarge_603980628(t_603980065);
+      index_603980360 = rawGetKnownHC_603981325(t_603980065, key_603980066, hc_603980122[0]);
+      }
+      
+      index_603980360 = (-1 - index_603980360);
+      rawInsert_603981043(t_603980065, t_603980065, "data", key_603980066, val_603980067, hc_603980122[0], index_603980360);
+      t_603980065.counter += 1;
+    }
+    
+
+  
+}
+
+function HEX5BHEX5DHEX3D_603981702(obj_603981703, key_603981704, val_603981705) {
+    var Temporary1;
+
+    var Temporary1 = obj_603981703;
+    if (ConstSet26[Temporary1.kind]===undefined) { raiseFieldError2(makeNimstrLit("field \'fields\' is not accessible for type \'JsonNodeObj\' using \'kind = "), reprDiscriminant(Temporary1.kind, NTI603979779)); }
+    HEX5BHEX5DHEX3D_603980062(Temporary1.fields, key_603981704, val_603981705);
+
+  
+}
+
+function newJInt_603979856(n_603979857) {
+  var result_603979858 = null;
+
+    result_603979858 = {kind: 2, num: n_603979857, isUnquoted: false, str: [], fnum: 0.0, bval: false, fields: ({data: [], counter: 0, first: 0, last: 0}), elems: []};
+
+  return result_603979858;
+
+}
+
+function newJFloat_603979859(n_603979860) {
+  var result_603979861 = null;
+
+    result_603979861 = {kind: 3, fnum: n_603979860, isUnquoted: false, str: [], num: 0, bval: false, fields: ({data: [], counter: 0, first: 0, last: 0}), elems: []};
+
+  return result_603979861;
+
+}
+
+function newJRawNumber_603979850(s_603979851) {
+  var result_603979852 = null;
+
+    result_603979852 = {kind: 4, str: nimCopy(null, s_603979851, NTI33554439), isUnquoted: true, num: 0, fnum: 0.0, bval: false, fields: ({data: [], counter: 0, first: 0, last: 0}), elems: []};
+
+  return result_603979852;
+
+}
+
+function newJString_603979817(s_603979818) {
+  var result_603979819 = null;
+
+    result_603979819 = {kind: 4, str: nimCopy(null, s_603979818, NTI33554439), isUnquoted: false, num: 0, fnum: 0.0, bval: false, fields: ({data: [], counter: 0, first: 0, last: 0}), elems: []};
+
+  return result_603979819;
+
+}
+
+function newJBool_603979862(b_603979863) {
+  var result_603979864 = null;
+
+    result_603979864 = {kind: 1, bval: b_603979863, isUnquoted: false, str: [], num: 0, fnum: 0.0, fields: ({data: [], counter: 0, first: 0, last: 0}), elems: []};
+
+  return result_603979864;
+
+}
+
+function newJNull_603979865() {
+  var result_603979866 = null;
+
+    result_603979866 = {kind: 0, isUnquoted: false, str: [], num: 0, fnum: 0.0, bval: false, fields: ({data: [], counter: 0, first: 0, last: 0}), elems: []};
+
+  return result_603979866;
+
+}
+
+function convertObject_603985064(x_603985065) {
+  var result_603985066 = null;
+
+    var isRawNumber_603985067 = [false];
+    switch (getVarType_603985042(x_603985065, isRawNumber_603985067, 0)) {
+    case 6:
+      result_603985066 = newJArray_603979898();
+      Label1: do {
+        var i_603985072 = 0;
+        var colontmp__452984976 = 0;
+        colontmp__452984976 = len_603985061(x_603985065);
+        var i_452984977 = 0;
+        Label2: do {
+            Label3: while (true) {
+            if (!(i_452984977 < colontmp__452984976)) break Label3;
+              i_603985072 = i_452984977;
+              add_603979997(result_603985066, convertObject_603985064(x_603985065[i_603985072]));
+              i_452984977 += 1;
+            }
+        } while (false);
+      } while (false);
+      break;
+    case 5:
+      result_603985066 = newJObject_603979867();
+      for (var property in x_603985065) {
+        if (x_603985065.hasOwnProperty(property)) {
+      
+      var nimProperty_603985073 = null;
+      var nimValue_603985074 = null;
+      nimProperty_603985073 = property; nimValue_603985074 = x_603985065[property];
+      HEX5BHEX5DHEX3D_603981702(result_603985066, cstrToNimstr(nimProperty_603985073), convertObject_603985064(nimValue_603985074));
+      }}
+      break;
+    case 2:
+      result_603985066 = newJInt_603979856((x_603985065));
+      break;
+    case 3:
+      result_603985066 = newJFloat_603979859((x_603985065));
+      break;
+    case 4:
+      if (isRawNumber_603985067[0]) {
+      var value_603985083 = null;
+      value_603985083 = x_603985065.toString();
+      result_603985066 = newJRawNumber_603979850(cstrToNimstr(value_603985083));
+      }
+      else {
+        result_603985066 = newJString_603979817(cstrToNimstr((x_603985065)));
+      }
+      
+      break;
+    case 1:
+      result_603985066 = newJBool_603979862((x_603985065));
+      break;
+    case 0:
+      result_603985066 = newJNull_603979865();
+      break;
+    }
+
+  return result_603985066;
+
+}
+
+function parseJson_603985092(buffer_603985093) {
+  var result_603985094 = null;
+
+  BeforeRet: do {
+    result_603985094 = convertObject_603985064(JSON.parse(toJSStr(buffer_603985093)));
+    break BeforeRet;
+  } while (false);
+
+  return result_603985094;
+
+}
+
+function HEX3Aanonymous_452984920(p5Inst_452984921) {
+    
+function HEX3Aanonymous_452984924() {
+        var bar_452984925 = foo_452984853();
+        p5Inst_452984921.createCanvas(toFloat_1107296262(bar_452984925), 400.0);
+        p5Inst_452984921.background(200.0);
+
+      
+    }
+    
+function HEX3Aanonymous_452984926() {
+        if (p5Inst_452984921.mouseIsPressed) {
+        p5Inst_452984921.fill(0.0);
+        }
+        else {
+          var fillBy_452984927 = 255;
+          p5Inst_452984921.fill(toFloat_1107296262(fillBy_452984927));
+        }
+        
+        p5Inst_452984921.ellipse(p5Inst_452984921.mouseX, p5Inst_452984921.mouseY, 40.0, 40.0);
 
       
     }
 
-    var x_452984914 = 5;
-    var y_452984915 = 10;
-    p5Inst_452984913.setup = HEX3Aanonymous_452984916;
-    p5Inst_452984913.draw = HEX3Aanonymous_452984918;
+    var x_452984922 = 5;
+    var y_452984923 = 10;
+    p5Inst_452984921.setup = HEX3Aanonymous_452984924;
+    p5Inst_452984921.draw = HEX3Aanonymous_452984926;
 
   
 }
 var sHEX60gensym0_452984904 = HEX3Aanonymous_452984861;
 var p5InstHEX60gensym0_452984905 = new p5(sHEX60gensym0_452984904, "canvas1");
-var sHEX60gensym4_452984920 = HEX3Aanonymous_452984912;
-var p5InstHEX60gensym4_452984921 = new p5(sHEX60gensym4_452984920, "canvas2");
+var p5instanceId_452984913 = to_452984906(parseJson_603985092(makeNimstrLit("\"p5instance-0\"")));
+var sHEX60gensym4_452984928 = HEX3Aanonymous_452984920;
+var p5InstHEX60gensym4_452984929 = new p5(sHEX60gensym4_452984928, toJSStr(p5instanceId_452984913));
 </script>
 </main>
 <footer>
@@ -202,13 +2216,14 @@ var p5InstHEX60gensym4_452984921 = new p5(sHEX60gensym4_452984920, "canvas2");
 </div>
 </footer>
 <section id="source">
-<pre><code class="nim hljs"><span class="hljs-keyword">import</span> nimib, index
+<pre><code class="nim hljs"><span class="hljs-keyword">import</span> nimib, index, p5
 nbInit
-nbRawHtml: <span class="hljs-string">&quot;&quot;&quot;&lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.2/p5.min.js&quot; integrity=&quot;sha512-rCZdHNB0AePry6kAnKAVFMRfWPmUXSo+/vlGtrOUvhsxD0Punm/xWbEh+8vppPIOzKB9xnk42yCRZ5MD/jvvjQ==&quot; crossorigin=&quot;anonymous&quot; referrerpolicy=&quot;no-referrer&quot;&gt;&lt;/script&gt;&quot;&quot;&quot;</span>
+nbUseP5
 nb.addEntry(<span class="hljs-number">9</span>, <span class="hljs-string">&quot;Instance mode&quot;</span>, <span class="hljs-string">&quot;&quot;&quot;
 This program creates a canvas in a local p5 instance using
 [instance mode](https://github.com/processing/p5.js/wiki/Global-and-instance-mode).
-
+&quot;&quot;&quot;</span>)
+nbText: <span class="hljs-string">&quot;&quot;&quot;
 Instance mode allows to place a p5 instance into a specific `&lt;div&gt;`
 and to have multiple p5 canvas in the same document.
 
@@ -221,10 +2236,9 @@ will have an additional `sketch` argument added.
 In this example we show two copies of `get_started` example.
 The syntax here is explicitly contrived to make sure the `instance`
 is able to check all possible syntax variations allowed by nim.
-&quot;&quot;&quot;</span>)
+&quot;&quot;&quot;</span>
 nbRawHtml: <span class="hljs-string">&quot;&lt;div id=</span><span class="hljs-meta">\&quot;</span><span class="hljs-string">canvas1</span><span class="hljs-meta">\&quot;</span><span class="hljs-string">&gt;&lt;/div&gt;&quot;</span>
-nbJsFromCode:
-  <span class="hljs-keyword">import</span> p5
+nbCodeDisplay(nbJsFromCode):
   <span class="hljs-comment"># to test that a local proc is not converted</span>
   <span class="hljs-keyword">proc</span> foo(): <span class="hljs-built_in">int</span> = <span class="hljs-number">400</span>
 
@@ -247,29 +2261,26 @@ nbJsFromCode:
         fillBy.fill <span class="hljs-comment"># not no `()`</span>
       mouseX.ellipse(mouseY, <span class="hljs-number">40</span>, <span class="hljs-number">40</span>) <span class="hljs-comment"># even if used in dot expression, rewrite works</span>
                                      <span class="hljs-comment"># (this is a `nnkCall` with `nnkDotExpr` first child)</span>
-nbJsShowSource()
-nbRawHtml: <span class="hljs-string">&quot;&lt;div id=</span><span class="hljs-meta">\&quot;</span><span class="hljs-string">canvas2</span><span class="hljs-meta">\&quot;</span><span class="hljs-string">&gt;&lt;/div&gt;&quot;</span>
-nbJsFromCode:
-  instance(<span class="hljs-string">&quot;canvas2&quot;</span>): <span class="hljs-comment"># call with `instance(&quot;&lt;name of my div&gt;&quot;)` to place into specific div</span>
-    <span class="hljs-keyword">let</span> x = <span class="hljs-number">5</span>
-    <span class="hljs-keyword">let</span> y = <span class="hljs-number">10</span>
-    setup: <span class="hljs-comment"># `setup` and `draw` are templates shadowing the global templates</span>
-      <span class="hljs-keyword">let</span> bar = foo() <span class="hljs-comment"># this won't be replaced, as there's no `foo` in p5 that we wrapped</span>
-      createCanvas(bar, <span class="hljs-number">400</span>) <span class="hljs-comment"># each call will be checked against calls wrapped in the p5nim wrapper.</span>
-                             <span class="hljs-comment"># If a name matches, it will be replaced by `p5Inst.&lt;the call&gt;` instead.</span>
-      background(<span class="hljs-number">200</span>)
+nbText: <span class="hljs-string">&quot;In this second instance we make use of `nbP5Instance` nimib convenience template:&quot;</span>
+nbCodeDisplay(nbP5Instance):
+  <span class="hljs-keyword">let</span> x = <span class="hljs-number">5</span>
+  <span class="hljs-keyword">let</span> y = <span class="hljs-number">10</span>
+  setup: <span class="hljs-comment"># `setup` and `draw` are templates shadowing the global templates</span>
+    <span class="hljs-keyword">let</span> bar = foo() <span class="hljs-comment"># this won't be replaced, as there's no `foo` in p5 that we wrapped</span>
+    createCanvas(bar, <span class="hljs-number">400</span>) <span class="hljs-comment"># each call will be checked against calls wrapped in the p5nim wrapper.</span>
+                            <span class="hljs-comment"># If a name matches, it will be replaced by `p5Inst.&lt;the call&gt;` instead.</span>
+    background(<span class="hljs-number">200</span>)
 
-    draw:
-      <span class="hljs-comment"># similar to calls, idents are also compared with known fields of the</span>
-      <span class="hljs-comment"># `P5Instance` type and replaced by `p5Inst.&lt;field&gt;` in case of a match</span>
-      <span class="hljs-keyword">if</span> mouseIsPressed:
-        fill(<span class="hljs-number">0</span>)
-      <span class="hljs-keyword">else</span>:
-        <span class="hljs-keyword">let</span> fillBy = <span class="hljs-number">255</span> <span class="hljs-comment"># store in variable to test rewriting of real `nnkDotExpr`</span>
-        fillBy.fill <span class="hljs-comment"># not no `()`</span>
-      mouseX.ellipse(mouseY, <span class="hljs-number">40</span>, <span class="hljs-number">40</span>) <span class="hljs-comment"># even if used in dot expression, rewrite works</span>
-                                     <span class="hljs-comment"># (this is a `nnkCall` with `nnkDotExpr` first child)</span>
-nbJsShowSource()
+  draw:
+    <span class="hljs-comment"># similar to calls, idents are also compared with known fields of the</span>
+    <span class="hljs-comment"># `P5Instance` type and replaced by `p5Inst.&lt;field&gt;` in case of a match</span>
+    <span class="hljs-keyword">if</span> mouseIsPressed:
+      fill(<span class="hljs-number">0</span>)
+    <span class="hljs-keyword">else</span>:
+      <span class="hljs-keyword">let</span> fillBy = <span class="hljs-number">255</span> <span class="hljs-comment"># store in variable to test rewriting of real `nnkDotExpr`</span>
+      fillBy.fill <span class="hljs-comment"># not no `()`</span>
+    mouseX.ellipse(mouseY, <span class="hljs-number">40</span>, <span class="hljs-number">40</span>) <span class="hljs-comment"># even if used in dot expression, rewrite works</span>
+                                    <span class="hljs-comment"># (this is a `nnkCall` with `nnkDotExpr` first child)</span>
 nbSave
 </code></pre>
 </section><script>
