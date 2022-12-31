@@ -6,7 +6,7 @@ dangerously addictive and sort of universal programming language [Nim].
 
 More prosaically **p5nim** provides [Nim] bindings for the [p5.js] library, some syntactic sugar
 and convenience functions to use it with [nimib]🐳.
-In [p5nim documentation](https://pietroppeter.github.io/nim-p5/) you can also
+In [p5nim documentation](https://pietroppeter.github.io/p5nim/) you can also
 see live a number of [p5.js] examples and [openprocessing] artwork ported to Nim.
 Documentation is built with [nimib], a library to publish nim code to the web.
 
@@ -22,9 +22,9 @@ From its website:
 ## Status
 
 This project started as a fork of https://github.com/Foldover/nim-p5/, to fix some bugs.
-Now it has been renamed as `p5nim`, the goal is to clean more the api to make it more Nim idiomatic,
+It has been renamed as `p5nim`, the goal is to clean more the api to make it more Nim idiomatic,
 port more examples, fix more stuff and add more convenience functions
-to use it with nimib. At some point I will tag a new release and publish it on nimble
+to use it with nimib. At some point I will tag a new release and publish it on nimble.
 
 You can install it using:
 
@@ -53,6 +53,11 @@ You might want instead to clone it, in order to contribute fixing stuff and addi
       
 As you see from the code above ([live](https://pietroppeter.github.io/p5nim/get_started.html)), using p5nim is almost identical to using p5.js, save for the syntax.
 To learn how to use this the best way is to use [p5.js] documentation and port examples.
+
+## p5sound
+
+[p5sound](https://p5js.org/reference/#/libraries/p5.sound) is an additional library from p5js which extends p5 with sound functionalities.
+A work-in-progress wrapper is available, see [doorbell](https://pietroppeter.github.io/p5nim/doorbell.html) for example of usage.
 
 ## Porting from p5js to Nim
 

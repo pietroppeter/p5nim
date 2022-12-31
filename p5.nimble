@@ -26,3 +26,4 @@ task examples, "rebuild all examples":
   build "okazz_221026a"
   build "sinewave"
   build "instances"
+  build "doorbell"
