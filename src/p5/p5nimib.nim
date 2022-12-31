@@ -9,3 +9,8 @@ template nbP5Instance*(body: untyped) =
   nbJsFromCode(p5instanceId):
     instance(p5instanceId):
       body
+
+template nbUseP5Sound* =
+  nb.partials["head"] &= """<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.5.0/addons/p5.sound.min.js"></script>"""
+  nbJsFromCodeGlobal:
+    import p5 / p5sound
