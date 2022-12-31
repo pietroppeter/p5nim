@@ -19,6 +19,8 @@ From its website:
 
 > p5.js is a JavaScript library for creative coding, with a focus on making coding accessible and inclusive for artists, designers, educators, beginners, and anyone else! p5.js is free and open-source because we believe software, and the tools to learn it, should be accessible to everyone.
 
+Note that there is also an alternative pure nim implementation inspired by p5js (which also works for native target): https://github.com/GabrielLasso/drawim
+
 ## Status
 
 This project started as a fork of https://github.com/Foldover/nim-p5/, to fix some bugs.
