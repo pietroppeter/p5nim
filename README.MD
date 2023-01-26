@@ -99,7 +99,8 @@ nbSave
 [Instance mode](https://github.com/processing/p5.js/wiki/Global-and-instance-mode) allows to place a p5 instance into a specific `<div>`
 and to have multiple p5 canvas in the same document.
 
-Thanks to nim metaprogramming capabilities, we do not need
+Thanks to nim metaprogramming capabilities (and mostly [thanks to @Vindaar](https://github.com/pietroppeter/p5nim/pull/5)),
+we do not need
 to have a different api for instance mode, we can have the same api
 we use for global mode, we only need to wrap it in a `instance` call.
 
