@@ -6,7 +6,7 @@ dangerously addictive and sort of universal programming language [Nim].
 
 More prosaically **p5nim** provides [Nim] bindings for the [p5.js] library, some syntactic sugar
 and convenience functions to use it with [nimib]🐳.
-In [p5nim documentation](https://pietroppeter.github.io/p5nim/) you can also
+In [p5nim exzmple gallery](https://pietroppeter.github.io/p5nim/) you can also
 see live a number of [p5.js] examples and [openprocessing] artwork ported to Nim.
 Documentation is built with [nimib], a library to publish nim code to the web.
 
@@ -26,9 +26,11 @@ Note that there is also an alternative pure nim implementation inspired by p5js 
 This project started as a fork of https://github.com/Foldover/nim-p5/, to fix some bugs.
 It has been renamed as `p5nim`, the goal is to clean more the api to make it more Nim idiomatic,
 port more examples, fix more stuff and add more convenience functions
-to use it with nimib. At some point I will tag a new release and publish it on nimble.
+to use it with nimib.
+Also in scope are additional p5js libraries such as p5sound (see below).
+I will add stuff as I need it but you are more than welcome to jump in and help out (check issues)!
 
-You can install it using:
+It is available on nimble (replaced nimp5) and you can install it using:
 
     nimble install https://github.com/pietroppeter/p5nim/
 
@@ -40,19 +42,21 @@ You might want instead to clone it, in order to contribute fixing stuff and addi
 
 ## Basic usage
 
-    import p5
+```nim
+import p5
 
-    setup:
-      createCanvas(400, 400)
-      background(200)
-      
-    draw:
-      if mouseIsPressed:
-        fill(0)
-      else:
-        fill(255)
-      ellipse(mouseX, mouseY, 40, 40)
-      
+setup:
+  createCanvas(400, 400)
+  background(200)
+
+draw:
+  if mouseIsPressed:
+    fill(0)
+  else:
+    fill(255)
+  ellipse(mouseX, mouseY, 40, 40)
+```
+
 As you see from the code above ([live](https://pietroppeter.github.io/p5nim/get_started.html)), using p5nim is almost identical to using p5.js, save for the syntax.
 To learn how to use this the best way is to use [p5.js] documentation and port examples.
 
@@ -60,6 +64,48 @@ To learn how to use this the best way is to use [p5.js] documentation and port e
 
 [p5sound](https://p5js.org/reference/#/libraries/p5.sound) is an additional library from p5js which extends p5 with sound functionalities.
 A work-in-progress wrapper is available, see [doorbell](https://pietroppeter.github.io/p5nim/doorbell.html) for example of usage.
+
+## Usage with nimib
+
+```nim
+import nimib
+import p5 # only imports nimib utilities when not using js backend
+
+nbInit
+
+nbUseP5 # adds p5 js and imports p5 in JsGlobal
+nbUseP5Sound # optional in case you want also p5sound
+
+nbCodeDisplay(nbJsFromCode): # if you want to display the js code
+  const nimColor = "#ffc200"
+  var doorbell: SoundFile
+
+  preload:
+    doorbell = loadSound("assets/doorbell.mp3")
+
+  setup:
+    createCanvas(200, 100)
+    background(nimColor)
+    text("click to play the doorbell 🛎️", 10, 20)
+
+  mousePressed:
+    play(doorbell)
+
+nbSave
+```
+
+## Instance mode
+
+[Instance mode](https://github.com/processing/p5.js/wiki/Global-and-instance-mode) allows to place a p5 instance into a specific `<div>`
+and to have multiple p5 canvas in the same document.
+
+Thanks to nim metaprogramming capabilities, we do not need
+to have a different api for instance mode, we can have the same api
+we use for global mode, we only need to wrap it in a `instance` call.
+
+See [instances](https://pietroppeter.github.io/p5nim/instances.html) for an example.
+
+**Note**: this feature is not yet complete, see https://github.com/pietroppeter/p5nim/issues/8
 
 ## Porting from p5js to Nim
 
