@@ -62,6 +62,7 @@ type
     keyCode*: int
     setup*: Closure
     draw*: Closure
+    preload*: Closure
 
   InstanceClosure* = proc(s: P5Instance) {.closure.}
   Closure* = proc() {.closure.}

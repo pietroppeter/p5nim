@@ -1,5 +1,6 @@
 import std / [macros, macrocache]
 from std/strutils import `%`
+import strformat
 
 import p5types
 
@@ -37,7 +38,8 @@ proc maybeReplaceCall(n: NimNode): NimNode =
     of nnkIdent, nnkSym: result = n
     of nnkCall: result = getName(n[0])
     of nnkDotExpr: result = getName(n[1]) # if it refers to a call, 2nd child is call
-    else: doAssert false, "Invalid branch as `maybeReplaceCall` expects nnkCall or nnkDotExpr"
+    of nnkBracketExpr: result = getName(n[0]) # generic function like newSeq[float]
+    else: doAssert false, &"Invalid branch ({n.kind}) as `maybeReplaceCall` expects nnkCall or nnkDotExpr"
 
   let name = getName(n)
   let nameIsWrapped = name in WrappedProcs
@@ -152,6 +154,10 @@ template instanceImpl(): untyped {.dirty.} =
 
   template draw(bd: untyped): untyped =
     p5Inst.draw = proc() =
+      replaceCalls(bd)
+
+  template preload(bd: untyped): untyped =
+    p5Inst.preload = proc() =
       replaceCalls(bd)
   ## XXX: define all templates from `p5sugar.nim`?
 
