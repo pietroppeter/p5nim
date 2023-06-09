@@ -6,7 +6,7 @@ dangerously addictive and sort of universal programming language [Nim].
 
 More prosaically **p5nim** provides [Nim] bindings for the [p5.js] library, some syntactic sugar
 and convenience functions to use it with [nimib]🐳.
-In [p5nim exzmple gallery](https://pietroppeter.github.io/p5nim/) you can also
+In [p5nim example gallery](https://pietroppeter.github.io/p5nim/) you can also
 see live a number of [p5.js] examples and [openprocessing] artwork ported to Nim.
 Documentation is built with [nimib], a library to publish nim code to the web.
 
